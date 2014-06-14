@@ -14,6 +14,7 @@ class exports.Chat
 		@client = new irc.connect {
 			autoreconnect: true
 			channels: []
+			debug: @Mikuia.settings.bot.debug
 			names: true
 			nickname: @Mikuia.settings.bot.name
 			port: 6667
