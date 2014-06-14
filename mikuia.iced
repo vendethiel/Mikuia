@@ -31,7 +31,10 @@ defaultSettings =
 		port: 6379
 		db: 0
 		options:
-			auth_pass: ''
+			auth_pass: '',
+	twitch:
+		key: 'TWITCH_API_KEY'
+		secret: 'TWITCH_API_SECRET'
 
 # Let's load the settings!
 fs.readFile 'settings.json', (settingsErr, data) ->
@@ -73,3 +76,4 @@ fs.readFile 'settings.json', (settingsErr, data) ->
 			Mikuia.Plugin.load file
 		
 	Mikuia.Chat.connect()
+	Mikuia.Twitch.init()

@@ -28,6 +28,9 @@ class exports.Chat
 				event.on 'connected', =>
 					@Mikuia.Log.info 'Connected to Twitch IRC.'
 
+				event.on 'disconnected', (reason) =>
+					@Mikuia.Log.warning 'Disconnected from Twitch IRC. Reason: ' + reason
+
 				event.on 'join', (channel) =>
 					@Mikuia.Log.info 'Joined ' + channel + '.'
 			else
