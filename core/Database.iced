@@ -1,5 +1,8 @@
+# Turns out this is how to get ICS work in modules...
+iced = require('iced-coffee-script').iced
+# Lame, I know.
+
 cli = require 'cli-color'
-iced = require 'iced-coffee-script'.iced
 redis = require 'redis'
 
 class exports.Database
