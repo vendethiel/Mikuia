@@ -23,3 +23,8 @@ class exports.Database
 		await @client.select @Mikuia.settings.redis.db
 		@client.get key, (err, data) ->
 			callback err, data
+
+	getSet: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.smembers key, (err, data) ->
+			callback err, data

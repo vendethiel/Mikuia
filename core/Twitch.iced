@@ -12,11 +12,11 @@ class exports.Twitch
 			}
 		else
 			@Mikuia.Log.fatal 'Please specify correct Twitch API key and secret.'
-			process.exit()
 
 	getStreams: (channels, callback) ->
-		@twitch._get 'streams/?channel=' + channels.join ',', (err, result) =>
-			if err
-				Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
+		@twitch._get 'streams/?channel=' + channels.join(','), (err, result) =>
+			if err && not result.req.res.body?.streams?
+				@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
+				callback true, null
 			else
-				console.log result
+				callback err, result.req.res.body.streams

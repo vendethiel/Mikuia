@@ -77,3 +77,5 @@ fs.readFile 'settings.json', (settingsErr, data) ->
 		
 	Mikuia.Chat.connect()
 	Mikuia.Twitch.init()
+
+	Mikuia.Chat.update()
