@@ -1,5 +1,5 @@
 cli = require 'cli-color'
-irc = require 'irc'
+irc = require 'node-twitch-irc'
 
 class exports.Chat
 	constructor: (Mikuia) ->
@@ -11,31 +11,32 @@ class exports.Chat
 			better safe than sorry,
 			better safe than sorry...
 		###
-		@client = new irc.Client 'irc.twitch.tv', @Mikuia.settings.bot.name, {
-			nick: @Mikuia.settings.bot.name
-			userName: @Mikuia.settings.bot.name
-			realName: 'Mikuia/Lukanya - a Twitch.tv bot // http://mikuia.tv'
-			password: @Mikuia.settings.bot.oauth
-			autoRejoin: false
-			debug: @Mikuia.settings.bot.debug
-			showErrors: true
-		}
+		@client = new irc.connect {
+			autoreconnect: true
+			channels: []
+			names: true
+			nickname: @Mikuia.settings.bot.name
+			port: 6667
+			server: 'irc.twitch.tv'
+			oauth: @Mikuia.settings.bot.oauth
+		}, (err, event) =>
+			if !err
+				event.on 'chat', (user, channel, message) =>
+					@handleMessage(user, channel, message)
 
-		@client.on 'registered', =>
-			@Mikuia.Log.info 'Connected to Twitch IRC.'
+				event.on 'connected', =>
+					@Mikuia.Log.info 'Connected to Twitch IRC.'
 
-		@client.on 'error', (err) =>
-			@Mikuia.Log.error err
-
-		@client.on 'join', (channel, nick) =>
-			@Mikuia.Log.info 'Joined ' + channel + '.'
-
-		@client.on 'message', (from, to, message) =>
-			@handleMessage from, to, message
+				event.on 'join', (channel) =>
+					@Mikuia.Log.info 'Joined ' + channel + '.'
+			else
+				@Mikuia.Log.error err
 
 	handleMessage: (from, to, message) ->
-		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from) + ': ' + cli.whiteBright(message)
+		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
 
 	join: (channel) ->
-		
-		@client.join(channel)
+		@client.join channel
+
+	say: (channel, message) ->
+		@client.say channel, message
