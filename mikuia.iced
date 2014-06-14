@@ -73,6 +73,3 @@ fs.readFile 'settings.json', (settingsErr, data) ->
 			Mikuia.Plugin.load file
 		
 	Mikuia.Chat.connect()
-
-	await Mikuia.Database.get 'derp', defer err, data
-	console.log data
