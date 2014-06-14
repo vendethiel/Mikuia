@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "dependencies": {
   	"cli-color": "0.3.2",
-    "express": "4.4.1",
-    "iced-coffee-script": "1.7.1-e",
+    "express": "4.4.3",
+    "iced-coffee-script": "1.7.1-f",
     "jade": "1.3.1",
-    "moment": "2.6.0",
+    "moment": "2.7.0",
     "node-twitch-irc": "1.0.5",
     "redis": "0.10.3"
   }
