@@ -1,0 +1,5 @@
+{
+	"name": "Base",
+	"description": "Basic commands and stuff.",
+	"baseFile": "plugin.iced"
+}
