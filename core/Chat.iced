@@ -2,7 +2,7 @@ cli = require 'cli-color'
 irc = require 'node-twitch-irc'
 RateLimiter = require('limiter').RateLimiter
 
-limiter = new RateLimiter 10, 30000
+limiter = new RateLimiter 15, 30000
 
 class exports.Chat
 	constructor: (Mikuia) ->
@@ -41,6 +41,8 @@ class exports.Chat
 
 	handleMessage: (from, to, message) ->
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
+		if message == '!lukanya'
+			@say to, 'Hi, I\'m Lukanya, and I don\'t do anything useful! Leave me alone.'
 
 	join: (channel, callback) ->
 		limiter.removeTokens 1, (err, rr) =>	
