@@ -8,7 +8,7 @@
     "jade": "1.3.1",
     "limiter": "1.0.5",
     "moment": "2.7.0",
-    "node-twitch-irc": "1.0.5",
+    "node-twitch-irc": "1.0.6",
     "redis": "0.10.3",
     "twitchy": "0.5.0"
   }
