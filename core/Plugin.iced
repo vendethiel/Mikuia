@@ -7,6 +7,12 @@ class exports.Plugin
 		@Mikuia = Mikuia
 		@plugins = {}
 
+	getManifest: (plugin) ->
+		if @plugins[plugin]?.manifest?
+			return @plugins[plugin][manifest]
+		else
+			return null
+
 	load: (name) ->
 		@Mikuia.Log.info 'Reading directory: ' + cli.yellowBright(name)
 
@@ -22,11 +28,19 @@ class exports.Plugin
 						@Mikuia.Log.info 'Loading plugin: ' + cli.yellowBright(name + '/' + manifest.baseFile)
 
 						filePath = path.resolve('plugins/' + name + '/' + manifest.baseFile)
-						@plugins[name] = require filePath
+						@plugins[name] =
+							manifest: manifest
+							module: require filePath
 
+						if manifest.settings?.server?
+							if not @Mikuia.settings.plugins[name]?
+								@Mikuia.settings.plugins[name] = {}
+							for key, value of manifest.settings.server	
+								if not @Mikuia.settings.plugins[name][key]?
+									@Mikuia.Settings.pluginSet name, key, value
 					else
 						@Mikuia.Log.error 'Plugin ' + cli.yellowBright(name) + ' does not specify base file.'
-
+					
 			else
 				@Mikuia.Log.error 'Failed to read manifest of plugin ' + cli.yellowBright(name)
 

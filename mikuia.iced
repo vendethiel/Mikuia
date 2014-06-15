@@ -25,46 +25,8 @@ for fileName in fs.readdirSync 'core'
 	shortName = fileName.replace '.iced', ''
 	Mikuia[shortName] = new coreFile[shortName] Mikuia
 
-# Some default fields for settings, maybe will get moved to other file.
-defaultSettings =
-	bot:
-		debug: false
-		name: 'YourBotNameHere'
-		oauth: 'oauth:YOUR_TWITCH_IRC_OAUTH_KEY'
-	redis:
-		host: '127.0.0.1'
-		port: 6379
-		db: 0
-		options:
-			auth_pass: '',
-	twitch:
-		key: 'TWITCH_API_KEY'
-		secret: 'TWITCH_API_SECRET'
-
 # Let's load the settings!
-fs.readFile 'settings.json', (settingsErr, data) ->
-	if settingsErr
-		Mikuia.Log.warning 'Settings file doesn\'t exist, creating one.'
-	else
-		# A better way to parse JSON would be nice... errors here tend to crash everything.
-		try
-			Mikuia.settings = JSON.parse data
-			Mikuia.Log.success 'Loaded settings from settings.json.'
-		catch e
-			Mikuia.Log.error 'Failed to parse settings.json file.'
-	
-	# Setting default values that don't exist in setting files.
-	for category, categoryFields of defaultSettings
-		if not Mikuia.settings[category]?
-			Mikuia.settings[category] = {}
-		for field, fieldDefaultValue of categoryFields
-			if not Mikuia.settings[category][field]?
-				Mikuia.settings[category][field] = fieldDefaultValue
-				Mikuia.Log.info 'Setting ' + cli.greenBright(category + '/' + field) + ' to ' + cli.yellowBright(fieldDefaultValue)
-
-	# Saving the settings file!
-	fs.writeFileSync 'settings.json', JSON.stringify Mikuia.settings, null, '\t'
-
+Mikuia.Settings.read ->
 	# Welp, we have our settings ready, we can now slowly check stuff, and launch!
 	# First thing to check - database connection, Redis FTW.
 	# CoffeeScript makes this line look really weird :D
@@ -82,5 +44,4 @@ fs.readFile 'settings.json', (settingsErr, data) ->
 		
 	Mikuia.Chat.connect()
 	Mikuia.Twitch.init()
-
 	Mikuia.Chat.update()
