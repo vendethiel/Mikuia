@@ -8,17 +8,22 @@ cli = require 'cli-color'
 fs = require 'fs'
 path = require 'path'
 
-Mikuia =
-  Models: {}
+# So yeah, let's see what happens if we go with this.
+{EventEmitter} = require 'events'
 
-  settings: {}
+Mikuia =
+	Events: new EventEmitter
+	Models: {}
+	settings: {}
+
+global.Mikuia = Mikuia
 
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
-  filePath = path.resolve './', 'core', fileName
-  coreFile = require filePath
-  shortName = fileName.replace '.iced', ''
-  Mikuia[shortName] = new coreFile[shortName] Mikuia
+	filePath = path.resolve './', 'core', fileName
+	coreFile = require filePath
+	shortName = fileName.replace '.iced', ''
+	Mikuia[shortName] = new coreFile[shortName] Mikuia
 
 # Some default fields for settings, maybe will get moved to other file.
 defaultSettings =
@@ -70,7 +75,7 @@ fs.readFile 'settings.json', (settingsErr, data) ->
 		if pluginDirErr
 			Mikuia.Log.warning 'Can\'t access plugin directory.'
 		else
-			Mikuia.Log.info 'Found ' + cli.greenBright(fileList.length) + ' files in plugin directory.'
+			Mikuia.Log.info 'Found ' + cli.greenBright(fileList.length) + ' directories in plugin directory.'
 			
 		for file in fileList
 			Mikuia.Plugin.load file
