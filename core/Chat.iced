@@ -50,7 +50,7 @@ class exports.Chat
 	say: (channel, message) ->
 		limiter.removeTokens 1, (err, rr) =>	
 			@client.say channel, message
-			@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + rr + '): ' + cli.whiteBright(message)
+			@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(message)
 
 	update: ->
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
