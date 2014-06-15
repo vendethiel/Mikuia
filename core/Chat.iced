@@ -52,7 +52,7 @@ class exports.Chat
 			@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + rr + '): ' + cli.whiteBright(message)
 
 	update: ->
-		await @Mikuia.Database.getSet 'mikuia:channels', defer err, channels
+		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray(channels, 100)
 			joinList = []
