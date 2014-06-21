@@ -41,7 +41,7 @@ class exports.Chat
 
 	handleMessage: (from, to, message) ->
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
-		@Mikuia.Events.emit('message', from, to, message)
+		@Mikuia.Events.emit('twitch.message', from, to, message)
 
 	join: (channel, callback) ->
 		limiter.removeTokens 1, (err, rr) =>	

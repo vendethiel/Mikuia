@@ -32,6 +32,10 @@ class exports.Plugin
 							manifest: manifest
 							module: require filePath
 
+						@plugins[name].module.Plugin =
+							getSetting: (setting) =>
+								return @Mikuia.Settings.pluginGet name, setting
+
 						if manifest.settings?.server?
 							if not @Mikuia.settings.plugins[name]?
 								@Mikuia.settings.plugins[name] = {}

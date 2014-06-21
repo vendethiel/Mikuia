@@ -1,3 +1,3 @@
-Mikuia.Events.on 'message', (from, to, message) ->
+Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	if message == '!lukanya'
-		Mikuia.Chat.say to, Mikuia.Settings.pluginGet('base', 'aboutMessage')
+		Mikuia.Chat.say to, @Plugin.getSetting 'aboutMessage'
