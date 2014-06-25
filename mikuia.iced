@@ -45,3 +45,5 @@ Mikuia.Settings.read ->
 	Mikuia.Chat.connect()
 	Mikuia.Twitch.init()
 	Mikuia.Chat.update()
+
+	Mikuia.Web = require './web/web.iced'

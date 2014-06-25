@@ -15,8 +15,11 @@ defaultSettings =
 		options:
 			auth_pass: '',
 	twitch:
+		callbackURL: 'http://127.0.0.1:2912/auth/twitch/callback'
 		key: 'TWITCH_API_KEY'
 		secret: 'TWITCH_API_SECRET'
+	web:
+		port: 5587
 
 class exports.Settings
 	constructor: (Mikuia) ->

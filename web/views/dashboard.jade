@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	h3
+		| You are logged in as 
+		img(src=user._json.logo, width='16', height='16')
+		a(href='twitch.tv/' + user.username)  #{user._json.display_name}
+		| . Oh my god. Unbelievable. 
+		a(href='/logout') Logout.

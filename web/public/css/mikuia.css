@@ -1,0 +1,31 @@
+.login > .avatars {
+	height: 100%;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: -10;
+	-webkit-filter: blur(1px);
+}
+
+.login > .avatars > ul {
+	height: 100%;
+	list-style: none;
+	padding: 0;
+	position: absolute;
+	right: -64px;
+	top: 0;
+}
+
+.login > .avatars > ul > li {
+	float: left;
+	margin: 0;
+	opacity: 0.2;
+	padding: 0;
+}
+
+a.navbar-brand {
+	color: white;
+	padding-top: 13px;
+}
