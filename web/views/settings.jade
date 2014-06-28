@@ -1,0 +1,36 @@
+extends layout
+
+block content
+	.row
+		.col-md-12
+			h3.page-title
+				| Settings
+				small  where you change stuff
+			ul.page-breadcrumb.breadcrumb
+				li
+					i.fa.fa-home
+					a(href='/dashboard') Dashboard
+					i.fa.fa-angle-right
+				li
+					a(href='/dashboard/settings') Settings
+	.row
+		.col-md-6
+			if !enabled
+				- var className = 'panel-warning'
+			else
+				- var className = 'panel-success'
+			.panel(class=className)
+				.panel-heading
+					h3.panel-title Status
+				.panel-body
+					if enabled
+						p.lead Mikuia is enabled.
+						a.btn.red(href='/dashboard/settings/disable') Disable
+					else
+						p.lead Mikuia is disabled.
+						a.btn.green(href='/dashboard/settings/enable') Enable
+			.panel.panel-default
+				.panel-heading
+					h3.panel-title Settings
+				.panel-body
+					p yep

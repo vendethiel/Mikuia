@@ -24,7 +24,22 @@ class exports.Database
 		@client.get key, (err, data) ->
 			callback err, data
 
+	sadd: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.sadd key, member, (err, data) ->
+			callback err, data
+
+	sismember: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.sismember key, member, (err, data) ->
+			callback err, data
+
 	smembers: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.smembers key, (err, data) ->
+			callback err, data
+
+	srem: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.srem key, member, (err, data) ->
 			callback err, data

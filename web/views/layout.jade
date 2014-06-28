@@ -43,15 +43,18 @@ html
 						li.sidebar-toggler-wrapper
 							.sidebar-toggler
 						br
-						li.start.active
+						li(class=(path == '/dashboard' ? 'active' : undefined))
 							a(href='/dashboard')
 								i.icon-home
 								span.title Dashboard
-								span.selected
-						li
-							a(href='/dashboard')
-								i.icon-key
-								span.title Whatever
+								if path == '/dashboard'
+									span.selected
+						li(class=(path == '/dashboard/settings' ? 'active' : undefined))
+							a(href='/dashboard/settings')
+								i.icon-settings
+								span.title Settings
+								if path == '/dashboard/settings'
+									span.selected
 			.page-content-wrapper
 				.page-content
 					block content
@@ -90,8 +93,9 @@ html
 		script(src='/assets/admin/pages/scripts/tasks.js', type='text/javascript')
 
 		script(type='text/javascript').
-			$.ready(function() {
+			$(document).ready(function() {
 				Metronic.init()
 				Layout.init()
+				QuickSidebar.init()
 				Index.init()
 			})

@@ -41,7 +41,7 @@ passport.use new TwitchStrategy
 
 app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
-app.use morgan 'dev'
+#app.use morgan 'dev'
 app.use express.static __dirname + '/public'
 app.use cookieParser 'oijt09j4g09qjg90q3jk90q3'
 app.use bodyParser()
@@ -51,6 +51,7 @@ app.use session
 app.use passport.initialize()
 app.use passport.session()
 app.use (req, res, next) ->
+	res.locals.path = req.path
 	res.locals.user = req.user
 	next()
 
@@ -61,6 +62,9 @@ for file in fileList
 
 app.get '/', routes.index
 app.get '/dashboard', checkAuth, routes.dashboard
+app.get '/dashboard/settings', checkAuth, routes.settings.settings
+app.get '/dashboard/settings/disable', checkAuth, routes.settings.disable
+app.get '/dashboard/settings/enable', checkAuth, routes.settings.enable
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()

@@ -1,9 +1,19 @@
 extends layout
 
 block content
-	h3
-		| You are logged in as 
-		img(src=user._json.logo, width='16', height='16')
-		a(href='twitch.tv/' + user.username)  #{user._json.display_name}
-		| . Oh my god. Unbelievable. 
-		a(href='/logout') Logout.
+	.row
+		.col-md-12
+			h3.page-title
+				| Dashboard
+				small  stuff and more stuff
+			ul.page-breadcrumb.breadcrumb
+				li
+					i.fa.fa-home
+					a(href='/dashboard') Dashboard
+			if !enabled
+				.alert.alert-block.alert-danger
+					h4.alert-heading Mikuia is not enabled on your channel!
+					p
+						| If you start complaining that it's not working without even trying to enable it, I'll fucking cut you.
+					p
+						a.btn.red(href='/dashboard/settings') Settings

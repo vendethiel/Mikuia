@@ -25,6 +25,13 @@ for fileName in fs.readdirSync 'core'
 	shortName = fileName.replace '.iced', ''
 	Mikuia[shortName] = new coreFile[shortName] Mikuia
 
+# Models... at least that's how I call this weird stuff.
+for fileName in fs.readdirSync 'models'
+	filePath = path.resolve './', 'models', fileName
+	modelFile = require filePath
+	shortName = fileName.replace '.iced', ''
+	Mikuia.Models[shortName] = modelFile[shortName]
+
 # Let's load the settings!
 Mikuia.Settings.read ->
 	# Welp, we have our settings ready, we can now slowly check stuff, and launch!
