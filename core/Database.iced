@@ -1,7 +1,3 @@
-# Turns out this is how to get ICS work in modules...
-iced = require('iced-coffee-script').iced
-# Lame, I know.
-
 cli = require 'cli-color'
 redis = require 'redis'
 
@@ -24,9 +20,24 @@ class exports.Database
 		@client.get key, (err, data) ->
 			callback err, data
 
+	hget: (key, field, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.hget key, field, (err, data) ->
+			callback err, data
+
+	hset: (key, field, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.hset key, field, value, (err, data) ->
+			callback err, data
+
 	sadd: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.sadd key, member, (err, data) ->
+			callback err, data
+
+	set: (key, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.set key, value, (err, data) ->
 			callback err, data
 
 	sismember: (key, member, callback) ->

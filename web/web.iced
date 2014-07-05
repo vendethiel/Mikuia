@@ -72,6 +72,12 @@ app.get '/logout', (req, res) ->
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->
+
+	Channel = new Mikuia.Models.Channel req.user.username
+	await Channel.setBio req.user.bio, defer err, data
+	await Channel.setEmail req.user.email, defer err, data
+	await Channel.setLogo req.user.logo, defer err, data
+
 	res.redirect '/dashboard'
 
 app.listen 2912

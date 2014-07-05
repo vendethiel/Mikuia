@@ -6,6 +6,7 @@
 
 cli = require 'cli-color'
 fs = require 'fs'
+iced = require('iced-coffee-script').iced
 path = require 'path'
 
 # So yeah, let's see what happens if we go with this.
@@ -16,6 +17,7 @@ Mikuia =
 	Models: {}
 	settings: {}
 
+global.iced = iced
 global.Mikuia = Mikuia
 
 # Loading core files (that's my way of pretending everything is okay)
@@ -24,6 +26,8 @@ for fileName in fs.readdirSync 'core'
 	coreFile = require filePath
 	shortName = fileName.replace '.iced', ''
 	Mikuia[shortName] = new coreFile[shortName] Mikuia
+
+Mikuia.Model = require('./class/Model').Model
 
 # Models... at least that's how I call this weird stuff.
 for fileName in fs.readdirSync 'models'

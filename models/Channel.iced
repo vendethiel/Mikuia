@@ -3,10 +3,14 @@ class exports.Channel extends Mikuia.Model
 		@model = 'channel'
 		@name = name
 
+	# Core functions, changing those often end up breaking half of the universe.
+
 	getName: () ->
 		return @name
 
-
+	setInfo: (field, value, callback) ->
+		await @_hset @getName(), field, value, defer err, data
+		callback err, data
 
 	# Enabling & disabling, whatever.
 
@@ -20,4 +24,18 @@ class exports.Channel extends Mikuia.Model
 
 	isEnabled: (callback) ->
 		await Mikuia.Database.sismember 'mikuia:channels', @getName(), defer err, data
+		callback err, data
+
+	# "Convenience" functions that help get and set data...  or something.
+
+	setBio: (bio, callback) ->
+		await @setInfo 'bio', bio, defer err, data
+		callback err, data
+
+	setEmail: (email, callback) ->
+		await @setInfo 'email', email, defer err, data
+		callback err, data
+
+	setLogo: (logo, callback) ->
+		await @setInfo 'logo', logo, defer err, data
 		callback err, data

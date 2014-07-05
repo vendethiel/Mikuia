@@ -6,14 +6,14 @@ limiter = new RateLimiter 15, 30000
 
 class exports.Chat
 	constructor: (Mikuia) ->
+		@joined = []
 		@Mikuia = Mikuia
 
+		setInterval () =>
+			@update()
+		, 300000
+
 	connect: ->
-		###
-			Better safe than sorry,
-			better safe than sorry,
-			better safe than sorry...
-		###
 		@client = new irc.connect {
 			autoreconnect: true
 			channels: []
@@ -43,16 +43,18 @@ class exports.Chat
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit('twitch.message', from, to, message)
 
-	join: (channel, callback) ->
+	join: (channel, callback) =>
 		limiter.removeTokens 1, (err, rr) =>	
 			@client.join channel
+			if @joined.indexOf(channel) == -1
+				@joined.push channel
 
 	say: (channel, message) ->
 		limiter.removeTokens 1, (err, rr) =>	
 			@client.say channel, message
 			@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(message)
 
-	update: ->
+	update: =>
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray(channels, 100)
@@ -68,4 +70,5 @@ class exports.Chat
 
 					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
 			for channel in joinList
-				await @Mikuia.Chat.join '#' + channel
+				if @joined.indexOf('#' + channel) == -1
+					await @Mikuia.Chat.join '#' + channel
