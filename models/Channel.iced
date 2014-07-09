@@ -55,7 +55,7 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	isPluginEnabled: (name, callback) ->
-		await @_sismember 'plugins', name, defer, err, data
+		await @_sismember 'plugins', name, defer err, data
 		callback err, data
 
 	# "Convenience" functions that help get and set data...  or something.
