@@ -8,8 +8,22 @@ class exports.Channel extends Mikuia.Model
 	getName: () ->
 		return @name
 
+	# Info & settings
+
+	getInfo: (field, callback) ->
+		await @_hget @getName(), field, defer err, data
+		callback err, data
+
+	getSetting: (plugin, field, callback) ->
+		await @_hget @getName() + ':plugin:' + plugin + ':settings', field, defer err, data
+		callback err, data
+
 	setInfo: (field, value, callback) ->
 		await @_hset @getName(), field, value, defer err, data
+		callback err, data
+
+	setSetting: (plugin, field, value, callback) ->
+		await @_hset @getName() + ':plugin:' + plugin + ':settings', field, value, defer err, data
 		callback err, data
 
 	# Enabling & disabling, whatever.

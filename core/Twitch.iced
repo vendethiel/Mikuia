@@ -15,7 +15,7 @@ class exports.Twitch
 
 	getStreams: (channels, callback) ->
 		@twitch._get 'streams/?channel=' + channels.join(','), (err, result) =>
-			if err && not result.req.res.body?.streams?
+			if err || not result.req.res.body?.streams?
 				@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
 				callback true, null
 			else
