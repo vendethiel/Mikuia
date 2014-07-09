@@ -7,6 +7,8 @@ class exports.Plugin
 		@Mikuia = Mikuia
 		@plugins = {}
 
+	getAll: () -> @plugins
+
 	getManifest: (plugin) ->
 		if @plugins[plugin]?.manifest?
 			return @plugins[plugin][manifest]

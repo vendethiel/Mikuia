@@ -15,8 +15,12 @@ class exports.Model
 		await Mikuia.Database.sadd @model + ':' + @name + ':' + key, member, defer err, data
 		callback err, data
 
-	_sismember: (key, value, callback) ->
-		await Mikuia.Database.sismember @model + ':' + @name + ':' + key, value, defer err, data
+	_sismember: (key, member, callback) ->
+		await Mikuia.Database.sismember @model + ':' + @name + ':' + key, member, defer err, data
+		callback err, data
+
+	_smembers: (key, callback) ->
+		await Mikuia.Database.smembers @model + ':' + @name + ':' + key, defer err, data
 		callback err, data
 
 	_srem: (key, member, callback) ->

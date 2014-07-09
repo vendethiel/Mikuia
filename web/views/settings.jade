@@ -29,6 +29,27 @@ block content
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(href='/dashboard/settings/enable') Enable
+		.col-md-6
+			if enabled
+				.panel.panel-info
+					.panel-heading
+						h3.panel-title Plugins
+					.panel-body
+						table.table
+							thead
+								tr
+									th Name
+									th Description
+									th Actions
+							tbody
+								each plugin, pluginName in plugins
+									tr
+										td=plugin.manifest.name
+										td=plugin.manifest.description
+										td
+											a.btn.red Yes
+	.row
+		.col-md-6
 			.panel.panel-default
 				.panel-heading
 					h3.panel-title Settings

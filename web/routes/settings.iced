@@ -1,12 +1,14 @@
 module.exports =
 	settings: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
+		plugins = Mikuia.Plugin.getAll()
 
 		await Channel.isEnabled defer err, enabled
 		if err then console.log err
 
 		res.render 'settings',
 			enabled: enabled
+			plugins: plugins
 
 	disable: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username

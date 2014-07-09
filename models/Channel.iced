@@ -40,6 +40,24 @@ class exports.Channel extends Mikuia.Model
 		await Mikuia.Database.sismember 'mikuia:channels', @getName(), defer err, data
 		callback err, data
 
+	# Plugins
+
+	disablePlugin: (name, callback) ->
+		await @_srem 'plugins', name, defer err, data
+		callback err, data
+
+	enablePlugin: (name, callback) ->
+		await @_sadd 'plugins', name, defer err, data
+		callback err, data
+
+	getEnabledPlugins: (callback) ->
+		await @_smembers 'plugins', defer err, data
+		callback err, data
+
+	isPluginEnabled: (name, callback) ->
+		await @_sismember 'plugins', name, defer, err, data
+		callback err, data
+
 	# "Convenience" functions that help get and set data...  or something.
 
 	setBio: (bio, callback) ->
