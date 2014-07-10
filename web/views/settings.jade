@@ -47,7 +47,10 @@ block content
 										td=plugin.manifest.name
 										td=plugin.manifest.description
 										td
-											a.btn.red Yes
+											if enabledPlugins.indexOf(pluginName) > -1
+												a.btn.green(href='/dashboard/settings/plugins/disable/' + pluginName) Enabled
+											else
+												a.btn.red(href='/dashboard/settings/plugins/enable/' + pluginName) Disabled
 	.row
 		.col-md-6
 			.panel.panel-default

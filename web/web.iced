@@ -65,6 +65,8 @@ app.get '/dashboard', checkAuth, routes.dashboard
 app.get '/dashboard/settings', checkAuth, routes.settings.settings
 app.get '/dashboard/settings/disable', checkAuth, routes.settings.disable
 app.get '/dashboard/settings/enable', checkAuth, routes.settings.enable
+app.get '/dashboard/settings/plugins/disable/:name', checkAuth, routes.settings.pluginDisable
+app.get '/dashboard/settings/plugins/enable/:name', checkAuth, routes.settings.pluginEnable
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
