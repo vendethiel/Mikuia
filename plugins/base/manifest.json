@@ -2,7 +2,17 @@
 	"name": "Base",
 	"description": "Basic commands and stuff.",
 	"baseFile": "plugin.iced",
+	"hidden": true,
 	"settings": {
+		"channel": {
+			"General": {
+				"customMessage": {
+					"name": "Custom Message",
+					"description": "The message that will be custom, and stuff.",
+					"default": "This is a default custom message."
+				}
+			}
+		},
 		"server": {
 			"aboutMessage": "Hi, I'm Lukanya, and I don't do anything useful! Leave me alone."
 		}

@@ -14,7 +14,7 @@ block content
 				li
 					a(href='/dashboard/settings') Settings
 	.row
-		.col-md-6
+		.col-md-4
 			if !enabled
 				- var className = 'panel-warning'
 			else
@@ -29,7 +29,7 @@ block content
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(href='/dashboard/settings/enable') Enable
-		.col-md-6
+		.col-md-8
 			if enabled
 				.panel.panel-info
 					.panel-heading
@@ -43,18 +43,36 @@ block content
 									th Actions
 							tbody
 								each plugin, pluginName in plugins
-									tr
-										td=plugin.manifest.name
-										td=plugin.manifest.description
-										td
-											if enabledPlugins.indexOf(pluginName) > -1
-												a.btn.green(href='/dashboard/settings/plugins/disable/' + pluginName) Enabled
-											else
-												a.btn.red(href='/dashboard/settings/plugins/enable/' + pluginName) Disabled
+									if !plugin.manifest.hidden
+										tr
+											td=plugin.manifest.name
+											td=plugin.manifest.description
+											td
+												if enabledPlugins.indexOf(pluginName) > -1
+													a.btn.green(href='/dashboard/settings/plugins/disable/' + pluginName) Enabled
+												else
+													a.btn.red(href='/dashboard/settings/plugins/enable/' + pluginName) Disabled
 	.row
-		.col-md-6
-			.panel.panel-default
-				.panel-heading
-					h3.panel-title Settings
-				.panel-body
-					p yep
+		each pluginName in enabledPlugins
+			- var plugin = plugins[pluginName]
+			.col-md-6
+				.panel.panel-default
+					.panel-heading
+						h3.panel-title=plugin.manifest.name
+					.panel-body.form
+						if plugin.manifest.settings && plugin.manifest.settings.channel
+							form.form-horizontal(role='form')
+								.form-body
+									each settings, categoryName in plugin.manifest.settings.channel
+										h3=categoryName
+										each setting, settingName in settings
+											.form-group
+												label.col-md-3.control-label=setting.name
+												.col-md-9
+													input.form-control(type='text', placeholder=setting.default)
+													span.help-block=setting.description
+								.form-actions
+									button.btn.blue(type='submit') Save
+
+						else
+							.text-muted This plugin has no configurable settings.
