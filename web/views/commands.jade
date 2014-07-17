@@ -27,7 +27,8 @@ block content
 							td=commandName
 							td #{command.handler} - #{command.description}
 							td
-								a.btn.input-sm.red(href='/dashboard/commands/remove') Remove
+								a.btn.input-sm.green.command-settings(href='/dashboard/commands/settings/' + commandName) Settings
+								a.btn.input-sm.red.command-remove(href='#', title=commandName) Remove
 		.col-md-4
 			.panel.panel-info
 				.panel-heading
@@ -49,3 +50,18 @@ block content
 									span.help-block This specifies what you expect the command to do.
 						.form-actions
 							button.btn.blue(type='submit') Add
+
+block footerScript
+	script(type='text/javascript').
+
+		$('.command-remove').click(function() {
+			$.post('/dashboard/commands/remove', {
+				command: $(this).attr('title')
+			}).done(function() {
+				location.reload()
+			})
+		})
+
+
+		// MIKUIA IS SHIT
+		// CONFIRMED

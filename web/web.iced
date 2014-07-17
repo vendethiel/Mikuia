@@ -63,26 +63,29 @@ for file in fileList
 app.get '/', routes.index
 app.get '/dashboard', checkAuth, routes.dashboard
 app.get '/dashboard/commands', checkAuth, routes.commands.commands
+app.get '/dashboard/commands/settings/:name', checkAuth, routes.commands.settings
 app.get '/dashboard/settings', checkAuth, routes.settings.settings
-app.get '/dashboard/settings/disable', checkAuth, routes.settings.disable
-app.get '/dashboard/settings/enable', checkAuth, routes.settings.enable
-app.get '/dashboard/settings/plugins/disable/:name', checkAuth, routes.settings.pluginDisable
-app.get '/dashboard/settings/plugins/enable/:name', checkAuth, routes.settings.pluginEnable
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
 	res.redirect '/'
 
 app.post '/dashboard/commands/add', checkAuth, routes.commands.add
+app.post '/dashboard/commands/remove', checkAuth, routes.commands.remove
+app.post '/dashboard/commands/save/:name', checkAuth, routes.commands.save
+app.post '/dashboard/settings/plugins/toggle', checkAuth, routes.settings.pluginToggle
 app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
+app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->
 
 	Channel = new Mikuia.Models.Channel req.user.username
-	await Channel.setBio req.user.bio, defer err, data
-	await Channel.setEmail req.user.email, defer err, data
-	await Channel.setLogo req.user.logo, defer err, data
+	await
+		Channel.setBio req.user.bio, defer err, data
+		Channel.setEmail req.user.email, defer err, data
+		Channel.setLogo req.user.logo, defer err, data
+		Channel.enablePlugin 'base', defer err, data
 
 	res.redirect '/dashboard'
 

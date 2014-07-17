@@ -4,8 +4,16 @@
 	"baseFile": "plugin.iced",
 	"hidden": true,
 	"handlers": {
-		"base.about": {
-			"description": "Shows an about message."
+		"base.dummy": {
+			"description": "Shows a text message.",
+			"settings": {
+				"message": {
+					"name": "Message",
+					"description": "A message, heh.",
+					"default": "This is a default dummy message.",
+					"type": "text"
+				}
+			}
 		}
 	},
 	"settings": {

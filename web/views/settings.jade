@@ -25,10 +25,10 @@ block content
 				.panel-body
 					if enabled
 						p.lead Mikuia is enabled.
-						a.btn.red(href='/dashboard/settings/disable') Disable
+						a.btn.red(onclick="toggle('disable')") Disable
 					else
 						p.lead Mikuia is disabled.
-						a.btn.green(href='/dashboard/settings/enable') Enable
+						a.btn.green(onclick="toggle('enable')") Enable
 		.col-md-8
 			if enabled
 				.panel.panel-info
@@ -49,9 +49,9 @@ block content
 											td=plugin.manifest.description
 											td
 												if enabledPlugins.indexOf(pluginName) > -1
-													a.btn.green(href='/dashboard/settings/plugins/disable/' + pluginName) Enabled
+													a.btn.green(onclick="pluginDisable('" + pluginName + "')") Enabled
 												else
-													a.btn.red(href='/dashboard/settings/plugins/enable/' + pluginName) Disabled
+													a.btn.red(onclick="pluginEnable('" + pluginName + "')") Disabled
 	.row
 		each pluginName in enabledPlugins
 			- var plugin = plugins[pluginName]
@@ -63,19 +63,29 @@ block content
 						if plugin.manifest.settings && plugin.manifest.settings.channel
 							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
-								each setting, settingName in plugin.manifest.settings.channel
-									.form-group
-										label.col-md-3.control-label=setting.name
-										.col-md-9
-											case setting.type
-												when 'text'
-													if settings[pluginName] && settings[pluginName][settingName]
-															input.form-control(type='text', name=settingName, placeholder=setting.default, value=settings[pluginName][settingName])
-													else
-														input.form-control(type='text', name=settingName, placeholder=setting.default)
-											span.help-block=setting.description
+								+settings(plugin.manifest.settings.channel, settings[pluginName])
 								.form-actions
 									button.btn.blue(type='submit') Save
 
 						else
 							.text-muted This plugin has no configurable settings.
+
+block footerScript
+	script(type='text/javascript').
+
+		function pluginToggle(name, status) {
+			$.post('/dashboard/settings/plugins/toggle', {
+				name: name,
+				status: status
+			}).done(function() {
+				location.reload()
+			})
+		}
+
+		function toggle(status) {
+			$.post('/dashboard/settings/toggle', {
+				status: status
+			}).done(function() {
+				location.reload()
+			})
+		}

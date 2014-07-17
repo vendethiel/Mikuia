@@ -43,6 +43,20 @@ class exports.Chat
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit('twitch.message', from, to, message)
 
+		Channel = new @Mikuia.Models.Channel to
+		tokens = message.split ' '
+		trigger = tokens[0]
+
+		await
+			Channel.getCommand trigger, defer commandError, command
+			Channel.getCommandSettings trigger, true, defer settingsError, settings
+		if !commandError && command?
+			@Mikuia.Events.emit command,
+				from: from
+				to: to
+				message: message
+				settings: settings
+
 	join: (channel, callback) =>
 		limiter.removeTokens 1, (err, rr) =>	
 			@client.join channel

@@ -4,19 +4,19 @@ class exports.Model
 		@name = ''
 
 	_hdel: (key, field, callback) ->
-		await Mikuia.Database.hdel @model + ':' + key, field, defer err, data
+		await Mikuia.Database.hdel @model + ':' + @name + ':' + key, field, defer err, data
 		callback err, data
 
 	_hget: (key, field, callback) ->
-		await Mikuia.Database.hget @model + ':' + key, field, defer err, data
+		await Mikuia.Database.hget @model + ':' + @name + ':' + key, field, defer err, data
 		callback err, data
 
 	_hgetall: (key, callback) ->
-		await Mikuia.Database.hgetall @model + ':' + key, defer err, data
+		await Mikuia.Database.hgetall @model + ':' + @name + ':' + key, defer err, data
 		callback err, data
 
 	_hset: (key, field, value, callback) ->
-		await Mikuia.Database.hset @model + ':' + key, field, value, defer err, data
+		await Mikuia.Database.hset @model + ':' + @name + ':' + key, field, value, defer err, data
 		callback err, data
 
 	_sadd: (key, member, callback) ->

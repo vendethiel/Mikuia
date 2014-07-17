@@ -17,35 +17,18 @@ module.exports =
 			plugins: plugins
 			settings: settings
 
-	disable: (req, res) ->
+	pluginToggle: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
+		data = req.body
 
-		await Channel.disable defer err, data
-		if err then # OMG DO SOMETHING ABOUT THE ERROR I DON'T KNOW CALL THE POLICE
-		res.redirect '/dashboard/settings'
+		if data.status? && data.name?
+			switch data.status
+				when "enable"
+					await Channel.enablePlugin data.name, defer err, data
+				when "disable"
+					await Channel.disablePlugin data.name, defer err, data
 
-	enable: (req, res) ->
-		Channel = new Mikuia.Models.Channel req.user.username
-
-		await Channel.enable defer err, data
-		if err then # OMG DO SOMETHING ABOUT THE ERROR I DON'T KNOW CALL THE POLICE
-		res.redirect '/dashboard/settings'
-
-	pluginDisable: (req, res) ->
-		Channel = new Mikuia.Models.Channel req.user.username
-
-		if Mikuia.Plugin.exists req.params.name
-			await Channel.disablePlugin req.params.name, defer err, data
-
-		res.redirect '/dashboard/settings'
-
-	pluginEnable: (req, res) ->
-		Channel = new Mikuia.Models.Channel req.user.username
-
-		if Mikuia.Plugin.exists req.params.name
-			await Channel.enablePlugin req.params.name, defer err, data
-
-		res.redirect '/dashboard/settings'
+		res.send 200
 
 	save: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
@@ -58,3 +41,16 @@ module.exports =
 					await Channel.setSetting req.params.name, setting, value, defer err, data
 
 		res.redirect '/dashboard/settings'
+
+	toggle: (req, res) ->
+		Channel = new Mikuia.Models.Channel req.user.username
+		data = req.body
+
+		if data.status?
+			switch data.status
+				when "enable"
+					await Channel.enable defer err, data
+				when "disable"
+					await Channel.disable defer err, data
+
+		res.send 200
