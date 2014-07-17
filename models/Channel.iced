@@ -38,11 +38,15 @@ class exports.Channel extends Mikuia.Model
 	# Enabling & disabling, whatever.
 
 	disable: (callback) ->
-		await Mikuia.Database.srem 'mikuia:channels', @getName(), defer err, data
+		await
+			Mikuia.Database.srem 'mikuia:channels', @getName(), defer err, data
+			Mikuia.Chat.part '#' + @getName()
 		callback err, data
 
 	enable: (callback) ->
-		await Mikuia.Database.sadd 'mikuia:channels', @getName(), defer err, data
+		await
+			Mikuia.Database.sadd 'mikuia:channels', @getName(), defer err, data
+			Mikuia.Chat.join '#' + @getName()
 		callback err, data
 
 	isEnabled: (callback) ->

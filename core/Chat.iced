@@ -36,6 +36,9 @@ class exports.Chat
 
 				event.on 'join', (channel) =>
 					@Mikuia.Log.info cli.whiteBright('Joined ' + cli.greenBright(channel) + ' on Twitch IRC.')
+			
+				event.on 'part', (channel) =>
+					@Mikuia.Log.info cli.whiteBright('Left ' + cli.redBright(channel) + ' on Twitch IRC.')
 			else
 				@Mikuia.Log.error err
 
@@ -62,6 +65,12 @@ class exports.Chat
 			@client.join channel
 			if @joined.indexOf(channel) == -1
 				@joined.push channel
+
+	part: (channel, callback) =>
+		limiter.removeTokens 1, (err, rr) =>	
+			@client.part channel
+			if @joined.indexOf(channel) > -1
+				@joined.splice @joined.indexOf(channel), 1
 
 	say: (channel, message) ->
 		limiter.removeTokens 1, (err, rr) =>	
