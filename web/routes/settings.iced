@@ -6,12 +6,16 @@ module.exports =
 		await
 			Channel.isEnabled defer err, enabled
 			Channel.getEnabledPlugins defer err, enabledPlugins
-		if err then console.log err
+
+		settings = {}
+		for pluginName in enabledPlugins
+			await Channel.getSettings pluginName, defer err, settings[pluginName]
 
 		res.render 'settings',
 			enabled: enabled
 			enabledPlugins: enabledPlugins
 			plugins: plugins
+			settings: settings
 
 	disable: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
@@ -40,5 +44,17 @@ module.exports =
 
 		if Mikuia.Plugin.exists req.params.name
 			await Channel.enablePlugin req.params.name, defer err, data
+
+		res.redirect '/dashboard/settings'
+
+	save: (req, res) ->
+		Channel = new Mikuia.Models.Channel req.user.username
+
+		if Mikuia.Plugin.exists req.params.name
+			manifest = Mikuia.Plugin.getManifest req.params.name
+			for setting, value of req.body
+				if manifest.settings.channel?[setting]?
+					# To do: some kind of entry validation, and errors?
+					await Channel.setSetting req.params.name, setting, value, defer err, data
 
 		res.redirect '/dashboard/settings'

@@ -29,7 +29,6 @@ html
 							a.dropdown-toggle(href='#', data-toggle='dropdown', data-hover='dropdown', data-close-others='true')
 								img.img-circle(src=user._json.logo, width='23', height='23')
 								span.username=user._json.display_name
-								- console.log(user)
 								i.fa.fa-angle-down
 							ul.dropdown-menu
 								li
@@ -55,6 +54,12 @@ html
 								i.icon-settings
 								span.title Settings
 								if path == '/dashboard/settings'
+									span.selected
+						li(class=(path == '/dashboard/commands' ? 'active' : undefined))
+							a(href='/dashboard/commands')
+								i.icon-settings
+								span.title Commands
+								if path == '/dashboard/commands'
 									span.selected
 			.page-content-wrapper
 				.page-content

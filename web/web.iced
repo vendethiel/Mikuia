@@ -62,6 +62,7 @@ for file in fileList
 
 app.get '/', routes.index
 app.get '/dashboard', checkAuth, routes.dashboard
+app.get '/dashboard/commands', checkAuth, routes.commands.commands
 app.get '/dashboard/settings', checkAuth, routes.settings.settings
 app.get '/dashboard/settings/disable', checkAuth, routes.settings.disable
 app.get '/dashboard/settings/enable', checkAuth, routes.settings.enable
@@ -71,6 +72,9 @@ app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
 	res.redirect '/'
+
+app.post '/dashboard/commands/add', checkAuth, routes.commands.add
+app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->

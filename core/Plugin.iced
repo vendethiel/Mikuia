@@ -5,18 +5,28 @@ path = require 'path'
 class exports.Plugin
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
+		@handlers = {}
 		@plugins = {}
 
-	exists: (plugin) ->
-		return @plugins[plugin]?
+	exists: (plugin) -> @plugins[plugin]?
 
 	getAll: () -> @plugins
 
-	getManifest: (plugin) ->
-		if @plugins[plugin]?.manifest?
-			return @plugins[plugin][manifest]
+	getHandler: (handler) ->
+		if @handlers[handler]?
+			return @handlers[handler]
 		else
 			return null
+
+	getHandlers: () -> @handlers
+
+	getManifest: (plugin) ->
+		if @plugins[plugin]?.manifest?
+			return @plugins[plugin].manifest
+		else
+			return null
+
+	handlerExists: (handler) -> @handlers[handler]?
 
 	load: (name) ->
 		@Mikuia.Log.info 'Reading directory: ' + cli.yellowBright(name)
@@ -47,6 +57,10 @@ class exports.Plugin
 							for key, value of manifest.settings.server	
 								if not @Mikuia.settings.plugins[name][key]?
 									@Mikuia.Settings.pluginSet name, key, value
+
+						if manifest.handlers?
+							for handlerName, handler of manifest.handlers
+								@handlers[handlerName] = handler
 					else
 						@Mikuia.Log.error 'Plugin ' + cli.yellowBright(name) + ' does not specify base file.'
 					

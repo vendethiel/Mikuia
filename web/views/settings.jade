@@ -61,16 +61,19 @@ block content
 						h3.panel-title=plugin.manifest.name
 					.panel-body.form
 						if plugin.manifest.settings && plugin.manifest.settings.channel
-							form.form-horizontal(role='form')
+							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
-									each settings, categoryName in plugin.manifest.settings.channel
-										h3=categoryName
-										each setting, settingName in settings
-											.form-group
-												label.col-md-3.control-label=setting.name
-												.col-md-9
-													input.form-control(type='text', placeholder=setting.default)
-													span.help-block=setting.description
+								each setting, settingName in plugin.manifest.settings.channel
+									.form-group
+										label.col-md-3.control-label=setting.name
+										.col-md-9
+											case setting.type
+												when 'text'
+													if settings[pluginName] && settings[pluginName][settingName]
+															input.form-control(type='text', name=settingName, placeholder=setting.default, value=settings[pluginName][settingName])
+													else
+														input.form-control(type='text', name=settingName, placeholder=setting.default)
+											span.help-block=setting.description
 								.form-actions
 									button.btn.blue(type='submit') Save
 

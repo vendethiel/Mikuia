@@ -58,7 +58,7 @@ class exports.Chat
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray(channels, 100)
-			joinList = []
+			joinList = ['hatsuney']
 			for chunk, i in chunks
 				@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
 				await @Mikuia.Twitch.getStreams chunk, defer err, streams

@@ -11,8 +11,7 @@ class exports.Database
 		@client.on 'ready', =>
 			@Mikuia.Log.success 'Connected to the database.'
 		@client.on 'error', (err) =>
-			@Mikuia.Log.fatal 'Failed to connect to database. '
-			@Mikuia.Log.fatal err
+			@Mikuia.Log.fatal 'Database error: ' + err
 			process.exit()
 
 	get: (key, callback) ->
@@ -20,9 +19,19 @@ class exports.Database
 		@client.get key, (err, data) ->
 			callback err, data
 
+	hdel: (key, field, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.hdel key, field, (err, data) ->
+			callback err, data
+
 	hget: (key, field, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.hget key, field, (err, data) ->
+			callback err, data
+
+	hgetall: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.hgetall key, (err, data) ->
 			callback err, data
 
 	hset: (key, field, value, callback) ->
