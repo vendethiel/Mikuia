@@ -58,6 +58,7 @@ class exports.Chat
 				from: from
 				to: to
 				message: message
+				tokens: tokens
 				settings: settings
 
 	join: (channel, callback) =>
@@ -72,7 +73,7 @@ class exports.Chat
 			if @joined.indexOf(channel) > -1
 				@joined.splice @joined.indexOf(channel), 1
 
-	say: (channel, message) ->
+	say: (channel, message) =>
 		limiter.removeTokens 1, (err, rr) =>	
 			@client.say channel, message
 			@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(message)

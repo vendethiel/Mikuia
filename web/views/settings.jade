@@ -49,9 +49,9 @@ block content
 											td=plugin.manifest.description
 											td
 												if enabledPlugins.indexOf(pluginName) > -1
-													a.btn.green(onclick="pluginDisable('" + pluginName + "')") Enabled
+													a.btn.green(onclick="pluginToggle('" + pluginName + "', 'disable')") Enabled
 												else
-													a.btn.red(onclick="pluginEnable('" + pluginName + "')") Disabled
+													a.btn.red(onclick="pluginToggle('" + pluginName + "', 'enable')") Disabled
 	.row
 		each pluginName in enabledPlugins
 			- var plugin = plugins[pluginName]
@@ -59,15 +59,15 @@ block content
 				.panel.panel-default
 					.panel-heading
 						h3.panel-title=plugin.manifest.name
-					.panel-body.form
-						if plugin.manifest.settings && plugin.manifest.settings.channel
+					if plugin.manifest.settings && plugin.manifest.settings.channel
+						.panel-body.form
 							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
 								+settings(plugin.manifest.settings.channel, settings[pluginName])
 								.form-actions
 									button.btn.blue(type='submit') Save
-
-						else
+					else
+						.panel-body
 							.text-muted This plugin has no configurable settings.
 
 block footerScript

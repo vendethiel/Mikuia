@@ -3,8 +3,9 @@ module.exports =
 		Channel = new Mikuia.Models.Channel req.user.username
 		handlers = Mikuia.Plugin.getHandlers()
 
-		await Channel.getCommands defer err, commandHandlers
-		if err then console.log err
+		await
+			Channel.getCommands defer err, commandHandlers
+			Channel.getEnabledPlugins defer err, enabledPlugins
 
 		commands = {}
 		if commandHandlers?
@@ -15,6 +16,7 @@ module.exports =
 
 		res.render 'commands',
 			commands: commands
+			enabledPlugins: enabledPlugins
 			handlers: handlers
 
 	add: (req, res) ->

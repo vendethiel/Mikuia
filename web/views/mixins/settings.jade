@@ -4,9 +4,31 @@ mixin settings(settings, userSettings)
 			label.col-md-3.control-label=setting.name
 			.col-md-8
 				case setting.type
+					when 'format'
+						if userSettings && userSettings[settingName]
+							.input-group
+								.input-group-addon Format
+								input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
+						else
+							.input-group
+								.input-group-addon Format
+								input.form-control(type='text', name=settingName, placeholder=setting.default)
+					when 'select'
+						if userSettings && userSettings[settingName]
+							select.form-control(name=settingName)
+								each option, optionValue in setting.options
+									- console.log(optionValue)
+									if optionValue == userSettings[settingName]
+										option(value=optionValue, selected='selected')=option
+									else
+										option(value=optionValue)=option
+						else
+							select.form-control(name=settingName)
+								each option, optionValue in setting.options
+									option(value=optionValue)=option
 					when 'text'
 						if userSettings && userSettings[settingName]
-								input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
+							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
 						else
 							input.form-control(type='text', name=settingName, placeholder=setting.default)
 				span.help-block=setting.description

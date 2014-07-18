@@ -1,0 +1,46 @@
+{
+	"name": "osu!",
+	"description": "Various fun stuff for osu!.",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"osu.stats": {
+			"description": "Shows osu! stats, duh.",
+			"settings": {
+				"username": {
+					"name": "Username",
+					"description": "Default username of the command. Gah.",
+					"default": "",
+					"type": "text"
+				},
+				"format": {
+					"name": "Output Format",
+					"description": "Format of the command output.",
+					"default": "Stats for <%username%>: <%pp%>pp, rank: #<%rank%>",
+					"type": "format"
+				}
+			}
+		}
+	},
+	"settings": {
+		"channel": {
+			"mode": {
+				"name": "Default Game Mode",
+				"category": "General",
+				"description": "The game mode you play, heh.",
+				"default": 0,
+				"type": "select",
+				"options": {
+					"0": "osu!",
+					"1": "Taiko",
+					"2": "Catch the Beat",
+					"3": "osu!mania"
+				}
+			}
+		},
+		"server": {
+			"apiKey": "OSU_API_KEY_HERE_OR_SOMETHING_LOL",
+			"debug": false
+		}
+	}
+}

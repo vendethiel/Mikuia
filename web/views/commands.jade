@@ -46,7 +46,8 @@ block content
 								.col-md-9
 									select.form-control(name='handler')
 										each handler, handlerName in handlers
-											option(value=handlerName) #{handlerName} - #{handler.description}
+											if enabledPlugins.indexOf(handler.plugin) > -1
+												option(value=handlerName) #{handlerName} - #{handler.description}
 									span.help-block This specifies what you expect the command to do.
 						.form-actions
 							button.btn.blue(type='submit') Add

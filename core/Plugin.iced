@@ -61,6 +61,7 @@ class exports.Plugin
 						if manifest.handlers?
 							for handlerName, handler of manifest.handlers
 								@handlers[handlerName] = handler
+								@handlers[handlerName].plugin = name
 					else
 						@Mikuia.Log.error 'Plugin ' + cli.yellowBright(name) + ' does not specify base file.'
 					
