@@ -14,7 +14,7 @@ class exports.Chat
 		, 300000
 
 	connect: ->
-		@client = new irc.connect {
+		@client = new irc.connect
 			autoreconnect: true
 			channels: []
 			debug: @Mikuia.settings.bot.debug
@@ -23,13 +23,14 @@ class exports.Chat
 			port: 6667
 			server: 'irc.twitch.tv'
 			oauth: @Mikuia.settings.bot.oauth
-		}, (err, event) =>
+		, (err, event) =>
 			if !err
 				event.on 'chat', (user, channel, message) =>
-					@handleMessage(user, channel, message)
+					@handleMessage user, channel, message
 
 				event.on 'connected', =>
 					@Mikuia.Log.info 'Connected to Twitch IRC.'
+					@Mikuia.Events.emit 'twitch.connected'
 
 				event.on 'disconnected', (reason) =>
 					@Mikuia.Log.warning 'Disconnected from Twitch IRC. Reason: ' + reason
@@ -44,7 +45,7 @@ class exports.Chat
 
 	handleMessage: (from, to, message) ->
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
-		@Mikuia.Events.emit('twitch.message', from, to, message)
+		@Mikuia.Events.emit 'twitch.message', from, to, message
 
 		Channel = new @Mikuia.Models.Channel to
 		tokens = message.split ' '
@@ -81,7 +82,7 @@ class exports.Chat
 	update: =>
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
-			chunks = @Mikuia.Tools.chunkArray(channels, 100)
+			chunks = @Mikuia.Tools.chunkArray channels, 100
 			joinList = ['hatsuney']
 			for chunk, i in chunks
 				@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'

@@ -50,6 +50,15 @@ class exports.Plugin
 						@plugins[name].module.Plugin =
 							getSetting: (setting) =>
 								return @Mikuia.Settings.pluginGet name, setting
+							Log:
+								success: (message) =>
+									@Mikuia.Log.success '[' + cli.magentaBright(name) + '] ' + message
+								info: (message) =>
+									@Mikuia.Log.info '[' + cli.magentaBright(name) + '] ' + message
+								warning: (message) =>
+									@Mikuia.Log.warning '[' + cli.magentaBright(name) + '] ' + message
+								error: (message) =>
+									@Mikuia.Log.error '[' + cli.magentaBright(name) + '] ' + message
 
 						if manifest.settings?.server?
 							if not @Mikuia.settings.plugins[name]?

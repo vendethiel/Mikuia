@@ -22,7 +22,7 @@ store = new RedisStore
 	pass: Mikuia.settings.redis.options.auth_pass
 
 routes = {}
-app = express()
+module.exports = app = express()
 
 passport.serializeUser (user, done) ->
 	done null, user

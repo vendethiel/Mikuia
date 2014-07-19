@@ -43,6 +43,9 @@ Mikuia.Settings.read ->
 	# CoffeeScript makes this line look really weird :D
 	Mikuia.Database.connect Mikuia.settings.redis.host, Mikuia.settings.redis.port, Mikuia.settings.redis.options
 
+	# WEBSITE WEEEEEEEEE
+	Mikuia.Web = require './web/web.iced'
+
 	# Let's load plugins.
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		if pluginDirErr
@@ -56,5 +59,3 @@ Mikuia.Settings.read ->
 	Mikuia.Chat.connect()
 	Mikuia.Twitch.init()
 	Mikuia.Chat.update()
-
-	Mikuia.Web = require './web/web.iced'

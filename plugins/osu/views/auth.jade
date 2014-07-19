@@ -1,0 +1,49 @@
+extends ../../../web/views/layout
+
+block content
+	.row
+		.col-sm-12
+			h3.page-title
+				| osu! authentication
+				small  because we have to authenticate you, duh
+			ul.page-breadcrumb.breadcrumb
+				li
+					i.fa.fa-home
+					a(href='/dashboard') Dashboard
+					i.fa.fa-angle-right
+				li
+					a Plugins
+					i.fa.fa-angle-right
+				li
+					a osu!
+					i.fa.fa-angle-right
+				li
+					a osu! authentication
+	.row
+		.col-md-4
+			h1 How to authenticate?
+			ol
+				li
+					| Send 
+					b Maxorq
+					|  in-game this message:
+					pre !verify
+				li You should get a code. Put it in the field below.
+				li Click the button.
+				li Why are you still reading this, just do it.
+	.row
+		.col-md-4
+			.panel.panel-default
+				.panel-heading
+					h3.panel-title Authentication
+				.panel-body.form
+					form.form-horizontal(action='/dashboard/plugins/osu/auth', method='post')
+						.form-body
+							.form-group
+								label.col-sm-3.control-label Auth Code
+								.col-sm-8
+									input.form-control(type='text', name='authCode')
+									span.help-block The code expires in one minute, gotta go fast!
+						.form-actions
+							button.btn.blue(type='submit') Save
+										

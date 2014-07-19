@@ -2,7 +2,7 @@ extends layout
 
 block content
 	.row
-		.col-md-12
+		.col-sm-12
 			h3.page-title
 				| Settings
 				small  where you change stuff
@@ -14,7 +14,7 @@ block content
 				li
 					a(href='/dashboard/settings') Settings
 	.row
-		.col-md-4
+		.col-sm-4
 			if !enabled
 				- var className = 'panel-warning'
 			else
@@ -29,7 +29,7 @@ block content
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(onclick="toggle('enable')") Enable
-		.col-md-8
+		.col-sm-8
 			if enabled
 				.panel.panel-info
 					.panel-heading
@@ -55,7 +55,7 @@ block content
 	.row
 		each pluginName in enabledPlugins
 			- var plugin = plugins[pluginName]
-			.col-md-6
+			.col-sm-6
 				.panel.panel-default
 					.panel-heading
 						h3.panel-title=plugin.manifest.name
@@ -63,7 +63,7 @@ block content
 						.panel-body.form
 							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
-								+settings(plugin.manifest.settings.channel, settings[pluginName])
+									+settings(plugin.manifest.settings.channel, settings[pluginName])
 								.form-actions
 									button.btn.blue(type='submit') Save
 					else

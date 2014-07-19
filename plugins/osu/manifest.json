@@ -16,8 +16,26 @@
 				"format": {
 					"name": "Output Format",
 					"description": "Format of the command output.",
-					"default": "Stats for <%username%>: <%pp%>pp, rank: #<%rank%>",
-					"type": "format"
+					"default": "Stats for <%username%>: <%pp%>pp, rank: #<%commas/rank%>",
+					"type": "format",
+					"variables": {
+						"username": "Username",
+						"id": "User ID",
+						"rank": "Rank",
+						"pp": "Performance Points",
+						"count300": "Total 300s",
+						"count100": "Total 100s",
+						"count50": "Total 50s",
+						"playcount": "Playcount",
+						"ranked_score": "Ranked Score",
+						"total_score": "Total Score",
+						"level": "Level",
+						"accuracy": "Accuracy",
+						"rank_ss": "SS Ranks",
+						"rank_s": "S Ranks",
+						"rank_a": "A Ranks",
+						"country": "Country"
+					}
 				}
 			}
 		}
@@ -36,11 +54,91 @@
 					"2": "Catch the Beat",
 					"3": "osu!mania"
 				}
+			},
+			"name": {
+				"name": "Username",
+				"category": "Channel",
+				"description": "Your osu! username.",
+				"default": "",
+				"type": "disabled",
+				"link": {
+					"url": "/dashboard/plugins/osu/auth",
+					"name": "Authenticate your account."
+				}
+			},
+			"requests": {
+				"name": "Global Requests",
+				"category": "Channel",
+				"description": "Listen for requests in all chat messages.",
+				"default": true,
+				"type": "boolean"
+			},
+			"osuRequestFormat": {
+				"name": "In-game request text",
+				"description": "Format of the request text in-game.",
+				"default": "New request from <%requester%>: [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]] (<%round/bpm%> BPM, ★<%round2/difficultyrating%>)",
+				"type": "format",
+				"variables": {
+					"requester": "Username of the requester",
+					"beatmapset_id": "ID of the beatmap set",
+					"beatmap_id": "ID of the beatmap",
+					"approved": "Approval Status ID",
+					"approvedText": "Approval Status",
+					"approved_date": "Approval Date",
+					"last_update": "Last Update",
+					"total_length": "Length",
+					"hit_length": "Drain Length",
+					"version": "Difficulty Name",
+					"artist": "Artist",
+					"title": "Title",
+					"creator": "Creator",
+					"bpm": "BPM",
+					"source": "Source",
+					"difficultyrating": "Star Rating",
+					"diff_size": "CS (Circle Size)",
+					"diff_overall": "OD (Overall Difficulty)",
+					"diff_approach": "AR (Approach Rate)",
+					"diff_drain": "HP (HP Drain Rate)",
+					"mode": "Mode ID",
+					"modeText": "Mode"
+				}
+			},
+			"chatRequestFormat": {
+				"name": "Chat request text",
+				"description": "Format of the request map info on chat.",
+				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>] (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars",
+				"type": "format",
+				"variables": {
+					"requester": "Username of the requester",
+					"beatmapset_id": "ID of the beatmap set",
+					"beatmap_id": "ID of the beatmap",
+					"approved": "Approval Status ID",
+					"approvedText": "Approval Status",
+					"approved_date": "Approval Date",
+					"last_update": "Last Update",
+					"total_length": "Length",
+					"hit_length": "Drain Length",
+					"version": "Difficulty Name",
+					"artist": "Artist",
+					"title": "Title",
+					"creator": "Creator",
+					"bpm": "BPM",
+					"source": "Source",
+					"difficultyrating": "Star Rating",
+					"diff_size": "CS (Circle Size)",
+					"diff_overall": "OD (Overall Difficulty)",
+					"diff_approach": "AR (Approach Rate)",
+					"diff_drain": "HP (HP Drain Rate)",
+					"mode": "Mode ID",
+					"modeText": "Mode"
+				}
 			}
 		},
 		"server": {
 			"apiKey": "OSU_API_KEY_HERE_OR_SOMETHING_LOL",
-			"debug": false
+			"debug": false,
+			"name": "OSU_USERNAME_HERE",
+			"password": "OSU_IRC_AUTH_PASS"
 		}
 	}
 }

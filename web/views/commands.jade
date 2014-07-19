@@ -2,7 +2,7 @@ extends layout
 
 block content
 	.row
-		.col-md-12
+		.col-sm-12
 			h3.page-title
 				| Commands
 				small  those things you write and they do things
@@ -14,7 +14,7 @@ block content
 				li
 					a(href='/dashboard/commands') Commands
 	.row
-		.col-md-8
+		.col-sm-8
 			table.table.table-bordered
 				thead
 					tr
@@ -29,7 +29,7 @@ block content
 							td
 								a.btn.input-sm.green.command-settings(href='/dashboard/commands/settings/' + commandName) Settings
 								a.btn.input-sm.red.command-remove(href='#', title=commandName) Remove
-		.col-md-4
+		.col-sm-4
 			.panel.panel-info
 				.panel-heading
 					h3.panel-title Add a command
@@ -37,13 +37,13 @@ block content
 					form.form-horizontal(action='/dashboard/commands/add', method='post', role='form')
 						.form-body
 							.form-group
-								label.col-md-3.control-label Command
-								.col-md-9
+								label.col-sm-3.control-label Command
+								.col-sm-9
 									input.form-control(type='text', name='command', placeholder='!command')
 									span.help-block This is the thing people will write in the chat.
 							.form-group
-								label.col-md-3.control-label Handler
-								.col-md-9
+								label.col-sm-3.control-label Handler
+								.col-sm-9
 									select.form-control(name='handler')
 										each handler, handlerName in handlers
 											if enabledPlugins.indexOf(handler.plugin) > -1

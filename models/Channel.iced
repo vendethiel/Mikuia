@@ -16,8 +16,15 @@ class exports.Channel extends Mikuia.Model
 
 	getSetting: (plugin, field, callback) ->
 		await @_hget 'plugin:' + plugin + ':settings', field, defer err, data
-		if !data && Mikuia.Plugin.getManifest(plugin)?.settings?.channel?[field]?.default?
-			data = Mikuia.Plugin.getManifest(plugin).settings.channel[field].default
+		if Mikuia.Plugin.getManifest(plugin)?.settings?.channel?[field]?
+			setting = Mikuia.Plugin.getManifest(plugin).settings.channel[field]
+			if !data && setting.default?
+				data = setting.default
+			if setting.type == 'boolean'
+				if data == 'true'
+					data = true
+				if data == 'false'
+					data = false
 		callback err, data
 
 	getSettings: (plugin, callback) ->

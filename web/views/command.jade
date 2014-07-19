@@ -25,7 +25,7 @@ block content
 					.panel-body.form
 						form.form-horizontal(action='/dashboard/commands/save/' + command, method='post', role='form')
 							.form-body
-							+settings(settings, userSettings)
+								+settings(settings, userSettings)
 							.form-actions
 								button.btn.blue(type='submit') Save
 				else

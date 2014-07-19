@@ -35,10 +35,15 @@ module.exports =
 
 		if Mikuia.Plugin.exists req.params.name
 			manifest = Mikuia.Plugin.getManifest req.params.name
-			for setting, value of req.body
-				if manifest.settings.channel?[setting]?
+			for settingName, setting of manifest.settings.channel
+				if setting.type == 'boolean'
+					if req.body[settingName]? && req.body[settingName] == 'on'
+							req.body[settingName] = true
+						else 
+							req.body[settingName] = false
+				if req.body[settingName]? && setting.type != 'disabled'
 					# To do: some kind of entry validation, and errors?
-					await Channel.setSetting req.params.name, setting, value, defer err, data
+					await Channel.setSetting req.params.name, settingName, req.body[settingName], defer err, data
 
 		res.redirect '/dashboard/settings'
 
