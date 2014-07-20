@@ -13,11 +13,13 @@ module.exports =
 			await Channel.getSettings pluginName, defer err, settings[pluginName]
 
 			categories[pluginName] = {}
-			for settingName, setting of Mikuia.Plugin.getManifest(pluginName).settings.channel
-				if setting.category?
-					if !categories[pluginName][setting.category]?
-						categories[pluginName][setting.category] = {}
-					categories[pluginName][setting.category][settingName] = setting
+			manifest = Mikuia.Plugin.getManifest(pluginName)
+			if manifest.settings?.channel?
+				for settingName, setting of manifest.settings.channel
+					if setting.category?
+						if !categories[pluginName][setting.category]?
+							categories[pluginName][setting.category] = {}
+						categories[pluginName][setting.category][settingName] = setting
 
 		res.render 'settings',
 			categories: categories
