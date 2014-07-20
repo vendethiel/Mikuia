@@ -15,16 +15,5 @@
 				}
 			}
 		}
-	},
-	"settings": {
-		"channel": {
-			"customMessage": {
-				"name": "Custom Message",
-				"category": "General",
-				"description": "The message that will be custom, and stuff.",
-				"default": "Hi, I'm Lukanya, and I don't do anything useful! Leave me alone.",
-				"type": "text"
-			}
-		}
 	}
 }
