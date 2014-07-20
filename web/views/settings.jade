@@ -63,7 +63,7 @@ block content
 						.panel-body.form
 							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
-									+settings(plugin.manifest.settings.channel, settings[pluginName])
+									+settings(plugin.manifest.settings.channel, settings[pluginName], categories[pluginName])
 								.form-actions
 									button.btn.blue(type='submit') Save
 					else

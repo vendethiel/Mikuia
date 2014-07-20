@@ -1,108 +1,118 @@
-mixin settings(settings, userSettings)
-	each setting, settingName in settings
-		.form-group
-			label.col-sm-3.control-label=setting.name
-			.col-sm-8
-				case setting.type
-					when 'boolean'
-						.checkbox
-							label
-								if userSettings && userSettings[settingName]
-									if userSettings[settingName] == 'true'
-										input(type='checkbox', name=settingName, checked)
-									else
-										input(type='checkbox', name=settingName)
-								else if setting.default == true
+mixin settings(settings, userSettings, categories)
+
+	if categories != undefined
+		each category, categoryName in categories
+			h3=categoryName
+			each setting, settingName in category
+				+setting(setting, settingName, userSettings)
+	else
+		each setting, settingName in settings
+			+setting(setting, settingName, userSettings)
+
+mixin setting(setting, settingName, userSettings)
+	.form-group
+		label.col-sm-3.control-label=setting.name
+		.col-sm-8
+			case setting.type
+				when 'boolean'
+					.checkbox
+						label
+							if userSettings && userSettings[settingName]
+								if userSettings[settingName] == 'true'
 									input(type='checkbox', name=settingName, checked)
 								else
 									input(type='checkbox', name=settingName)
-								| #{setting.description}
-					when 'disabled'
-						if userSettings && userSettings[settingName]
-							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)
-						else
-							input.form-control(type='text', name=settingName, placeholder=setting.default, disabled)
-						span.help-block
-							| #{setting.description} 
-							a(href=setting.link.url)=setting.link.name
-					when 'format'
-						if userSettings && userSettings[settingName]
-							.input-group
-								.input-group-addon Format
-								input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
-						else
-							.input-group
-								.input-group-addon Format
-								input.form-control(type='text', name=settingName, placeholder=setting.default)
-						span.help-block
-							| #{setting.description} 
-							a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle()") Need help?
-						span.list(name=settingName, style='display: none;')
-							.row
-								.col-sm-12
-									h3 How to use Format?
-									p Insert variables using <% and %> like this:
-									pre <%variable%>
-									p Use functions by prepending variable name with function name and a slash ("/")
-									pre <%function/variable%>
-									p You can even use multiple functions for some reason.
-									pre <%function1/function2/function3/variable%>
-							.row
-								small.col-sm-4
-									h3 Variables
-									table.table.table-condensed.text-muted
-										each variable, name in setting.variables
-											tr
-												td=variable
-												td <%#{name}%>
-								small.col-sm-7.col-sm-offset-1
-									h3 Functions
-									table.table.table-condensed.text-muted
-										tr
-											td
-												h4 Math
-											td
-										tr
-											td ceil
-											td Rounds the value up.
-										tr
-											td commas
-											td Inserts commas every 3 numbers to the value.
-										tr
-											td floor
-											td Rounds the value down.
-										tr
-											td round
-											td Rounds the value.
-										tr
-											td round(1-4)
-											td Rounds the value to (1-4) decimal places.
-										tr
-											td
-												h4 Strings
-											td
-										tr
-											td lower
-											td Lowercases the text.
-										tr
-											td upper
-											td Uppercases the text.
-					when 'select'
-						if userSettings && userSettings[settingName]
-							select.form-control(name=settingName)
-								each option, optionValue in setting.options
-									if optionValue == userSettings[settingName]
-										option(value=optionValue, selected='selected')=option
-									else
-										option(value=optionValue)=option
-						else
-							select.form-control(name=settingName)
-								each option, optionValue in setting.options
-									option(value=optionValue)=option
-						span.help-block=setting.description
-					when 'text'
-						if userSettings && userSettings[settingName]
+							else if setting.default == true
+								input(type='checkbox', name=settingName, checked)
+							else
+								input(type='checkbox', name=settingName)
+							| #{setting.description}
+				when 'disabled'
+					if userSettings && userSettings[settingName]
+						input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)
+					else
+						input.form-control(type='text', name=settingName, placeholder=setting.default, disabled)
+					span.help-block
+						| #{setting.description} 
+						a(href=setting.link.url)=setting.link.name
+				when 'format'
+					if userSettings && userSettings[settingName]
+						.input-group
+							.input-group-addon Format
 							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
-						else
+					else
+						.input-group
+							.input-group-addon Format
 							input.form-control(type='text', name=settingName, placeholder=setting.default)
-						span.help-block=setting.description
+					span.help-block
+						| #{setting.description} 
+						a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle()") Need help?
+					span.list(name=settingName, style='display: none;')
+						.row
+							.col-sm-12
+								h3 How to use Format?
+								p Insert variables using <% and %> like this:
+								pre <%variable%>
+								p Use functions by prepending variable name with function name and a slash ("/")
+								pre <%function/variable%>
+								p You can even use multiple functions for some reason.
+								pre <%function1/function2/function3/variable%>
+						.row
+							small.col-sm-4
+								h3 Variables
+								table.table.table-condensed.text-muted
+									each variable, name in setting.variables
+										tr
+											td=variable
+											td <%#{name}%>
+							small.col-sm-7.col-sm-offset-1
+								h3 Functions
+								table.table.table-condensed.text-muted
+									tr
+										td
+											h4 Math
+										td
+									tr
+										td ceil
+										td Rounds the value up.
+									tr
+										td commas
+										td Inserts commas every 3 numbers to the value.
+									tr
+										td floor
+										td Rounds the value down.
+									tr
+										td round
+										td Rounds the value.
+									tr
+										td round(1-4)
+										td Rounds the value to (1-4) decimal places.
+									tr
+										td
+											h4 Strings
+										td
+									tr
+										td lower
+										td Lowercases the text.
+									tr
+										td upper
+										td Uppercases the text.
+				when 'select'
+					if userSettings && userSettings[settingName]
+						select.form-control(name=settingName)
+							each option, optionValue in setting.options
+								if optionValue == userSettings[settingName]
+									option(value=optionValue, selected='selected')=option
+								else
+									option(value=optionValue)=option
+					else
+						select.form-control(name=settingName)
+							each option, optionValue in setting.options
+								option(value=optionValue)=option
+					span.help-block=setting.description
+				when 'text'
+					if userSettings && userSettings[settingName]
+						input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
+					else
+						input.form-control(type='text', name=settingName, placeholder=setting.default)
+					span.help-block=setting.description

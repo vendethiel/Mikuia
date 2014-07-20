@@ -7,11 +7,20 @@ module.exports =
 			Channel.isEnabled defer err, enabled
 			Channel.getEnabledPlugins defer err, enabledPlugins
 
+		categories = {}
 		settings = {}
 		for pluginName in enabledPlugins
 			await Channel.getSettings pluginName, defer err, settings[pluginName]
 
+			categories[pluginName] = {}
+			for settingName, setting of Mikuia.Plugin.getManifest(pluginName).settings.channel
+				if setting.category?
+					if !categories[pluginName][setting.category]?
+						categories[pluginName][setting.category] = {}
+					categories[pluginName][setting.category][settingName] = setting
+
 		res.render 'settings',
+			categories: categories
 			enabled: enabled
 			enabledPlugins: enabledPlugins
 			plugins: plugins
