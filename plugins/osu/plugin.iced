@@ -69,6 +69,7 @@ sendRequest = (channel, from, user, map) =>
 	await
 		channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
 		channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
+		channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
 
 	modeText = 'osu!'
 	approvedText = 'Ranked'
@@ -109,7 +110,7 @@ sendRequest = (channel, from, user, map) =>
 		modeText: modeText
 
 	# Chat
-	if !err
+	if !err && requestChatInfo
 		Mikuia.Chat.say channel.getName(), Mikuia.Format.parse chatRequestFormat, data
 
 	# osu!
@@ -154,6 +155,10 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	await Channel.getSetting 'osu', 'requests', defer err, requestsEnabled
 	if !err && requestsEnabled
 		checkForRequest from, Channel, message
+
+Mikuia.Events.on 'osu.request', (data) =>
+	Channel = new Mikuia.Models.Channel data.to
+	checkForRequest data.from, Channel, data.message
 
 Mikuia.Events.on 'osu.stats', (data) =>
 	tokens = data.tokens
