@@ -4,6 +4,9 @@
 	"baseFile": "plugin.iced",
 	"hidden": false,
 	"handlers": {
+		"osu.request": {
+			"description": "Allows requesting songs."
+		},
 		"osu.stats": {
 			"description": "Shows osu! stats, duh.",
 			"settings": {
@@ -57,7 +60,7 @@
 			},
 			"name": {
 				"name": "Username",
-				"category": "Channel",
+				"category": "General",
 				"description": "Your osu! username.",
 				"default": "",
 				"type": "disabled",
@@ -68,13 +71,21 @@
 			},
 			"requests": {
 				"name": "Global Requests",
-				"category": "Channel",
+				"category": "Requests",
 				"description": "Listen for requests in all chat messages.",
+				"default": true,
+				"type": "boolean"
+			},
+			"requestChatInfo": {
+				"name": "Request Chat Info",
+				"category": "Requests",
+				"description": "Shows request map info in the chat.",
 				"default": true,
 				"type": "boolean"
 			},
 			"osuRequestFormat": {
 				"name": "In-game request text",
+				"category": "Advanced",
 				"description": "Format of the request text in-game.",
 				"default": "New request from <%requester%>: [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]] (<%round/bpm%> BPM, ★<%round2/difficultyrating%>)",
 				"type": "format",
@@ -105,6 +116,7 @@
 			},
 			"chatRequestFormat": {
 				"name": "Chat request text",
+				"category": "Advanced",
 				"description": "Format of the request map info on chat.",
 				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>] (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars",
 				"type": "format",
