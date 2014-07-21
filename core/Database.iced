@@ -14,6 +14,16 @@ class exports.Database
 			@Mikuia.Log.fatal 'Database error: ' + err
 			process.exit()
 
+	del: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.del key, (err, data) ->
+			callback err, data
+
+	expire: (key, timeout, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.expire key, timeout, (err, data) ->
+			callback err, data
+
 	get: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.get key, (err, data) ->

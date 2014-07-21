@@ -84,6 +84,7 @@ class exports.Chat
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
 			joinList = ['hatsuney']
+			streamList = []
 			for chunk, i in chunks
 				@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
 				await @Mikuia.Twitch.getStreams chunk, defer err, streams
@@ -92,8 +93,20 @@ class exports.Chat
 					for stream in streams
 						chunkList.push stream.channel.display_name
 						joinList.push stream.channel.name
+						streamList.push stream
 
 					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
 			for channel in joinList
 				if @joined.indexOf('#' + channel) == -1
 					await @Mikuia.Chat.join '#' + channel
+
+			# Yay, save dat stuff.
+
+			await @Mikuia.Database.del 'mikuia:streams', defer err, response
+			if !err
+				await
+					for stream in streamList
+						@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
+							
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'game', stream.channel.game, defer err, whatever
+						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
