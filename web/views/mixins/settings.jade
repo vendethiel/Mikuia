@@ -97,6 +97,12 @@ mixin setting(setting, settingName, userSettings)
 									tr
 										td upper
 										td Uppercases the text.
+				when 'number'
+					if userSettings && userSettings[settingName]
+						input.form-control(type='number', name=settingName, placeholder=setting.default, value=userSettings[settingName])
+					else
+						input.form-control(type='number', name=settingName, placeholder=setting.default)
+					span.help-block=setting.description
 				when 'select'
 					if userSettings && userSettings[settingName]
 						select.form-control(name=settingName)

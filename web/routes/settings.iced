@@ -53,7 +53,8 @@ module.exports =
 						else 
 							req.body[settingName] = false
 				if req.body[settingName]? && setting.type != 'disabled'
-					# To do: some kind of entry validation, and errors?
+					if setting.type == 'number'
+						req.body[settingName] = parseFloat req.body[settingName]
 					await Channel.setSetting req.params.name, settingName, req.body[settingName], defer err, data
 
 		res.redirect '/dashboard/settings'
