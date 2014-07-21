@@ -156,7 +156,7 @@
 				"name": "Rank change format",
 				"category": "Advanced",
 				"description": "Format of the rank change messages on chat.",
-				"default": "<%pp_sign%><%pp_change%>pp!\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"default": "<%pp_sign%><%round2/pp_change%>pp!\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
 				"type": "format",
 				"variables": {
 					"pp_new": "New PP value",
