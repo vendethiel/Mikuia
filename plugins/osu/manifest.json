@@ -83,6 +83,13 @@
 				"default": true,
 				"type": "boolean"
 			},
+			"updates": {
+				"name": "Enable Updates",
+				"category": "Statistic Updates",
+				"description": "Shows changes in account stats.",
+				"default": true,
+				"type": "boolean"
+			},
 			"osuRequestFormat": {
 				"name": "In-game request text",
 				"category": "Advanced",
@@ -143,6 +150,30 @@
 					"diff_drain": "HP (HP Drain Rate)",
 					"mode": "Mode ID",
 					"modeText": "Mode"
+				}
+			},
+			"rankChangeFormat": {
+				"name": "Rank change format",
+				"category": "Advanced",
+				"description": "Format of the rank change messages on chat.",
+				"default": "<%pp_sign%><%pp_change%>pp!\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"type": "format",
+				"variables": {
+					"pp_new": "New PP value",
+					"pp_old": "Old PP value",
+					"pp_change": "PP value change",
+					"pp_updown": "PP up/down text",
+					"pp_sign": "+ if PP change > 0",
+					"rank_new": "New rank",
+					"rank_old": "Old rank",
+					"rank_change": "Rank change",
+					"rank_updown": "Rank up/down text",
+					"rank_sign": "+ if rank change > 0",
+					"acc_new": "New accuracy",
+					"acc_old": "Old accuracy",
+					"acc_change": "Accuracy change",
+					"acc_updown": "Accuracy up/down text",
+					"acc_sign": "+ if accuracy change > 0"
 				}
 			}
 		},

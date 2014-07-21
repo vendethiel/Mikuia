@@ -7,6 +7,7 @@ RateLimiter = require('limiter').RateLimiter
 apiLimiter = new RateLimiter 30, 60000
 banchoLimiter = new RateLimiter 1, 'second'
 codes = {}
+userData = {}
 
 # Crucial stuff, whatever!
 
@@ -162,8 +163,8 @@ Mikuia.Events.on 'osu.request', (data) =>
 
 Mikuia.Events.on 'osu.stats', (data) =>
 	tokens = data.tokens
-	tokens.splice(0, 1)
-	username = tokens.join(' ')
+	tokens.splice 0, 1
+	username = tokens.join ' '
 
 	await getUser username, 0, defer err, user
 
@@ -197,3 +198,84 @@ Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 		delete codes[req.body.authCode]
 
 	res.redirect '/dashboard/settings'
+
+setInterval () =>
+	await Mikuia.Database.smembers 'mikuia:streams', defer err, streams
+	
+	if !err && streams?
+		for stream in streams
+			await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
+			if !err && game == 'Osu!'
+				Channel = new Mikuia.Models.Channel stream
+				await Channel.getSetting 'osu', 'updates', defer err, updates
+				if !err && updates
+					await
+						Channel.getSetting 'osu', 'name', defer err, name
+						Channel.getSetting 'osu', 'mode', defer err2, mode
+					if !err && name?
+
+						if err2
+							mode = 0
+
+						await getUser name, mode, defer err, stats
+						if !err
+							stats = stats[0]
+							console.log 'got stats'
+
+							if userData[name]?[mode]?
+								console.log 'there are already stats'
+								data = userData[name][mode]
+
+								if data.pp_raw != stats.pp_raw
+									console.log 'omg pp changed'
+									pp_change = stats.pp_raw - data.pp_raw
+									rank_change = (stats.pp_rank - data.pp_rank) * -1
+									acc_change = stats.accuracy - data.accuracy
+
+									if pp_change >= 0
+										pp_updown = 'up'
+										pp_sign = '+'
+									else
+										pp_updown = 'down'
+										pp_sign = ''
+
+									if rank_change >= 0
+										rank_updown = 'up'
+										rank_sign = '+'
+									else
+										rank_updown = 'down'
+										rank_sign = ''
+
+									if acc_change >= 0
+										acc_updown = 'up'
+										acc_sign = '+'
+									else
+										acc_updown = 'down'
+										acc_sign = ''
+
+
+									await Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
+									if !err
+										console.log 'say stuff'
+										Mikuia.Chat.say stream, Mikuia.Format.parse rankChangeFormat,
+											pp_new: stats.pp_raw
+											pp_old: data.pp_raw
+											pp_change: pp_change
+											pp_updown: pp_updown
+											pp_sign: pp_sign
+											rank_new: stats.pp_rank
+											rank_old: data.pp_rank
+											rank_change: rank_change
+											rank_updown: rank_updown
+											rank_sign: rank_sign
+											acc_new: stats.accuracy
+											acc_old: data.accuracy
+											acc_change: acc_change
+											acc_updown: acc_updown
+											acc_sign: acc_sign
+
+							if !userData[name]?
+								console.log 'no stats!'
+								userData[name] = {}
+							userData[name][mode] = stats
+, 5000
