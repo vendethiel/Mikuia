@@ -75,9 +75,11 @@ class exports.Chat
 				@joined.splice @joined.indexOf(channel), 1
 
 	say: (channel, message) =>
-		limiter.removeTokens 1, (err, rr) =>	
-			@client.say channel, message
-			@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(message)
+		lines = message.split '\n'
+		for line in lines
+			limiter.removeTokens 1, (err, rr) =>	
+				@client.say channel, line
+				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
 
 	update: =>
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
