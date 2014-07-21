@@ -15,43 +15,52 @@ banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
 		@bancho.send name, message
 
-checkForRequest = (from, Channel, message) =>
-	if /osu.ppy.sh\/(b|s)\/(\d+)/g.test message
-		match = /osu.ppy.sh\/(b|s)\/(\d+)/g.exec message
-		
-		await
-			Channel.getSetting 'osu', 'name', defer err, username
-			Channel.getSetting 'osu', 'mode', defer err2, mode
-		if !err && username != ''
-			await getBeatmap match[2], match[1], defer err, beatmaps
-			if !err && beatmaps.length
-				switch match[1]
-					when 'b'
-						sendRequest Channel, from, username, beatmaps[0]
-					when 's'
-						customModes = false
-						preferredMode = '0'
-						if !err2
-							preferredMode = mode
+checkForRequest = (user, Channel, message) =>
 
-						maps = []
-						for i, map of beatmaps
-							if map.mode == preferredMode
-								maps.push map
+	continueCheck = true
+	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
+	if !err && requestSubMode
+		if user.special.indexOf('subscriber') == -1
+			continueCheck = false
 
-						if maps.length == 0
-							maps = beatmaps
+	if continueCheck
+		if /osu.ppy.sh\/(b|s)\/(\d+)/g.test message
+			match = /osu.ppy.sh\/(b|s)\/(\d+)/g.exec message
+			
+			await
+				Channel.getSetting 'osu', 'name', defer err, username
+				Channel.getSetting 'osu', 'mode', defer err2, mode
+
+			if !err && username != ''
+				await getBeatmap match[2], match[1], defer err, beatmaps
+				if !err && beatmaps.length
+					switch match[1]
+						when 'b'
+							sendRequest Channel, user, username, beatmaps[0]
+						when 's'
+							customModes = false
 							preferredMode = '0'
+							if !err2
+								preferredMode = mode
 
-						highestDifficultyRating = 0
-						highestDifficultyMap = null
+							maps = []
+							for i, map of beatmaps
+								if map.mode == preferredMode
+									maps.push map
 
-						for i, map of maps
-							if map.difficultyrating > highestDifficultyRating && map.mode == preferredMode
-								highestDifficultyRating = map.difficultyrating
-								highestDifficultyMap = map
+							if maps.length == 0
+								maps = beatmaps
+								preferredMode = '0'
 
-						sendRequest Channel, from, username, highestDifficultyMap
+							highestDifficultyRating = 0
+							highestDifficultyMap = null
+
+							for i, map of maps
+								if map.difficultyrating > highestDifficultyRating && map.mode == preferredMode
+									highestDifficultyRating = map.difficultyrating
+									highestDifficultyMap = map
+
+							sendRequest Channel, user, username, highestDifficultyMap
 
 makeAPIRequest = (link, callback) =>
 	apiLimiter.removeTokens 1, (err, rr) =>
@@ -66,7 +75,7 @@ makeAPIRequest = (link, callback) =>
 			else
 				callback true, null
 
-sendRequest = (channel, from, user, map) =>
+sendRequest = (channel, user, username, map) =>
 	await
 		channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
 		channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
@@ -87,7 +96,7 @@ sendRequest = (channel, from, user, map) =>
 		when '-2' then approvedText = 'Graveyard'
 
 	data =
-		requester: from.username
+		requester: user.username
 		beatmapset_id: map.beatmapset_id
 		beatmap_id: map.beatmap_id
 		approved: map.approved
@@ -116,7 +125,7 @@ sendRequest = (channel, from, user, map) =>
 
 	# osu!
 	if !err2
-		banchoSay user, Mikuia.Format.parse osuRequestFormat, data
+		banchoSay username, Mikuia.Format.parse osuRequestFormat, data
 
 # API functions.
 
@@ -151,11 +160,11 @@ Mikuia.Events.on 'twitch.connected', =>
 				delete codes[code]
 			, 60000
 
-Mikuia.Events.on 'twitch.message', (from, to, message) =>
+Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to
 	await Channel.getSetting 'osu', 'requests', defer err, requestsEnabled
 	if !err && requestsEnabled
-		checkForRequest from, Channel, message
+		checkForRequest user, Channel, message
 
 Mikuia.Events.on 'osu.request', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -251,24 +260,29 @@ setInterval () =>
 										acc_sign = ''
 
 
-									await Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
+									await
+										Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
+										Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
 									if !err
-										Mikuia.Chat.say stream, Mikuia.Format.parse rankChangeFormat,
-											pp_new: stats.pp_raw
-											pp_old: data.pp_raw
-											pp_change: pp_change
-											pp_updown: pp_updown
-											pp_sign: pp_sign
-											rank_new: stats.pp_rank
-											rank_old: data.pp_rank
-											rank_change: rank_change
-											rank_updown: rank_updown
-											rank_sign: rank_sign
-											acc_new: stats.accuracy
-											acc_old: data.accuracy
-											acc_change: acc_change
-											acc_updown: acc_updown
-											acc_sign: acc_sign
+
+										setTimeout () =>
+											Mikuia.Chat.say stream, Mikuia.Format.parse rankChangeFormat,
+												pp_new: stats.pp_raw
+												pp_old: data.pp_raw
+												pp_change: pp_change
+												pp_updown: pp_updown
+												pp_sign: pp_sign
+												rank_new: stats.pp_rank
+												rank_old: data.pp_rank
+												rank_change: rank_change
+												rank_updown: rank_updown
+												rank_sign: rank_sign
+												acc_new: stats.accuracy
+												acc_old: data.accuracy
+												acc_change: acc_change
+												acc_updown: acc_updown
+												acc_sign: acc_sign
+										, updateDelay * 1000
 
 							if !userData[name]?
 								userData[name] = {}

@@ -83,16 +83,16 @@
 				"default": true,
 				"type": "boolean"
 			},
-			"updates": {
-				"name": "Enable Updates",
-				"category": "Statistic Updates",
-				"description": "Shows changes in account stats.",
-				"default": true,
+			"requestSubMode": {
+				"name": "Request Sub Mode",
+				"category": "Requests",
+				"description": "Limits requests to subscribers only.",
+				"default": false,
 				"type": "boolean"
 			},
 			"osuRequestFormat": {
 				"name": "In-game request text",
-				"category": "Advanced",
+				"category": "Requests",
 				"description": "Format of the request text in-game.",
 				"default": "New request from <%requester%>: [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]] (<%round/bpm%> BPM, ★<%round2/difficultyrating%>)",
 				"type": "format",
@@ -123,7 +123,7 @@
 			},
 			"chatRequestFormat": {
 				"name": "Chat request text",
-				"category": "Advanced",
+				"category": "Requests",
 				"description": "Format of the request map info on chat.",
 				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>] (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars",
 				"type": "format",
@@ -152,9 +152,23 @@
 					"modeText": "Mode"
 				}
 			},
+			"updates": {
+				"name": "Enable Updates",
+				"category": "Statistic Updates",
+				"description": "Shows changes in account stats.",
+				"default": true,
+				"type": "boolean"
+			},
+			"updateDelay": {
+				"name": "Update Delay",
+				"category": "Statistic Updates",
+				"description": "Amount of time to delay rank updates (in seconds)",
+				"default": 0,
+				"type": "number"
+			},
 			"rankChangeFormat": {
 				"name": "Rank change format",
-				"category": "Advanced",
+				"category": "Statistic Updates",
 				"description": "Format of the rank change messages on chat.",
 				"default": "<%pp_sign%><%round2/pp_change%>pp!\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
 				"type": "format",
