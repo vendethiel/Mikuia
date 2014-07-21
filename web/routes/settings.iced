@@ -55,6 +55,8 @@ module.exports =
 				if req.body[settingName]? && setting.type != 'disabled'
 					if setting.type == 'number'
 						req.body[settingName] = parseFloat req.body[settingName]
+						if isNaN(req.body[settingName])
+							req.body[settingName] = ''
 					await Channel.setSetting req.params.name, settingName, req.body[settingName], defer err, data
 
 		res.redirect '/dashboard/settings'
