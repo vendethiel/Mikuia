@@ -220,14 +220,11 @@ setInterval () =>
 						await getUser name, mode, defer err, stats
 						if !err
 							stats = stats[0]
-							console.log 'got stats'
 
 							if userData[name]?[mode]?
-								console.log 'there are already stats'
 								data = userData[name][mode]
 
 								if data.pp_raw != stats.pp_raw
-									console.log 'omg pp changed'
 									pp_change = stats.pp_raw - data.pp_raw
 									rank_change = (stats.pp_rank - data.pp_rank) * -1
 									acc_change = stats.accuracy - data.accuracy
@@ -256,7 +253,6 @@ setInterval () =>
 
 									await Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
 									if !err
-										console.log 'say stuff'
 										Mikuia.Chat.say stream, Mikuia.Format.parse rankChangeFormat,
 											pp_new: stats.pp_raw
 											pp_old: data.pp_raw
@@ -275,7 +271,6 @@ setInterval () =>
 											acc_sign: acc_sign
 
 							if !userData[name]?
-								console.log 'no stats!'
 								userData[name] = {}
 							userData[name][mode] = stats
 , 5000
