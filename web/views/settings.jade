@@ -49,9 +49,9 @@ block content
 											td=plugin.manifest.description
 											td
 												if enabledPlugins.indexOf(pluginName) > -1
-													a.btn.green(onclick="pluginToggle('" + pluginName + "', 'disable')") Enabled
+													a.btn.red(onclick="pluginToggle('" + pluginName + "', 'disable')") Disable
 												else
-													a.btn.red(onclick="pluginToggle('" + pluginName + "', 'enable')") Disabled
+													a.btn.green(onclick="pluginToggle('" + pluginName + "', 'enable')") Enable
 	.row
 		each pluginName in enabledPlugins
 			- var plugin = plugins[pluginName]
