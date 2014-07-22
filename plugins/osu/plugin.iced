@@ -175,25 +175,32 @@ Mikuia.Events.on 'osu.stats', (data) =>
 	tokens.splice 0, 1
 	username = tokens.join ' '
 
-	await getUser username, 0, defer err, user
+	if username == ''
+		Channel = new Mikuia.Models.Channel data.to
+		await Channel.getSetting 'osu', 'name', defer err, name
+		if !err && name?
+			username = name
 
-	Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
-		username: user[0].username
-		id: user[0].user_id
-		rank: user[0].pp_rank
-		pp: user[0].pp_raw
-		count300: user[0].count300
-		count100: user[0].count100
-		count50: user[0].count50
-		playcount: user[0].playcount
-		ranked_score: user[0].ranked_score
-		total_score: user[0].total_score
-		level: user[0].level
-		accuracy: user[0].accuracy
-		rank_ss: user[0].count_rank_ss
-		rank_s: user[0].count_rank_s
-		rank_a: user[0].count_rank_a
-		country: user[0].country
+	if username != ''
+		await getUser username, 0, defer err, user
+		if !err
+			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
+				username: user[0].username
+				id: user[0].user_id
+				rank: user[0].pp_rank
+				pp: user[0].pp_raw
+				count300: user[0].count300
+				count100: user[0].count100
+				count50: user[0].count50
+				playcount: user[0].playcount
+				ranked_score: user[0].ranked_score
+				total_score: user[0].total_score
+				level: user[0].level
+				accuracy: user[0].accuracy
+				rank_ss: user[0].count_rank_ss
+				rank_s: user[0].count_rank_s
+				rank_a: user[0].count_rank_a
+				country: user[0].country
 
 Mikuia.Web.get '/dashboard/plugins/osu/auth', (req, res) ->
 	res.render '../../plugins/osu/views/auth'
@@ -266,7 +273,7 @@ setInterval () =>
 									if !err
 
 										setTimeout () =>
-											Mikuia.Chat.say stream, Mikuia.Format.parse rankChangeFormat,
+											Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse rankChangeFormat,
 												pp_new: stats.pp_raw
 												pp_old: data.pp_raw
 												pp_change: pp_change
