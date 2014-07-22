@@ -43,9 +43,9 @@ class exports.Chat
 			else
 				@Mikuia.Log.error err
 
-	handleMessage: (from, to, message) ->
-		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(from.username) + ': ' + cli.whiteBright(message)
-		@Mikuia.Events.emit 'twitch.message', from, to, message
+	handleMessage: (user, to, message) ->
+		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
+		@Mikuia.Events.emit 'twitch.message', user, to, message
 
 		Channel = new @Mikuia.Models.Channel to
 		tokens = message.split ' '
@@ -56,7 +56,7 @@ class exports.Chat
 			Channel.getCommandSettings trigger, true, defer settingsError, settings
 		if !commandError && command?
 			@Mikuia.Events.emit command,
-				from: from
+				user: user
 				to: to
 				message: message
 				tokens: tokens
