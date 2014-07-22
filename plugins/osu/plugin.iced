@@ -171,18 +171,28 @@ Mikuia.Events.on 'osu.request', (data) =>
 	checkForRequest data.from, Channel, data.message
 
 Mikuia.Events.on 'osu.stats', (data) =>
-	tokens = data.tokens
+	tokens = data.tokens.slice 0
 	tokens.splice 0, 1
 	username = tokens.join ' '
 
+	mode = 0
+
+	Channel = new Mikuia.Models.Channel data.to
+	await Channel.getCommandSettings data.tokens[0], true, defer err2, settings
+
+	if !err2
+		if settings.username? && settings.username != ''
+			username = settings.username
+		if settings.mode?
+			mode = settings.mode
+
 	if username == ''
-		Channel = new Mikuia.Models.Channel data.to
 		await Channel.getSetting 'osu', 'name', defer err, name
 		if !err && name?
 			username = name
 
 	if username != ''
-		await getUser username, 0, defer err, user
+		await getUser username, mode, defer err, user
 		if !err
 			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
 				username: user[0].username
@@ -210,7 +220,7 @@ Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 		Channel = new Mikuia.Models.Channel req.user.username
 
 		await Channel.setSetting 'osu', 'name', codes[req.body.authCode], defer err, data
-		@Plugin.Log.info 'Authorized ' + cli.yellowBright(codes[req.body.authCode]) + '.'
+		@Plugin.Log.info 'Authenticated ' + cli.yellowBright(codes[req.body.authCode]) + '.'
 		delete codes[req.body.authCode]
 
 	res.redirect '/dashboard/settings'

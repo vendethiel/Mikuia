@@ -12,9 +12,21 @@
 			"settings": {
 				"username": {
 					"name": "Username",
-					"description": "Default username of the command. Gah.",
+					"description": "Default username of the command. Leave empty to use yours.",
 					"default": "",
 					"type": "text"
+				},
+				"mode": {
+					"name": "Game Mode",
+					"description": "The game mode of the command.",
+					"default": 0,
+					"type": "select",
+					"options": {
+						"0": "osu!",
+						"1": "Taiko",
+						"2": "Catch the Beat",
+						"3": "osu!mania"
+					}
 				},
 				"format": {
 					"name": "Output Format",
