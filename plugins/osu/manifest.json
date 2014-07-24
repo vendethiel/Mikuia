@@ -193,7 +193,7 @@
 					"rank_new": "New rank",
 					"rank_old": "Old rank",
 					"rank_change": "Rank change",
-					"rank_updown": "Rank up/down text",
+					"rank_updown": "Rank gained/lost text",
 					"rank_sign": "+ if rank change > 0",
 					"acc_new": "New accuracy",
 					"acc_old": "Old accuracy",
