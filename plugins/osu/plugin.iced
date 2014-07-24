@@ -252,7 +252,7 @@ setInterval () =>
 
 								if data.pp_raw != stats.pp_raw
 									pp_change = stats.pp_raw - data.pp_raw
-									rank_change = (stats.pp_rank - data.pp_rank) * -1
+									rank_change = Math.abs(stats.pp_rank - data.pp_rank)
 									acc_change = stats.accuracy - data.accuracy
 
 									if pp_change >= 0
@@ -263,10 +263,10 @@ setInterval () =>
 										pp_sign = ''
 
 									if rank_change >= 0
-										rank_updown = 'up'
+										rank_updown = 'gained'
 										rank_sign = '+'
 									else
-										rank_updown = 'down'
+										rank_updown = 'lost'
 										rank_sign = ''
 
 									if acc_change >= 0
@@ -275,7 +275,6 @@ setInterval () =>
 									else
 										acc_updown = 'down'
 										acc_sign = ''
-
 
 									await
 										Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
