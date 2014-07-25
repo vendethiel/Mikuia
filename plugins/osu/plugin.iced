@@ -16,7 +16,6 @@ banchoSay = (name, message) =>
 		@bancho.send name, message
 
 checkForRequest = (user, Channel, message) =>
-
 	continueCheck = true
 	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
 	if !err && requestSubMode
@@ -61,6 +60,95 @@ checkForRequest = (user, Channel, message) =>
 									highestDifficultyMap = map
 
 							sendRequest Channel, user, username, highestDifficultyMap
+
+checkRankUpdates = (stream, callback) =>
+	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
+	if err || game != 'Osu!'
+		callback err, null
+	else
+		Channel = new Mikuia.Models.Channel stream
+		await Channel.getSetting 'osu', 'updates', defer err, updates
+		if err || !updates
+			callback err, null
+		else
+			await
+				Channel.getSetting 'osu', 'name', defer err, name
+				Channel.getSetting 'osu', 'mode', defer err2, mode
+			if err || !name?
+				callback err, null
+			else
+				if err2
+					mode = 0
+
+				await getUser name, mode, defer err, stats
+				if err
+					callback true, null
+				else
+					stats = stats[0]
+
+					if userData[name]?[mode]?
+						data = userData[name][mode]
+
+						if data.pp_raw != stats.pp_raw
+							pp_change = stats.pp_raw - data.pp_raw
+							rank_change = Math.abs(stats.pp_rank - data.pp_rank)
+							acc_change = stats.accuracy - data.accuracy
+
+							if pp_change >= 0
+								pp_updown = 'up'
+								pp_sign = '+'
+							else
+								pp_updown = 'down'
+								pp_sign = ''
+
+							if rank_change >= 0
+								rank_updown = 'gained'
+								rank_sign = '+'
+							else
+								rank_updown = 'lost'
+								rank_sign = ''
+
+							if acc_change >= 0
+								acc_updown = 'up'
+								acc_sign = '+'
+							else
+								acc_updown = 'down'
+								acc_sign = ''
+
+							await
+								Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
+								Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
+							if !err
+
+								setTimeout () =>
+									Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse rankChangeFormat,
+										pp_new: stats.pp_raw
+										pp_old: data.pp_raw
+										pp_change: pp_change
+										pp_updown: pp_updown
+										pp_sign: pp_sign
+										rank_new: stats.pp_rank
+										rank_old: data.pp_rank
+										rank_change: rank_change
+										rank_updown: rank_updown
+										rank_sign: rank_sign
+										acc_new: stats.accuracy
+										acc_old: data.accuracy
+										acc_change: acc_change
+										acc_updown: acc_updown
+										acc_sign: acc_sign
+								, updateDelay * 1000
+								callback false, null
+							else
+								callback true, null
+						else
+							callback false, null
+					else
+						callback false, null
+
+					if !userData[name]?
+						userData[name] = {}
+					userData[name][mode] = stats
 
 makeAPIRequest = (link, callback) =>
 	apiLimiter.removeTokens 1, (err, rr) =>
@@ -230,77 +318,5 @@ setInterval () =>
 	
 	if !err && streams?
 		for stream in streams
-			await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
-			if !err && game == 'Osu!'
-				Channel = new Mikuia.Models.Channel stream
-				await Channel.getSetting 'osu', 'updates', defer err, updates
-				if !err && updates
-					await
-						Channel.getSetting 'osu', 'name', defer err, name
-						Channel.getSetting 'osu', 'mode', defer err2, mode
-					if !err && name?
-
-						if err2
-							mode = 0
-
-						await getUser name, mode, defer err, stats
-						if !err
-							stats = stats[0]
-
-							if userData[name]?[mode]?
-								data = userData[name][mode]
-
-								if data.pp_raw != stats.pp_raw
-									pp_change = stats.pp_raw - data.pp_raw
-									rank_change = Math.abs(stats.pp_rank - data.pp_rank)
-									acc_change = stats.accuracy - data.accuracy
-
-									if pp_change >= 0
-										pp_updown = 'up'
-										pp_sign = '+'
-									else
-										pp_updown = 'down'
-										pp_sign = ''
-
-									if rank_change >= 0
-										rank_updown = 'gained'
-										rank_sign = '+'
-									else
-										rank_updown = 'lost'
-										rank_sign = ''
-
-									if acc_change >= 0
-										acc_updown = 'up'
-										acc_sign = '+'
-									else
-										acc_updown = 'down'
-										acc_sign = ''
-
-									await
-										Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
-										Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
-									if !err
-
-										setTimeout () =>
-											Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse rankChangeFormat,
-												pp_new: stats.pp_raw
-												pp_old: data.pp_raw
-												pp_change: pp_change
-												pp_updown: pp_updown
-												pp_sign: pp_sign
-												rank_new: stats.pp_rank
-												rank_old: data.pp_rank
-												rank_change: rank_change
-												rank_updown: rank_updown
-												rank_sign: rank_sign
-												acc_new: stats.accuracy
-												acc_old: data.accuracy
-												acc_change: acc_change
-												acc_updown: acc_updown
-												acc_sign: acc_sign
-										, updateDelay * 1000
-
-							if !userData[name]?
-								userData[name] = {}
-							userData[name][mode] = stats
-, 5000
+			await checkRankUpdates stream, defer err, status
+, 15000
