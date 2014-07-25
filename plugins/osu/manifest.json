@@ -102,6 +102,20 @@
 				"default": false,
 				"type": "boolean"
 			},
+			"requestMapLimit": {
+				"name": "Map Request Limit",
+				"category": "Requests",
+				"description": "How long to block a map from being requested again (in seconds)",
+				"default": 0,
+				"type": "number"
+			},
+			"requestUserLimit": {
+				"name": "Per-User Request Limit",
+				"category": "Requests",
+				"description": "How long to block a user from requesting again (in seconds)",
+				"default": 0,
+				"type": "number"
+			},
 			"osuRequestFormat": {
 				"name": "In-game request text",
 				"category": "Requests",

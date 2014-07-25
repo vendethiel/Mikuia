@@ -7,6 +7,7 @@ RateLimiter = require('limiter').RateLimiter
 apiLimiter = new RateLimiter 30, 60000
 banchoLimiter = new RateLimiter 1, 'second'
 codes = {}
+limits = {}
 userData = {}
 
 # Crucial stuff, whatever!
@@ -21,6 +22,12 @@ checkForRequest = (user, Channel, message) =>
 	if !err && requestSubMode
 		if user.special.indexOf('subscriber') == -1
 			continueCheck = false
+
+	await Channel.getSetting 'osu', 'requestUserLimit', defer err, requestUserLimit
+	if !err && requestUserLimit
+		if limits[Channel.getName()]?.users?[user.username]?
+			if (new Date()).getTime() < limits[Channel.getName()].users[user.username] + (requestUserLimit * 1000)
+				continueCheck = false
 
 	if continueCheck
 		if /osu.ppy.sh\/(b|s)\/(\d+)/g.test message
@@ -163,57 +170,74 @@ makeAPIRequest = (link, callback) =>
 			else
 				callback true, null
 
-sendRequest = (channel, user, username, map) =>
-	await
-		channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
-		channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
-		channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
+sendRequest = (Channel, user, username, map) =>
+	continueRequest = true
 
-	modeText = 'osu!'
-	approvedText = 'Ranked'
-	switch map.mode
-		when '1' then modeText = 'Taiko'
-		when '2' then modeText = 'Catch the Beat'
-		when '3' then modeText = 'osu!mania'
+	await Channel.getSetting 'osu', 'requestMapLimit', defer err, requestMapLimit
+	if !err && requestMapLimit
+		if limits[Channel.getName()]?.maps?[map.beatmapset_id]?
+			if (new Date()).getTime() < limits[Channel.getName()].maps[map.beatmapset_id] + (requestMapLimit * 1000)
+				continueRequest = false
 
-	switch map.approved
-		when '3' then approvedText = 'Qualified'
-		when '2' then approvedText = 'Approved'
-		when '0' then approvedText = 'Pending'
-		when '-1' then approvedText = 'WIP'
-		when '-2' then approvedText = 'Graveyard'
+	if continueRequest
+		await
+			Channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
+			Channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
+			Channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
 
-	data =
-		requester: user.username
-		beatmapset_id: map.beatmapset_id
-		beatmap_id: map.beatmap_id
-		approved: map.approved
-		approved_date: map.approved_date
-		approvedText: approvedText
-		last_update: map.last_update
-		total_length: map.total_length
-		hit_length: map.hit_length
-		version: map.version
-		artist: map.artist
-		title: map.title
-		creator: map.creator
-		bpm: map.bpm
-		source: map.source
-		difficultyrating: map.difficultyrating
-		diff_size: map.diff_size
-		diff_overall: map.diff_overall
-		diff_approach: map.diff_approach
-		diff_drain: map.diff_drain
-		mode: map.mode
-		modeText: modeText
+		modeText = 'osu!'
+		approvedText = 'Ranked'
+		switch map.mode
+			when '1' then modeText = 'Taiko'
+			when '2' then modeText = 'Catch the Beat'
+			when '3' then modeText = 'osu!mania'
 
-	# Chat
-	if !err && requestChatInfo
-		Mikuia.Chat.say channel.getName(), Mikuia.Format.parse chatRequestFormat, data
+		switch map.approved
+			when '3' then approvedText = 'Qualified'
+			when '2' then approvedText = 'Approved'
+			when '0' then approvedText = 'Pending'
+			when '-1' then approvedText = 'WIP'
+			when '-2' then approvedText = 'Graveyard'
 
-	# osu!
-	if !err2
-		banchoSay username.split(' ').join(''), Mikuia.Format.parse osuRequestFormat, data
+		data =
+			requester: user.username
+			beatmapset_id: map.beatmapset_id
+			beatmap_id: map.beatmap_id
+			approved: map.approved
+			approved_date: map.approved_date
+			approvedText: approvedText
+			last_update: map.last_update
+			total_length: map.total_length
+			hit_length: map.hit_length
+			version: map.version
+			artist: map.artist
+			title: map.title
+			creator: map.creator
+			bpm: map.bpm
+			source: map.source
+			difficultyrating: map.difficultyrating
+			diff_size: map.diff_size
+			diff_overall: map.diff_overall
+			diff_approach: map.diff_approach
+			diff_drain: map.diff_drain
+			mode: map.mode
+			modeText: modeText
+
+		if !limits[Channel.getName()]?
+			limits[Channel.getName()] =
+				maps: {}
+				users: {}
+
+		limits[Channel.getName()].maps[map.beatmapset_id] = (new Date()).getTime()
+		limits[Channel.getName()].users[user.username] = (new Date()).getTime()
+
+		# Chat
+		if !err && requestChatInfo
+			Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse chatRequestFormat, data
+
+		# osu!
+		if !err2
+			banchoSay username.split(' ').join(''), Mikuia.Format.parse osuRequestFormat, data
 
 # API functions.
 
