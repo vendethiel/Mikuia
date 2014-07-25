@@ -75,6 +75,8 @@ class exports.Chat
 				@joined.splice @joined.indexOf(channel), 1
 
 	say: (channel, message) =>
+		if channel.indexOf('#') == -1
+			channel = '#' + channel
 		lines = message.split '\n'
 		for line in lines
 			limiter.removeTokens 1, (err, rr) =>	
