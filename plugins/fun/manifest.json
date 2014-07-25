@@ -1,0 +1,25 @@
+{
+	"name": "Fun",
+	"description": "Various utilities and fun commands.",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"fun.roll": {
+			"description": "Rolls a dice.",
+			"settings": {
+				"limit": {
+					"name": "Limit",
+					"description": "Maximum number that can get rolled (unless overriden)",
+					"default": "100",
+					"type": "number"
+				},
+				"blockOverride": {
+					"name": "Block Overriding",
+					"description": "Don't allow people to provide their own limits.",
+					"default": false,
+					"type": "boolean"
+				}
+			}
+		}
+	}
+}
