@@ -213,7 +213,7 @@ sendRequest = (channel, user, username, map) =>
 
 	# osu!
 	if !err2
-		banchoSay username, Mikuia.Format.parse osuRequestFormat, data
+		banchoSay username.split(' ').join(''), Mikuia.Format.parse osuRequestFormat, data
 
 # API functions.
 
