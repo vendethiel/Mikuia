@@ -66,6 +66,12 @@ checkForRequest = (user, Channel, message) =>
 									highestDifficultyRating = map.difficultyrating
 									highestDifficultyMap = map
 
+							if !highestDifficultyMap
+								for i, map of maps
+									if map.difficultyrating > highestDifficultyRating
+										highestDifficultyRating = map.difficultyrating
+										highestDifficultyMap = map
+
 							sendRequest Channel, user, username, highestDifficultyMap
 
 checkRankUpdates = (stream, callback) =>
@@ -305,7 +311,7 @@ Mikuia.Events.on 'osu.stats', (data) =>
 
 	if username != ''
 		await getUser username, mode, defer err, user
-		if !err
+		if !err && user[0]?
 			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
 				username: user[0].username
 				id: user[0].user_id
