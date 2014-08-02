@@ -1,3 +1,4 @@
+request = require 'request'
 twitchy = require 'twitchy'
 
 class exports.Twitch
@@ -12,6 +13,18 @@ class exports.Twitch
 			}
 		else
 			@Mikuia.Log.fatal 'Please specify correct Twitch API key and secret.'
+
+	getChatters: (channel, callback) ->
+		request 'http://tmi.twitch.tv/group/user/' + channel + '/chatters', (error, response, body) ->
+			if !error && response.statusCode == 200
+				data = {}
+				try
+					data = JSON.parse body
+				catch e
+					console.log e
+				callback false, data
+			else
+				callback true, null
 
 	getStreams: (channels, callback) ->
 		@twitch._get 'streams/?channel=' + channels.join(','), (err, result) =>
