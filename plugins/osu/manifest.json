@@ -218,6 +218,37 @@
 					"acc_updown": "Accuracy up/down text",
 					"acc_sign": "+ if accuracy change > 0"
 				}
+			},
+			"events": {
+				"name": "Enable Events",
+				"category": "Events",
+				"description": "Shows events on the chat.",
+				"default": false,
+				"type": "boolean"
+			},
+			"eventDelay": {
+				"name": "Event Delay",
+				"category": "Events",
+				"description": "Amount of time to delay event messages (in seconds)",
+				"default": 0,
+				"type": "number"
+			},
+			"eventRankFormat": {
+				"name": "Event Rank Format",
+				"category": "Events",
+				"description": "Format of rank event messages on chat.",
+				"default": "<%username%> achieved rank #<%rank%> on <%map%> [<%version%>] (<%mode%>)",
+				"type": "format",
+				"variables": {
+					"user_id": "User ID",
+					"username": "Username",
+					"rank": "Obtained Rank",
+					"beatmap_id": "Beatmap ID",
+					"map": "Map Artist & Title",
+					"version": "Difficulty",
+					"mode": "Game Mode",
+					"grade": "Grade"
+				}
 			}
 		},
 		"server": {
