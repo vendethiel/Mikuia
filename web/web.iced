@@ -5,6 +5,7 @@ fs = require 'fs'
 morgan = require 'morgan'
 passport = require 'passport'
 path = require 'path'
+rstring = require 'random-string'
 session = require 'express-session'
 
 RedisStore = require('connect-redis')(session)
@@ -57,7 +58,7 @@ app.use (req, res, next) ->
 
 fileList = fs.readdirSync 'web/routes'
 for file in fileList
-	filePath = path.resolve('web/routes/' + file)
+	filePath = path.resolve 'web/routes/' + file
 	routes[file.replace('.iced', '')] = require filePath
 
 app.get '/', routes.index
@@ -77,6 +78,8 @@ app.post '/dashboard/settings/plugins/toggle', checkAuth, routes.settings.plugin
 app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
+app.get '/community', routes.community.index
+
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->
 
@@ -86,6 +89,13 @@ app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedi
 		Channel.setEmail req.user.email, defer err, data
 		Channel.setLogo req.user._json.logo, defer err, data
 		Channel.enablePlugin 'base', defer err, data
+		Channel.getInfo 'key', defer err, key
+
+	# Generating an API key on login if missing
+	if !key?
+		key = rstring
+			length: 20
+		await Channel.setInfo 'key', key, defer err, whatever
 
 	res.redirect '/dashboard'
 
