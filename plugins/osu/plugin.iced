@@ -4,7 +4,7 @@ net = require 'net'
 request = require 'request'
 RateLimiter = require('limiter').RateLimiter
 
-apiLimiter = new RateLimiter 30, 60000
+apiLimiter = new RateLimiter 120, 60000
 banchoLimiter = new RateLimiter 1, 'second'
 codes = {}
 limits = {}
@@ -284,6 +284,9 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	if !err && requestsEnabled
 		checkForRequest user, Channel, message
 
+Mikuia.Events.on 'osu.np', (data) ->
+	Mikuia.Chat.say data.to, 'Darude - Sandstorm'
+
 Mikuia.Events.on 'osu.request', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 	checkForRequest data.from, Channel, data.message
@@ -311,7 +314,7 @@ Mikuia.Events.on 'osu.stats', (data) =>
 
 	if username != ''
 		await getUser username, mode, defer err, user
-		if !err && user[0]?
+		if !err && user[0]?.username?
 			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
 				username: user[0].username
 				id: user[0].user_id
@@ -343,6 +346,13 @@ Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 
 	res.redirect '/dashboard/settings'
 
+# np! continuing the old path so people don't have to reconfigure osu!np
+Mikuia.Web.post '/plugins/osu/post/:username', (req, res) ->
+	console.log req.body
+
+	res.send 200
+
+# Updating ranks! This has to be implemented in like Mikuia.Streams or something..
 setInterval () =>
 	await Mikuia.Database.smembers 'mikuia:streams', defer err, streams
 	
