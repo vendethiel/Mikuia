@@ -8,6 +8,11 @@ class exports.Channel extends Mikuia.Model
 	getName: () ->
 		return @name
 
+	isLive: (callback) ->
+		# This is bad D:
+		await Mikuia.Database.sismember 'mikuia:streams', @getName(), defer err, data
+		callback err, data
+
 	# Info & settings
 
 	getInfo: (field, callback) ->
