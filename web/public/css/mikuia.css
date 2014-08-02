@@ -29,3 +29,30 @@ a.navbar-brand {
 	color: white;
 	padding-top: 13px;
 }
+
+.navbar-mikuia {
+	background-color: rgba(0, 0, 0, 0.3);
+	position: absolute;
+}
+
+.navbar-mikuia .navbar-nav > li.active > a, 
+.navbar-mikuia .navbar-nav > li.active > a:hover,
+.navbar-mikuia .navbar-nav > li.active > a:focus,
+.navbar-mikuia .navbar-nav > li > a:hover,
+.navbar-mikuia .navbar-nav > li > a:focus {
+	background-color: #b19dff;
+	color: #ffffff;
+}
+
+.splash {
+	background-color: gray;
+	box-shadow: 0px 0px 20px #333;
+	color: #fff;
+	height: 16em;
+	margin-bottom: 2em;
+	padding-top: 9em;
+}
+
+.splash-index {
+	height: 24em;
+}

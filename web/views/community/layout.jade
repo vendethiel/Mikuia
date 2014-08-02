@@ -1,0 +1,22 @@
+doctype html
+html
+	head
+		link(href='//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/yeti/bootstrap.min.css', rel='stylesheet', type='text/css')
+		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
+	body
+		nav.navbar.navbar-default.navbar-fixed-top.navbar-mikuia(role='navigation')
+			.container
+				.navbar-header
+					a.navbar-brand(href='/') Mikuia
+
+				.collapse.navbar-collapse
+					ul.nav.navbar-nav
+						li.active 
+							a(href='#') Derp
+						li 
+							a(href='#') Herp
+						li 
+							a(href='#') Berp
+						li
+							a(href='#') Kappa
+		block content
