@@ -50,3 +50,17 @@ class exports.Model
 			key = ':' + key
 		await Mikuia.Database.srem @model + ':' + @name + key, member, defer err, data
 		callback err, data
+
+	trackGet: (key, callback) ->
+		await Mikuia.Tracker.get @model, @name, key, defer err, data
+		callback err, data
+
+	trackIncrement: (key, value, callback) ->
+		await Mikuia.Tracker.increment @model, @name, key, value, defer err, data
+		if callback
+			callback err, data
+
+	trackValue: (key, value, callback) ->
+		await Mikuia.Tracker.track @model, @name, key, value, defer err, data
+		if callback
+			callback err, data
