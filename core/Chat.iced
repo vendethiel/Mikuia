@@ -48,6 +48,8 @@ class exports.Chat
 		@Mikuia.Events.emit 'twitch.message', user, to, message
 
 		Channel = new @Mikuia.Models.Channel to
+		Channel.trackIncrement 'messages', 1
+
 		tokens = message.split ' '
 		trigger = tokens[0]
 
@@ -61,6 +63,7 @@ class exports.Chat
 				message: message
 				tokens: tokens
 				settings: settings
+			Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
 		limiter.removeTokens 1, (err, rr) =>	
@@ -88,6 +91,7 @@ class exports.Chat
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
 			joinList = ['hatsuney']
+			streamData = {}
 			streamList = []
 			for chunk, i in chunks
 				@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
@@ -98,11 +102,19 @@ class exports.Chat
 						chunkList.push stream.channel.display_name
 						joinList.push stream.channel.name
 						streamList.push stream
+						streamData[stream.channel.name] = stream
 
 					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
 			for channel in joinList
 				if @joined.indexOf('#' + channel) == -1
 					await @Mikuia.Chat.join '#' + channel
+
+				await @Mikuia.Twitch.getChatters channel, defer err, chatters
+				if !err
+					Channel = new Mikuia.Models.Channel channel
+					Channel.trackValue 'chatters', chatters.chatter_count
+					if streamData[channel]?
+						Channel.trackValue 'viewers', streamData[channel].viewers
 
 			# Yay, save dat stuff.
 
