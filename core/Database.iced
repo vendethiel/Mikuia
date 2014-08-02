@@ -49,6 +49,11 @@ class exports.Database
 		@client.hset key, field, value, (err, data) ->
 			callback err, data
 
+	incrby: (key, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.incrby key, value, (err, data) ->
+			callback err, data
+
 	sadd: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.sadd key, member, (err, data) ->
@@ -57,6 +62,11 @@ class exports.Database
 	set: (key, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.set key, value, (err, data) ->
+			callback err, data
+
+	setex: (key, ttl, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.setex key, ttl, value, (err, data) ->
 			callback err, data
 
 	sismember: (key, member, callback) ->
