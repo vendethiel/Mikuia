@@ -77,7 +77,7 @@ class exports.Chat
 	say: (channel, message) =>
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
-		lines = message.split '\n'
+		lines = message.split '\\n'
 		for line in lines
 			limiter.removeTokens 1, (err, rr) =>	
 				@client.say channel, line
