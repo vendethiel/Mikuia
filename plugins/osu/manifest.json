@@ -199,7 +199,7 @@
 				"name": "Rank change format",
 				"category": "Statistic Updates",
 				"description": "Format of the rank change messages on chat.",
-				"default": "<%pp_sign%><%round2/pp_change%>pp!\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"default": "<%pp_sign%><%round2/pp_change%>pp!\\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
 				"type": "format",
 				"variables": {
 					"pp_new": "New PP value",
@@ -223,7 +223,7 @@
 				"name": "Enable Events",
 				"category": "Events",
 				"description": "Shows events on the chat.",
-				"default": false,
+				"default": true,
 				"type": "boolean"
 			},
 			"eventDelay": {
