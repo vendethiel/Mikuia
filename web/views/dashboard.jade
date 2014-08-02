@@ -17,3 +17,45 @@ block content
 						| If you start complaining that it's not working without even trying to enable it, I'll fucking cut you.
 					p
 						a.btn.red(href='/dashboard/settings') Settings
+	.row
+		if live
+			.col-lg-3.col-md-3.col-sm-16.col-xs-12
+				.dashboard-stat.red-intense
+					.visual
+						i.fa.fa-user
+					.details
+						.number=tracker.viewers
+						.desc Viewers
+					a.more(href='#') 
+						| View more 
+						i.m-icon-swapright.m-icon-white
+			.col-lg-3.col-md-3.col-sm-16.col-xs-12
+				.dashboard-stat.blue-madison
+					.visual
+						i.fa.fa-group
+					.details
+						.number=tracker.chatters
+						.desc Chatters
+					a.more(href='#') 
+						| View more 
+						i.m-icon-swapright.m-icon-white
+		.col-lg-3.col-md-3.col-sm-16.col-xs-12
+			.dashboard-stat.grey-gallery
+				.visual
+					i.fa.fa-wrench
+				.details
+					.number=tracker.commands
+					.desc Total Commands Handled
+				a.more(href='#') 
+					| View more 
+					i.m-icon-swapright.m-icon-white
+		.col-lg-3.col-md-3.col-sm-16.col-xs-12
+			.dashboard-stat.grey-gallery
+				.visual
+					i.fa.fa-comments
+				.details
+					.number=tracker.messages
+					.desc Total Chat Messages
+				a.more(href='#') 
+					| View more 
+					i.m-icon-swapright.m-icon-white
