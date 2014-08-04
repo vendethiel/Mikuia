@@ -100,42 +100,12 @@ checkRankUpdates = (stream, callback) =>
 				else
 					stats = stats[0]
 
-					if !err3 && events
-						if userData[name]?.lastEventDate? && stats?.events?[0]?.date?
-							if (new Date(stats.events[0].date)).getTime() > userData[name].lastEventDate
-								await
-									Channel.getSetting 'osu', 'eventDelay', defer err, delay
-									Channel.getSetting 'osu', 'eventRankFormat', defer err2, eventRankFormat
-								if !err && !err2
-									#eventString = stats.events[0].display_html.replace(/(<([^>]+)>)/ig,"").trim()
-									match = /images\/([A-Z]+)_small.+\/u\/(\d+).+achieved rank #(\d+) on .+\/b\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
-									if match?
-										grade = match[1]
-										user_id = match[2]
-										rank = match[3]
-										beatmap_id = match[4]
-										map = match[5]
-										version = match[6]
-										mode = match[7]
-
-										setTimeout () =>
-											Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse eventRankFormat,
-												user_id: user_id
-												username: name
-												rank: rank
-												beatmap_id: beatmap_id
-												map: map
-												version: version
-												mode: mode
-												grade: grade
-										, delay * 1000
-
 					if userData[name]?[mode]?
 						data = userData[name][mode]
 
 						if data.pp_raw != stats.pp_raw
 							pp_change = stats.pp_raw - data.pp_raw
-							rank_change = Math.abs(stats.pp_rank - data.pp_rank)
+							rank_change = stats.pp_rank - data.pp_rank
 							acc_change = stats.accuracy - data.accuracy
 
 							if pp_change >= 0
@@ -151,6 +121,7 @@ checkRankUpdates = (stream, callback) =>
 							else
 								rank_updown = 'lost'
 								rank_sign = ''
+								rank_change *= -1
 
 							if acc_change >= 0
 								acc_updown = 'up'
@@ -193,9 +164,40 @@ checkRankUpdates = (stream, callback) =>
 					if !userData[name]?
 						userData[name] = {}
 					
+					userData[name][mode] = stats
+
+					if !err3 && events
+						if userData[name]?.lastEventDate? && stats?.events?[0]?.date?
+							if (new Date(stats.events[0].date)).getTime() > userData[name].lastEventDate
+								await
+									Channel.getSetting 'osu', 'eventDelay', defer err, delay
+									Channel.getSetting 'osu', 'eventRankFormat', defer err2, eventRankFormat
+								if !err && !err2
+									#eventString = stats.events[0].display_html.replace(/(<([^>]+)>)/ig,"").trim()
+									match = /images\/([A-Z]+)_small.+\/u\/(\d+).+achieved rank #(\d+) on .+\/b\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
+									if match?
+										grade = match[1]
+										user_id = match[2]
+										rank = match[3]
+										beatmap_id = match[4]
+										map = match[5]
+										version = match[6]
+										mode = match[7]
+
+										setTimeout () =>
+											Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse eventRankFormat,
+												user_id: user_id
+												username: name
+												rank: rank
+												beatmap_id: beatmap_id
+												map: map
+												version: version
+												mode: mode
+												grade: grade
+										, delay * 1000
+										
 					if stats?.events?[0]?.date?
 						userData[name].lastEventDate = (new Date(stats.events[0].date)).getTime()
-					userData[name][mode] = stats
 
 makeAPIRequest = (link, callback) =>
 	apiLimiter.removeTokens 1, (err, rr) =>
