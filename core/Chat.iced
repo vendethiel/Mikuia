@@ -6,14 +6,16 @@ limiter = new RateLimiter 15, 30000
 
 class exports.Chat
 	constructor: (Mikuia) ->
-		@joined = []
 		@Mikuia = Mikuia
+		
+		@joined = []
+		@moderators = {}
 
 		setInterval () =>
 			@update()
 		, 300000
 
-	connect: ->
+	connect: =>
 		@client = new irc.connect
 			autoreconnect: true
 			channels: []
@@ -23,6 +25,7 @@ class exports.Chat
 			port: 6667
 			server: 'irc.twitch.tv'
 			oauth: @Mikuia.settings.bot.oauth
+			twitchclient: 3
 		, (err, event) =>
 			if !err
 				event.on 'chat', (user, channel, message) =>
@@ -37,7 +40,7 @@ class exports.Chat
 
 				event.on 'join', (channel) =>
 					@Mikuia.Log.info cli.whiteBright('Joined ' + cli.greenBright(channel) + ' on Twitch IRC.')
-			
+
 				event.on 'part', (channel) =>
 					@Mikuia.Log.info cli.whiteBright('Left ' + cli.redBright(channel) + ' on Twitch IRC.')
 			else
@@ -70,6 +73,12 @@ class exports.Chat
 			@client.join channel
 			if @joined.indexOf(channel) == -1
 				@joined.push channel
+
+	mods: (channel) =>
+		if @moderators[channel]?
+			return @moderators[channel]
+		else
+			return null
 
 	part: (channel, callback) =>
 		limiter.removeTokens 1, (err, rr) =>	
@@ -111,6 +120,7 @@ class exports.Chat
 
 				await @Mikuia.Twitch.getChatters channel, defer err, chatters
 				if !err
+					@moderators['#' + channel] = chatters.chatters.moderators
 					Channel = new Mikuia.Models.Channel channel
 					Channel.trackValue 'chatters', chatters.chatter_count
 					if streamData[channel]?
