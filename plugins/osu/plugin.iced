@@ -118,10 +118,10 @@ checkRankUpdates = (stream, callback) =>
 							if rank_change >= 0
 								rank_updown = 'lost'
 								rank_sign = ''
-								rank_change *= -1
 							else
 								rank_updown = 'gained'
 								rank_sign = '+'
+								rank_change *= -1
 
 							if acc_change >= 0
 								acc_updown = 'up'
