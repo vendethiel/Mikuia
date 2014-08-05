@@ -249,6 +249,13 @@
 					"mode": "Game Mode",
 					"grade": "Grade"
 				}
+			},
+			"eventMinRank": {
+				"name": "Event Minimum Rank",
+				"category": "Events",
+				"description": "Minimum rank you have to obtain to show a rank event message (1-1000)",
+				"default": 500,
+				"type": "number"
 			}
 		},
 		"server": {
