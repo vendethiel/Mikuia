@@ -2,9 +2,11 @@ bodyParser = require 'body-parser'
 cookieParser = require 'cookie-parser'
 express = require 'express'
 fs = require 'fs'
+gm = require 'gm'
 morgan = require 'morgan'
 passport = require 'passport'
 path = require 'path'
+request = require 'request'
 rstring = require 'random-string'
 session = require 'express-session'
 
@@ -98,5 +100,7 @@ app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedi
 		await Channel.setInfo 'key', key, defer err, whatever
 
 	res.redirect '/dashboard'
+
+	await Channel.updateAvatar defer err, whatever
 
 app.listen 2912

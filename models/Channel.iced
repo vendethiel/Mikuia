@@ -1,3 +1,7 @@
+fs = require 'fs'
+gm = require 'gm'
+request = require 'request'
+
 class exports.Channel extends Mikuia.Model
 	constructor: (name) ->
 		@model = 'channel'
@@ -135,3 +139,20 @@ class exports.Channel extends Mikuia.Model
 	setLogo: (logo, callback) ->
 		await @setInfo 'logo', logo, defer err, data
 		callback err, data
+
+	# :D
+
+	updateAvatar: (callback) ->
+		randomNumber = Math.floor(Math.random() * 10000000)
+		await @getInfo 'logo', defer err, logo
+		if !err
+			path = 'web/public/img/avatars/' + @getName() + '.jpg'
+			r = request.get(logo).pipe fs.createWriteStream path
+			r.on 'finish', ->
+				console.log 'i am here'
+				gm(path).resize(64, 64).write(path, (err) ->
+					console.log err
+					callback err
+				)
+		else
+			callback true
