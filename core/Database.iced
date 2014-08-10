@@ -83,3 +83,8 @@ class exports.Database
 		await @client.select @Mikuia.settings.redis.db
 		@client.srem key, member, (err, data) ->
 			callback err, data
+
+	zadd: (key, score, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zadd key, score, member, (err, data) ->
+			callback err, data
