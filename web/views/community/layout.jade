@@ -11,12 +11,8 @@ html
 
 				.collapse.navbar-collapse
 					ul.nav.navbar-nav
-						li.active 
-							a(href='#') Derp
-						li 
-							a(href='#') Herp
-						li 
-							a(href='#') Berp
-						li
-							a(href='#') Kappa
+						li(class=(path == '/community' ? 'active' : undefined))
+							a(href='/community') Home
+						li(class=(path == '/streams' ? 'active' : undefined))
+							a(href='/streams') Streams
 		block content

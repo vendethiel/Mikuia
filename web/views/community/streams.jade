@@ -1,13 +1,13 @@
 extends layout
 
 block content
-	.splash.splash-index
+	.splash
 		.avatars
 			ul
-				each avatarFile in Mikuia.Tools.getAvatars(1000)
+				each avatarFile in Mikuia.Tools.getAvatars(500)
 					li
 						img(src='/img/avatars/' + avatarFile, width='64', height='64')
 		.container
 			.row
 				.col-md-12
-					h1 Hi
+					h1 Streams

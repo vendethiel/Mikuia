@@ -54,6 +54,7 @@ app.use session
 app.use passport.initialize()
 app.use passport.session()
 app.use (req, res, next) ->
+	res.locals.Mikuia = Mikuia
 	res.locals.path = req.path
 	res.locals.user = req.user
 	next()
@@ -81,6 +82,7 @@ app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/community', routes.community.index
+app.get '/streams', routes.community.streams
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->
