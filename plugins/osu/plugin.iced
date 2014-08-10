@@ -12,6 +12,18 @@ userData = {}
 
 # Crucial stuff, whatever!
 
+osuLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode0'
+taikoLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode1'
+ctbLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode2'
+omLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode3'
+
+leaderboard = [
+	osuLeaderboard
+	taikoLeaderboard
+	ctbLeaderboard
+	omLeaderboard
+]
+
 banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
 		@bancho.send name, message
@@ -81,7 +93,7 @@ checkRankUpdates = (stream, callback) =>
 	else
 		Channel = new Mikuia.Models.Channel stream
 		await Channel.getSetting 'osu', 'updates', defer err, updates
-		if err || !updates
+		if err
 			callback err, null
 		else
 			await
@@ -102,6 +114,8 @@ checkRankUpdates = (stream, callback) =>
 
 					if userData[name]?[mode]?
 						data = userData[name][mode]
+
+						leaderboard[mode].setScore stream, stats.pp_rank
 
 						if data.pp_raw != stats.pp_raw
 							pp_change = stats.pp_raw - data.pp_raw
@@ -133,8 +147,7 @@ checkRankUpdates = (stream, callback) =>
 							await
 								Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
 								Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
-							if !err
-
+							if !err && updates
 								setTimeout () =>
 									Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse rankChangeFormat,
 										pp_new: stats.pp_raw
