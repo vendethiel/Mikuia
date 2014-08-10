@@ -20,6 +20,7 @@
     "redis": "0.10.3",
     "request": "2.37.0",
     "slate-irc": "0.6.0",
-    "twitchy": "0.5.0"
+    "twitchy": "0.5.0",
+    "underscore": "1.6.0"
   }
 }
