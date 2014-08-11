@@ -10,6 +10,14 @@ codes = {}
 limits = {}
 userData = {}
 
+modes = [
+	'osu!'
+	'Taiko'
+	'Catch the Beat'
+	'osu!mania'
+]
+
+
 # Crucial stuff, whatever!
 
 osuLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode0'
@@ -23,6 +31,11 @@ leaderboard = [
 	ctbLeaderboard
 	omLeaderboard
 ]
+
+for lb, i in leaderboard
+	lb.setDisplayName 'osu! - ' + modes[i] + ' Rank'
+	lb.setDisplayHtml '<b style="color: #FC74B0;">#<%value%></b>'
+	lb.setReverseOrder true
 
 banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
@@ -403,10 +416,9 @@ Mikuia.Web.post '/plugins/osu/post/:username', (req, res) ->
 
 	res.send 200
 
-# Updating ranks! This has to be implemented in like Mikuia.Streams or something..
+# Updating ranks!
 setInterval () =>
-	await Mikuia.Database.smembers 'mikuia:streams', defer err, streams
-	
+	await Mikuia.Streams.getAll defer err, streams
 	if !err && streams?
 		for stream in streams
 			await checkRankUpdates stream, defer err, status

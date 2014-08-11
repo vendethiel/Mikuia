@@ -88,3 +88,8 @@ class exports.Database
 		await @client.select @Mikuia.settings.redis.db
 		@client.zadd key, score, member, (err, data) ->
 			callback err, data
+
+	zscore: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zscore key, member, (err, data) ->
+			callback err, data

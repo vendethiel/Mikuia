@@ -57,6 +57,12 @@ class exports.Model
 		await Mikuia.Database.zadd @model + ':' + @name + key, score, member, defer err, data
 		callback err, data
 
+	_zscore: (key, member, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.zscore @model + ':' + @name + key, member, defer err, data
+		callback err, data
+
 	trackGet: (key, callback) ->
 		await Mikuia.Tracker.get @model, @name, key, defer err, data
 		callback err, data

@@ -59,3 +59,8 @@ Mikuia.Settings.read ->
 	Mikuia.Chat.connect()
 	Mikuia.Twitch.init()
 	Mikuia.Chat.update()
+
+	# Stock Leaderboards
+	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
+	viewerLeaderboard.setDisplayName 'Viewers'
+	viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'

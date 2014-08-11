@@ -128,8 +128,31 @@ class exports.Channel extends Mikuia.Model
 
 	# "Convenience" functions that help get and set data...  or something.
 
+	getBio: (callback) ->
+		await @getInfo 'bio', defer err, data
+		callback err, data
+
+	getDisplayName: (callback) ->
+		await @getInfo 'display_name', defer err, data
+		if err || data == null
+			callback false, @getName()
+		else
+			callback err, data
+
+	getEmail: (callback) ->
+		await @getInfo 'email', defer err, data
+		callback err, data
+
+	getLogo: (callback) ->
+		await @getInfo 'logo', defer err, data
+		callback err, data
+
 	setBio: (bio, callback) ->
 		await @setInfo 'bio', bio, defer err, data
+		callback err, data
+
+	setDisplayName: (name, callback) ->
+		await @setInfo 'display_name', name, defer err, data
 		callback err, data
 
 	setEmail: (email, callback) ->

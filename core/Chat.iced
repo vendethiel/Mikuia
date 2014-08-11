@@ -96,6 +96,8 @@ class exports.Chat
 				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
 
 	update: =>
+		viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
+		
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
@@ -125,6 +127,7 @@ class exports.Chat
 					Channel.trackValue 'chatters', chatters.chatter_count
 					if streamData[channel]?
 						Channel.trackValue 'viewers', streamData[channel].viewers
+						viewerLeaderboard.setScore channel, streamData[channel].viewers
 
 			# Yay, save dat stuff.
 
@@ -133,6 +136,10 @@ class exports.Chat
 				await
 					for stream in streamList
 						@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
-							
+						
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'display_name', stream.channel.display_name, defer err, whatever
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'game', stream.channel.game, defer err, whatever
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'status', stream.channel.status, defer err, whatever
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever

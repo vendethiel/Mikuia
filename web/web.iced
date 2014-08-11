@@ -89,6 +89,7 @@ app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedi
 
 	Channel = new Mikuia.Models.Channel req.user.username
 	await
+		Channel.setDisplayName req.user._json.display_name, defer err, data
 		Channel.setBio req.user._json.bio, defer err, data
 		Channel.setEmail req.user.email, defer err, data
 		Channel.setLogo req.user._json.logo, defer err, data

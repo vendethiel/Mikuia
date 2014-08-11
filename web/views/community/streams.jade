@@ -11,3 +11,45 @@ block content
 			.row
 				.col-md-12
 					h1 Streams
+	.container
+		.row
+			.col-md-3
+				.well
+					h4 Options
+
+					form.form-horizontal(action='/streams', method='GET')
+						.form-group
+							label.col-sm-4(for='sortMethod') Sort Method
+							.col-sm-8
+								select.form-control.input-sm#sortMethod(name='sortMethod')
+									each lbName, lbId in leaderboards
+										if lbId == sortMethod
+											option(value=lbId, selected)=lbName
+										else
+											option(value=lbId)=lbName
+						.form-group
+							.col-sm-12
+								button.btn.btn-primary.btn-sm(type='submit') Filter
+			.col-md-9
+				each miniData in sorting
+					- var name = miniData[0]
+					- var stream = streams[name]
+					- var sortValue = miniData[1]
+					.card.col-md-4.col-sm-3
+						a(href='http://twitch.tv/' + name, target='_blank')
+							img(src=stream.preview, width='260')
+						br
+						a(href='http://twitch.tv/' + name, target='_blank')
+							|  #{stream.status}
+						br
+						small.pull-right!=displayHtml.replace('<%value%>', sortValue)						
+						small.media.text-muted
+							a.pull-left(href='/channel/' + name, style='margin-right: 5px;')
+								img.media-object(src='/img/avatars/' + name + '.jpg', width='16', height='16')
+							.media-body
+								.media-heading
+									a(href='/channel/' + name) #{stream.display_name}
+									|  playing #{stream.game}
+
+block footerScript
+	script(type='text/javascript').
