@@ -357,9 +357,12 @@ Mikuia.Events.on 'twitch.connected', =>
 
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to
-	await Channel.getSetting 'osu', 'requests', defer err, requestsEnabled
-	if !err && requestsEnabled
-		checkForRequest user, Channel, message
+	await Channel.isPluginEnabled 'osu', defer err, enabled
+
+	if !err && enabled
+		await Channel.getSetting 'osu', 'requests', defer err, requestsEnabled
+		if !err && requestsEnabled
+			checkForRequest user, Channel, message
 
 Mikuia.Events.on 'osu.np', (data) ->
 	Mikuia.Chat.say data.to, 'Darude - Sandstorm'
