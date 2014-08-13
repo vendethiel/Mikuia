@@ -122,7 +122,7 @@ checkRankUpdates = (stream, callback) =>
 				await getUser name, mode, defer err, stats
 				if err
 					callback true, null
-				else
+				else if stats?[0]?
 					stats = stats[0]
 
 					if userData[name]?[mode]?
@@ -226,6 +226,8 @@ checkRankUpdates = (stream, callback) =>
 											
 					if stats?.events?[0]?.date?
 						userData[name].lastEventDate = (new Date(stats.events[0].date)).getTime()
+				else
+					callback false, null
 
 makeAPIRequest = (link, callback) =>
 	apiLimiter.removeTokens 1, (err, rr) =>
@@ -352,8 +354,9 @@ Mikuia.Events.on 'osu.np', (data) ->
 	Mikuia.Chat.say data.to, 'Darude - Sandstorm'
 
 Mikuia.Events.on 'osu.request', (data) =>
+	console.log data
 	Channel = new Mikuia.Models.Channel data.to
-	checkForRequest data.from, Channel, data.message
+	checkForRequest data.user, Channel, data.message
 
 Mikuia.Events.on 'osu.stats', (data) =>
 	tokens = data.tokens.slice 0
