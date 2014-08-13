@@ -158,16 +158,19 @@ checkRankUpdates = (stream, callback) =>
 								acc_sign = ''
 
 							await
+								Channel.getSetting 'osu', 'ppChangeFormat', defer err, ppChangeFormat
 								Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
 								Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
 							if !err && updates
 								setTimeout () =>
-									Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse rankChangeFormat,
+									ppMessage = Mikuia.Format.parse ppChangeFormat,
 										pp_new: stats.pp_raw
 										pp_old: data.pp_raw
 										pp_change: pp_change
 										pp_updown: pp_updown
 										pp_sign: pp_sign
+
+									rankMessage = Mikuia.Format.parse rankChangeFormat,
 										rank_new: stats.pp_rank
 										rank_old: data.pp_rank
 										rank_change: rank_change
@@ -178,6 +181,14 @@ checkRankUpdates = (stream, callback) =>
 										acc_change: acc_change
 										acc_updown: acc_updown
 										acc_sign: acc_sign
+
+									if rank_change != 0
+										message = ppMessage + rankMessage
+									else
+										message = ppMessage
+
+									Mikuia.Chat.say Channel.getName(), message
+
 								, updateDelay * 1000
 								callback false, null
 							else
@@ -354,7 +365,6 @@ Mikuia.Events.on 'osu.np', (data) ->
 	Mikuia.Chat.say data.to, 'Darude - Sandstorm'
 
 Mikuia.Events.on 'osu.request', (data) =>
-	console.log data
 	Channel = new Mikuia.Models.Channel data.to
 	checkForRequest data.user, Channel, data.message
 

@@ -195,18 +195,27 @@
 				"default": 0,
 				"type": "number"
 			},
-			"rankChangeFormat": {
-				"name": "Rank change format",
+			"ppChangeFormat": {
+				"name": "PP change format",
 				"category": "Statistic Updates",
-				"description": "Format of the rank change messages on chat.",
-				"default": "<%pp_sign%><%round2/pp_change%>pp!\\nRank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"description": "Format of the pp change messages on chat.",
+				"default": "<%pp_sign%><%round2/pp_change%>pp!\\n",
 				"type": "format",
 				"variables": {
 					"pp_new": "New PP value",
 					"pp_old": "Old PP value",
 					"pp_change": "PP value change",
 					"pp_updown": "PP up/down text",
-					"pp_sign": "+ if PP change > 0",
+					"pp_sign": "+ if PP change > 0"
+				}
+			},
+			"rankChangeFormat": {
+				"name": "Rank change format",
+				"category": "Statistic Updates",
+				"description": "Format of the rank change messages on chat.",
+				"default": "Rank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"type": "format",
+				"variables": {
 					"rank_new": "New rank",
 					"rank_old": "Old rank",
 					"rank_change": "Rank change",
