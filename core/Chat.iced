@@ -65,14 +65,19 @@ class exports.Chat
 		await
 			Channel.getCommand trigger, defer commandError, command
 			Channel.getCommandSettings trigger, true, defer settingsError, settings
+
 		if !commandError && command?
-			@Mikuia.Events.emit command,
-				user: user
-				to: to
-				message: message
-				tokens: tokens
-				settings: settings
-			Channel.trackIncrement 'commands', 1
+			handler = @Mikuia.Plugin.getHandler command
+			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
+
+			if !whateverError && enabled
+				@Mikuia.Events.emit command,
+					user: user
+					to: to
+					message: message
+					tokens: tokens
+					settings: settings
+				Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
 		limiter.removeTokens 1, (err, rr) =>	
