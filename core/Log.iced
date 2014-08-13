@@ -28,4 +28,4 @@ class exports.Log
 	
 	fatal: (message) ->
 		@log message, 'Fatal', cli.red
-		process.exit()
+		process.exit 1
