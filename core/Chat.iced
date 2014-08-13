@@ -8,6 +8,7 @@ class exports.Chat
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 		
+		@connected = false
 		@joined = []
 		@moderators = {}
 
@@ -16,6 +17,10 @@ class exports.Chat
 		, 300000
 
 	connect: =>
+		setTimeout () =>
+			if !@connected
+				@Mikuia.Log.fatal 'Sorry, but Twitch is being a fucking dick.'
+		, 10000
 		@client = new irc.connect
 			autoreconnect: true
 			channels: []
@@ -34,6 +39,7 @@ class exports.Chat
 				event.on 'connected', =>
 					@Mikuia.Log.info 'Connected to Twitch IRC.'
 					@Mikuia.Events.emit 'twitch.connected'
+					@connected = true
 
 				event.on 'disconnected', (reason) =>
 					@Mikuia.Log.warning 'Disconnected from Twitch IRC. Reason: ' + reason
@@ -118,7 +124,7 @@ class exports.Chat
 					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
 			for channel in joinList
 				if @joined.indexOf('#' + channel) == -1
-					await @Mikuia.Chat.join '#' + channel
+					@Mikuia.Chat.join '#' + channel
 
 				await @Mikuia.Twitch.getChatters channel, defer err, chatters
 				if !err
@@ -128,9 +134,8 @@ class exports.Chat
 					if streamData[channel]?
 						Channel.trackValue 'viewers', streamData[channel].viewers
 						viewerLeaderboard.setScore channel, streamData[channel].viewers
-
+						
 			# Yay, save dat stuff.
-
 			await @Mikuia.Database.del 'mikuia:streams', defer err, response
 			if !err
 				await
