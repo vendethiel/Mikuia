@@ -168,7 +168,7 @@ class exports.Channel extends Mikuia.Model
 	updateAvatar: (callback) ->
 		randomNumber = Math.floor(Math.random() * 10000000)
 		await @getInfo 'logo', defer err, logo
-		if !err && logo != 'undefined'
+		if !err && logo.indexOf('http://') > -1
 			path = 'web/public/img/avatars/' + @getName() + '.jpg'
 			r = request.get(logo).pipe fs.createWriteStream path
 			r.on 'finish', ->
