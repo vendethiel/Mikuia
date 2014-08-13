@@ -11,8 +11,8 @@ class exports.Database
 		@client.on 'ready', =>
 			@Mikuia.Log.success 'Connected to the database.'
 		@client.on 'error', (err) =>
+			console.trace()
 			@Mikuia.Log.fatal 'Database error: ' + err
-			process.exit()
 
 	del: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
