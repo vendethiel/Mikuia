@@ -1,0 +1,6 @@
+{
+	"name": "Mod Tools",
+	"description": "[DON'T USE] Chat moderating tools.",
+	"baseFile": "plugin.iced",
+	"hidden": false
+}

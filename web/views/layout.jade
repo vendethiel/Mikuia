@@ -63,6 +63,13 @@ html
 								span.title Commands
 								if path == '/dashboard/commands'
 									span.selected
+						each page in pages
+							li(class=(path == page.path ? 'active' : undefined))
+								a(href=page.path)
+									i(class=page.icon)
+									span.title=page.name
+									if path == page.path
+										span.selected
 			.page-content-wrapper
 				.page-content
 					block content
