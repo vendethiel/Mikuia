@@ -5,7 +5,6 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	-webkit-filter: blur(1px);
 }
 
 .avatars > ul {
@@ -28,6 +27,28 @@
 	z-index: -10;
 }
 
+.blackbox {
+	background-color: rgba(0, 0, 0, 0.6);
+	box-shadow: 0px 0px 10px black;
+	height: 225px;
+	max-height: 300px;
+	overflow: hidden;
+	padding: 20px;
+	position: relative;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.blackbox-buttons {
+	bottom: 20px;
+	position: absolute;
+}
+
+.btn-twitch {
+	background-color: #6441A5;
+	color: white;
+}
+
 .card {
 	height: 220px;
 	margin: 5px;
@@ -38,13 +59,35 @@
 	white-space: nowrap;
 }
 
+.featured h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+}
+
+.featured h1 {
+	font-size: 50px;
+}
+
+.featured h1 > small {
+	color: #ccc;
+	font-size: 24px;
+}
+
+.featured h4 {
+	color: #aaa;
+}
+
+.featured h6 {
+	color: #999;
+	font-weight: bold;
+}
+
 a.navbar-brand {
 	color: white;
 	padding-top: 13px;
 }
 
 .navbar-mikuia {
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.6);
 	position: absolute;
 }
 
@@ -59,7 +102,11 @@ a.navbar-brand {
 
 .splash {
 	background-color: #7a62d3;
-	box-shadow: 0px 0px 20px #333;
+	background-image: -webkit-linear-gradient(top, #7a62d3, #000000);
+	background-image:    -moz-linear-gradient(top, #7a62d3, #000000);
+	background-image:      -o-linear-gradient(top, #7a62d3, #000000);
+	background-image:         linear-gradient(to bottom, #7a62d3, #000000);
+	box-shadow: 0px 0px 50px black;
 	color: #fff;
 	height: 12em;
 	margin-bottom: 2em;

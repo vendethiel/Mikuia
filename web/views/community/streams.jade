@@ -23,10 +23,11 @@ block content
 							.col-sm-8
 								select.form-control.input-sm#sortMethod(name='sortMethod')
 									each lbName, lbId in leaderboards
-										if lbId == sortMethod
-											option(value=lbId, selected)=lbName
-										else
-											option(value=lbId)=lbName
+										if lbName
+											if lbId == sortMethod
+												option(value=lbId, selected)=lbName
+											else
+												option(value=lbId)=lbName
 						.form-group
 							.col-sm-12
 								button.btn.btn-primary.btn-sm(type='submit') Filter

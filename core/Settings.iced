@@ -19,6 +19,8 @@ defaultSettings =
 		key: 'TWITCH_API_KEY'
 		secret: 'TWITCH_API_SECRET'
 	web:
+		featureMethod: 'viewers'
+		featureFallbackMethod: 'viewers'
 		port: 5587
 
 class exports.Settings

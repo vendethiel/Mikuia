@@ -1,13 +1,42 @@
 extends layout
 
 block content
-	.splash.splash-index
-		.avatars
-			ul
-				each avatarFile in Mikuia.Tools.getAvatars(1000)
-					li
-						img(src='/img/avatars/' + avatarFile, width='64', height='64')
-		.container
-			.row
-				.col-md-12
-					h1 Hi
+	if featured
+		.splash.splash-index.featured
+			.avatars
+				ul
+					each avatarFile in Mikuia.Tools.getAvatars(1000)
+						li
+							img(src='/img/avatars/' + avatarFile, width='64', height='64')
+			.container
+				.row
+					.col-xs-4
+						object.player(type='application/x-shockwave-flash', height='225', width='369', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel=' + featured.display_name)
+							param(name='allowFullScreen', value='true')
+							param(name='allowScriptAccess', value='always')
+							param(name='allowNetworking', value='all')
+							param(name='movie', value='http://www.twitch.tv/widgets/live_embed_player.swf')
+							param(name='flashvars', value='hostname=www.twitch.tv&channel=' + featured.display_name + '&auto_play=true&start_volume=0')
+					.col-xs-8.blackbox
+						.pull-right
+							i.fa.fa-user(style='color: red;')
+							|  #{featured.viewers}  
+							i.fa.fa-eye(style='color: #aaa;')
+							|  #{featured.views}  
+							i.fa.fa-user(style='color: #aaa;')
+							|  #{featured.followers}
+						h1
+							| #{featured.display_name}
+							small  playing #{featured.game}
+						h4 #{featured.status}
+						br
+						h6 BIO
+						i=featured.bio
+						br
+						br
+						.blackbox-buttons
+							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.display_name)
+								img(src='/img/glitch.png', height='18', width='18')
+								|  Watch on Twitch.tv
+	else
+		h2 WELL FUCK
