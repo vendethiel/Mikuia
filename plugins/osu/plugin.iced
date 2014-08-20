@@ -1,4 +1,5 @@
 cli = require 'cli-color'
+fs = require 'fs'
 irc = require 'slate-irc'
 net = require 'net'
 request = require 'request'
@@ -17,6 +18,7 @@ modes = [
 	'osu!mania'
 ]
 
+patterns = [/(http|https):\/\/(?!osu.ppy.sh\/).+/ig]
 
 # Crucial stuff, whatever!
 
@@ -37,8 +39,23 @@ for lb, i in leaderboard
 	lb.setDisplayHtml '<b style="color: #FC74B0;">#<%value%></b>'
 	lb.setReverseOrder true
 
+insertStars = (length) =>
+	string = ''
+	for i in [1..length]
+		string += '*'
+	return string
+
 banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
+		for pattern in patterns
+			matches = []
+			while match = pattern.exec message
+				matches.push match
+
+			for match in matches
+				if match?
+					message = message.replace match[0], insertStars match[0].length
+					fs.appendFileSync 'logs/' + name + '.txt', 'Lukanya: ' + message + '\n'
 		@bancho.send name, message
 
 checkForRequest = (user, Channel, message) =>
@@ -347,6 +364,7 @@ Mikuia.Events.on 'twitch.connected', =>
 
 	@bancho.on 'message', (message) =>
 		@Plugin.Log.info cli.yellowBright(message.from) + ': ' + cli.whiteBright(message.message)
+		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
 		if message.message == '!verify'
 			code = Math.floor(Math.random() * 900000) + 100000
 			codes[code] = message.from
@@ -354,6 +372,9 @@ Mikuia.Events.on 'twitch.connected', =>
 			setTimeout () ->
 				delete codes[code]
 			, 60000
+
+	for word in @Plugin.getSetting('blockedWords')
+		patterns.push new RegExp word, 'ig'
 
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to

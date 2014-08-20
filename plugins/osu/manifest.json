@@ -269,6 +269,7 @@
 		},
 		"server": {
 			"apiKey": "OSU_API_KEY_HERE_OR_SOMETHING_LOL",
+			"blockedWords": [],
 			"debug": false,
 			"name": "OSU_USERNAME_HERE",
 			"password": "OSU_IRC_AUTH_PASS"
