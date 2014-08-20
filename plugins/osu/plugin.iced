@@ -47,6 +47,8 @@ insertStars = (length) =>
 
 banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
+		cleanMessage = message
+		
 		for pattern in patterns
 			matches = []
 			while match = pattern.exec message
@@ -55,7 +57,7 @@ banchoSay = (name, message) =>
 			for match in matches
 				if match?
 					message = message.replace match[0], insertStars match[0].length
-					fs.appendFileSync 'logs/' + name + '.txt', 'Lukanya: ' + message + '\n'
+					fs.appendFileSync 'logs/' + name + '.txt', 'Lukanya: ' + cleanMessage + '\n'
 		@bancho.send name, message
 
 checkForRequest = (user, Channel, message) =>

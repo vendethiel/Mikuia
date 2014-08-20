@@ -31,7 +31,10 @@ block content
 						h4 #{featured.status}
 						br
 						h6 BIO
-						i=featured.bio
+						if featured.bio != 'null'
+							i=featured.bio
+						else
+							i No bio.
 						br
 						br
 						.blackbox-buttons
