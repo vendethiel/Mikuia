@@ -16,7 +16,9 @@ TwitchStrategy = require('passport-twitchtv').Strategy
 checkAuth = (req, res, next) ->
 	if req.isAuthenticated()
 		return next()
-	res.redirect '/login'
+	else
+		req.session.redirectTo = req.path
+		res.redirect '/login'
 
 store = new RedisStore
 	host: Mikuia.settings.redis.host
@@ -58,6 +60,9 @@ app.use (req, res, next) ->
 	res.locals.path = req.path
 	res.locals.user = req.user
 
+	if req.path.indexOf('/auth') != 0 && req.path != '/logout'
+		req.session.redirectTo = req.path
+
 	pages = []
 	if req.user && req.path.indexOf('/dashboard') == 0
 		Channel = new Mikuia.Models.Channel req.user.username
@@ -72,7 +77,6 @@ app.use (req, res, next) ->
 						icon: page.icon
 
 	res.locals.pages = pages
-	console.log pages
 	next()
 
 fileList = fs.readdirSync 'web/routes'
@@ -88,7 +92,7 @@ app.get '/dashboard/settings', checkAuth, routes.settings.settings
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
-	res.redirect '/'
+	res.redirect req.session.redirectTo
 
 app.post '/dashboard/commands/add', checkAuth, routes.commands.add
 app.post '/dashboard/commands/remove', checkAuth, routes.commands.remove
@@ -118,7 +122,11 @@ app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedi
 			length: 20
 		await Channel.setInfo 'key', key, defer err, whatever
 
-	res.redirect '/dashboard'
+	redirectTo = '/dashboard'
+	if req.session.redirectTo?
+		redirectTo = req.session.redirectTo
+	delete req.session.redirectTo
+	res.redirect redirectTo
 
 	await Channel.updateAvatar defer err, whatever
 

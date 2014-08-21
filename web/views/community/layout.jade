@@ -17,5 +17,28 @@ html
 							a(href='/community') Home
 						li(class=(path == '/streams' ? 'active' : undefined))
 							a(href='/streams') Streams
+						li
+							a(href='http://forums.mikuia.tv') Forums
+
+					if !user
+						ul.nav.navbar-nav.navbar-right.pull-right
+							li
+								a(href='/auth/twitch') Login with Twitch
+					else
+						- console.log(user)
+						ul.nav.navbar-nav.navbar-right.pull-right
+							li.dropdown
+								a.dropdown-toggle(href='#', data-toggle='dropdown')
+									img.img-circle(src='/img/avatars/' + user.username + '.jpg', width='18', height='18')
+									|  #{user._json.display_name} 
+									span.caret
+								ul.dropdown-menu(role='menu')
+									li
+										a(href='/logout') Logout
 		block content
 		block footerScript
+		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js')
+		script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
+		script(type='text/javascript').
+			$('.timeago').timeago()
