@@ -1,5 +1,16 @@
 Mikuia.Events.on 'base.dummy', (data) =>
-	Mikuia.Chat.say data.to, data.settings.message
+	sendMessage = true
+
+	if data.settings.onlyMods
+		if !checkMod data.to, data.user.username
+			sendMessage = false
+
+	if data.settings.onlySubs
+		if 'subscriber' not in data.user.special
+			sendMessage = false
+
+	if sendMessage
+		Mikuia.Chat.say data.to, data.settings.message
 
 Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'

@@ -12,6 +12,18 @@
 					"description": "A message, heh.",
 					"default": "This is a default dummy message.",
 					"type": "text"
+				},
+				"onlyMods": {
+					"name": "Only Mods",
+					"description": "Allow only moderators to use the command.",
+					"default": false,
+					"type": "boolean"
+				},
+				"onlySubs": {
+					"name": "Only Subs",
+					"description": "Allow only subscribers to use the command.",
+					"default": false,
+					"type": "boolean"
 				}
 			}
 		}

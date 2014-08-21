@@ -60,9 +60,6 @@ app.use (req, res, next) ->
 	res.locals.path = req.path
 	res.locals.user = req.user
 
-	if req.path.indexOf('/auth') != 0 && req.path != '/logout'
-		req.session.redirectTo = req.path
-
 	pages = []
 	if req.user && req.path.indexOf('/dashboard') == 0
 		Channel = new Mikuia.Models.Channel req.user.username
@@ -84,7 +81,6 @@ for file in fileList
 	filePath = path.resolve 'web/routes/' + file
 	routes[file.replace('.iced', '')] = require filePath
 
-app.get '/', routes.index
 app.get '/dashboard', checkAuth, routes.dashboard
 app.get '/dashboard/commands', checkAuth, routes.commands.commands
 app.get '/dashboard/commands/settings/:name', checkAuth, routes.commands.settings
@@ -92,7 +88,7 @@ app.get '/dashboard/settings', checkAuth, routes.settings.settings
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
-	res.redirect req.session.redirectTo
+	res.redirect '/'
 
 app.post '/dashboard/commands/add', checkAuth, routes.commands.add
 app.post '/dashboard/commands/remove', checkAuth, routes.commands.remove
@@ -101,7 +97,7 @@ app.post '/dashboard/settings/plugins/toggle', checkAuth, routes.settings.plugin
 app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
-app.get '/community', routes.community.index
+app.get '/', routes.community.index
 app.get '/streams', routes.community.streams
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
@@ -122,11 +118,10 @@ app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedi
 			length: 20
 		await Channel.setInfo 'key', key, defer err, whatever
 
-	redirectTo = '/dashboard'
 	if req.session.redirectTo?
-		redirectTo = req.session.redirectTo
-	delete req.session.redirectTo
-	res.redirect redirectTo
+		res.redirect req.session.redirectTo
+	else
+		res.redirect '/dashboard'
 
 	await Channel.updateAvatar defer err, whatever
 

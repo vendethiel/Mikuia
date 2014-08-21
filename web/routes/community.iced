@@ -20,9 +20,17 @@ module.exports =
 
 		await Mikuia.Element.preparePanels 'community.index', defer panels
 
+		sortLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
+
+		await Mikuia.Streams.getAllSorted 'viewers', defer sorting, streams
+		await sortLeaderboard.getDisplayHtml defer err, displayHtml
+
 		res.render 'community/index',
-			featured: featuredStream,
+			featured: featuredStream
 			panels: panels
+			sorting: sorting
+			streams: streams
+			displayHtml: displayHtml
 
 	streams: (req, res) ->
 		game = ''

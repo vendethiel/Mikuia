@@ -51,6 +51,12 @@ block content
 						.panel-heading=panel.title
 						.panel-body!=panel.content
 			.col-md-4
+				.panel.panel-info
+					.panel-heading Guide
+					.panel-body
+						h2 Can't handle the awesomeness?
+						p Read the guide!
+						a.btn.btn-info.btn-xs.pull-right(href='http://forums.mikuia.tv/topic/6/how-to-use-mikuia') Guide
 				.panel.panel-danger
 					.panel-heading Bug Reports
 					.panel-body
@@ -63,3 +69,10 @@ block content
 						h2 Something missing?
 						p Ask for it on the forums!
 						a.btn.btn-success.btn-xs.pull-right(href='http://forums.mikuia.tv/category/3/feature-requests') Feature Requests
+	.well
+		.container
+			.row
+				.col-md-12
+					h1 Other Streams
+					each miniData in sorting
+						+stream(streams[miniData[0]], displayHtml, miniData[1])

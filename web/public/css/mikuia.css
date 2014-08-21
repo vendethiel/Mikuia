@@ -1,3 +1,9 @@
+body.mikuia {
+	background-image: url('/img/mikuia.png');
+	background-position: right top;
+	background-repeat: no-repeat;
+}
+
 .align-center {
 	text-align: center;
 }
