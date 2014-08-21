@@ -43,3 +43,23 @@ block content
 								|  Watch on Twitch.tv
 	else
 		h2 WELL FUCK
+	.container
+		.row
+			.col-md-8
+				each panel in panels
+					.panel.panel-default
+						.panel-heading=panel.title
+						.panel-body!=panel.content
+			.col-md-4
+				.panel.panel-danger
+					.panel-heading Bug Reports
+					.panel-body
+						h2 Found a bug?
+						p Check out the forums, report it, we'll respond ASAP!
+						a.btn.btn-danger.btn-xs.pull-right(href='http://forums.mikuia.tv/category/4/bug-reports') Bug Reports
+				.panel.panel-success
+					.panel-heading Feature Requests
+					.panel-body
+						h2 Something missing?
+						p Ask for it on the forums!
+						a.btn.btn-success.btn-xs.pull-right(href='http://forums.mikuia.tv/category/3/feature-requests') Feature Requests

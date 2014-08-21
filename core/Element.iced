@@ -5,6 +5,19 @@ class exports.Element
 
 	getAll: (key) -> @elements[key]
 
+	preparePanels: (key, callback) =>
+		panels = @getAll key + '.panel'
+		results = []
+
+		for panel in panels
+			plugin = Mikuia.Plugin.get panel.plugin
+			await plugin.getPanel panel.id, defer response
+			results.push
+				title: panel.title,
+				content: response
+
+		callback results			
+
 	register: (key, name) ->
 		if !@elements[key]
 			@elements[key] = []

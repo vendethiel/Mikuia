@@ -18,8 +18,11 @@ module.exports =
 			await Channel.getBio defer err, bio
 			featuredStream.bio = bio
 
+		await Mikuia.Element.preparePanels 'community.index', defer panels
+
 		res.render 'community/index',
-			featured: featuredStream
+			featured: featuredStream,
+			panels: panels
 
 	streams: (req, res) ->
 		game = ''

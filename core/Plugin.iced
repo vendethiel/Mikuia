@@ -10,6 +10,8 @@ class exports.Plugin
 
 	exists: (plugin) -> @plugins[plugin]?
 
+	get: (plugin) -> @plugins[plugin].module
+
 	getAll: () -> @plugins
 
 	getHandler: (handler) ->
