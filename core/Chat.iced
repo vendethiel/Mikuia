@@ -163,3 +163,4 @@ class exports.Chat
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
+			@Mikuia.Events.emit 'twitch.updated'
