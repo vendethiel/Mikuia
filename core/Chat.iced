@@ -80,10 +80,18 @@ class exports.Chat
 				Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
-		limiter.removeTokens 1, (err, rr) =>	
-			@client.join channel
-			if @joined.indexOf(channel) == -1
-				@joined.push channel
+		if @joined.indexOf('#' + channel) == -1
+			limiter.removeTokens 1, (err, rr) =>	
+				@client.join channel
+				if @joined.indexOf(channel) == -1
+					@joined.push channel
+
+		await @Mikuia.Twitch.getChatters channel, defer err, chatters
+		if !err
+			if chatters.chatters?.moderators?
+				@moderators['#' + channel] = chatters.chatters.moderators
+			Channel = new Mikuia.Models.Channel channel
+			Channel.trackValue 'chatters', chatters.chatter_count
 
 	mods: (channel) =>
 		if channel.indexOf('#') == -1
@@ -126,18 +134,12 @@ class exports.Chat
 						streamList.push stream
 						streamData[stream.channel.name] = stream
 
+						Channel = new Mikuia.Models.Channel stream.channel.name
+						Channel.trackValue 'viewers', stream.viewers
+
 					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
 			for channel in joinList
-				if @joined.indexOf('#' + channel) == -1
-					@Mikuia.Chat.join '#' + channel
-
-				await @Mikuia.Twitch.getChatters channel, defer err, chatters
-				if !err
-					@moderators['#' + channel] = chatters.chatters.moderators
-					Channel = new Mikuia.Models.Channel channel
-					Channel.trackValue 'chatters', chatters.chatter_count
-					if streamData[channel]?
-						Channel.trackValue 'viewers', streamData[channel].viewers
+				@Mikuia.Chat.join '#' + channel
 						
 			# Yay, save dat stuff.
 			await @Mikuia.Database.del 'mikuia:streams', defer err, response

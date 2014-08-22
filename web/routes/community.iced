@@ -58,3 +58,19 @@ module.exports =
 			sorting: sorting
 			sortMethod: sortMethod
 			streams: streams
+
+	user: (req, res) ->
+		if req.params.userId?
+			Channel = new Mikuia.Models.Channel req.params.userId
+			
+			await Channel.exists defer err, exists
+			if !err && exists
+
+				await Channel.getAll defer err, channel
+
+				res.render 'community/user',
+					Channel: channel
+			else
+				res.render 'error'
+		else
+			res.render 'error'

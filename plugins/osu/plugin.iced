@@ -73,6 +73,11 @@ checkForRequest = (user, Channel, message) =>
 			if (new Date()).getTime() < limits[Channel.getName()].users[user.username] + (requestUserLimit * 1000)
 				continueCheck = false
 
+	await Channel.getSetting 'osu', 'requestIgnoreMyself', defer err, requestIgnoreMyself
+	if !err && requestIgnoreMyself
+		if user.username == Channel.getName()
+			continueCheck = false
+
 	if continueCheck
 		if /osu.ppy.sh\/(b|s)\/(\d+)/g.test message
 			match = /osu.ppy.sh\/(b|s)\/(\d+)/g.exec message

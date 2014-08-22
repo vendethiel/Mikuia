@@ -19,6 +19,11 @@ class exports.Database
 		@client.del key, (err, data) ->
 			callback err, data
 
+	exists: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.exists key, (err, data) ->
+			callback err, data
+
 	expire: (key, timeout, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.expire key, timeout, (err, data) ->

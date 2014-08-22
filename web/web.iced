@@ -1,6 +1,6 @@
 bodyParser = require 'body-parser'
 cookieParser = require 'cookie-parser'
-express = require 'express'
+express = require 'express.io'
 fs = require 'fs'
 gm = require 'gm'
 morgan = require 'morgan'
@@ -28,6 +28,7 @@ store = new RedisStore
 
 routes = {}
 module.exports = app = express()
+app.http().io()
 
 passport.serializeUser (user, done) ->
 	done null, user
@@ -99,6 +100,7 @@ app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/', routes.community.index
 app.get '/streams', routes.community.streams
+app.get '/user/:userId', routes.community.user
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->

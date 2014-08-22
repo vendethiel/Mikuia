@@ -94,15 +94,22 @@
 			"requestChatInfo": {
 				"name": "Request Chat Info",
 				"category": "Requests",
-				"description": "Shows request map info in the chat.",
+				"description": "Show request map info in the chat.",
 				"default": true,
 				"type": "boolean"
 			},
 			"requestSubMode": {
 				"name": "Request Sub Mode",
 				"category": "Requests",
-				"description": "Limits requests to subscribers only.",
+				"description": "Limit requests to subscribers only.",
 				"default": false,
+				"type": "boolean"
+			},
+			"requestIgnoreMyself": {
+				"name": "Ignore Myself",
+				"category": "Requests",
+				"description": "Ignore requests from yourself.",
+				"default": true,
 				"type": "boolean"
 			},
 			"requestMapLimit": {
@@ -184,7 +191,7 @@
 			"updates": {
 				"name": "Enable Updates",
 				"category": "Statistic Updates",
-				"description": "Shows changes in account stats.",
+				"description": "Show changes in account stats.",
 				"default": true,
 				"type": "boolean"
 			},
@@ -231,7 +238,7 @@
 			"events": {
 				"name": "Enable Events",
 				"category": "Events",
-				"description": "Shows events on the chat.",
+				"description": "Show events on the chat.",
 				"default": true,
 				"type": "boolean"
 			},

@@ -29,7 +29,7 @@ body.mikuia {
 .avatars > ul > li {
 	float: left;
 	margin: 0;
-	opacity: 0.3;
+	opacity: 0.2;
 	padding: 0;
 }
 
@@ -110,6 +110,14 @@ a.navbar-brand {
 	color: #ffffff;
 }
 
+.navbar-text {
+	margin-top: 13px;
+}
+
+.profile-name {
+	padding-top: 32px;
+}
+
 .splash {
 	background-color: #7a62d3;
 	background-image: -webkit-linear-gradient(top, #7a62d3, #000000);
@@ -121,6 +129,10 @@ a.navbar-brand {
 	height: 12em;
 	margin-bottom: 2em;
 	padding-top: 6em;
+}
+
+.splash.profile {
+	padding-top: 3.5em;
 }
 
 .splash > .avatars {

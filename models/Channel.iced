@@ -9,6 +9,10 @@ class exports.Channel extends Mikuia.Model
 
 	# Core functions, changing those often end up breaking half of the universe.
 
+	exists: (callback) ->
+		await @_exists '', defer err, data
+		callback err, data
+
 	getName: () ->
 		return @name
 
@@ -18,6 +22,10 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	# Info & settings
+
+	getAll: (callback) ->
+		await @_hgetall '', defer err, data
+		callback err, data
 
 	getInfo: (field, callback) ->
 		await @_hget '', field, defer err, data
