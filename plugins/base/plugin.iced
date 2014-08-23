@@ -61,7 +61,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 
 checkMod = (channel, username) ->
 	moderators = Mikuia.Chat.mods channel
-	if username in moderators
+	if moderators? && username in moderators
 		return true
 	else
 		return false

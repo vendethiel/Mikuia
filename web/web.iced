@@ -103,28 +103,44 @@ app.get '/streams', routes.community.streams
 app.get '/user/:userId', routes.community.user
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
-app.get '/auth/twitch/callback', passport.authenticate('twitchtv', { failureRedirect: '/login' }), (req, res) ->
+app.get '/auth/twitch/callback', (req, res, next) =>
+	passport.authenticate('twitchtv', (err, user, info) ->
+		if err
+			console.log 'here!'
+			return res.render 'community/error',
+				error: err
+		if !user
+			return res.redirect '/login'
+		req.logIn user, (err) =>
+			if err
+				return res.render 'community/error',
+					error: err
 
-	Channel = new Mikuia.Models.Channel req.user.username
-	await
-		Channel.setDisplayName req.user._json.display_name, defer err, data
-		Channel.setBio req.user._json.bio, defer err, data
-		Channel.setEmail req.user.email, defer err, data
-		Channel.setLogo req.user._json.logo, defer err, data
-		Channel.enablePlugin 'base', defer err, data
-		Channel.getInfo 'key', defer err, key
+			console.log user
 
-	# Generating an API key on login if missing
-	if !key?
-		key = rstring
-			length: 20
-		await Channel.setInfo 'key', key, defer err, whatever
+			if req.session.redirectTo?
+				res.redirect req.session.redirectTo
+			else
+				res.redirect '/dashboard'
+	)(req, res, next)
 
-	if req.session.redirectTo?
-		res.redirect req.session.redirectTo
-	else
-		res.redirect '/dashboard'
+	# Channel = new Mikuia.Models.Channel req.user.username
+	# await
+	# 	Channel.setDisplayName req.user._json.display_name, defer err, data
+	# 	Channel.setBio req.user._json.bio, defer err, data
+	# 	Channel.setEmail req.user.email, defer err, data
+	# 	Channel.setLogo req.user._json.logo, defer err, data
+	# 	Channel.enablePlugin 'base', defer err, data
+	# 	Channel.getInfo 'key', defer err, key
 
-	await Channel.updateAvatar defer err, whatever
+	# # Generating an API key on login if missing
+	# if !key?
+	# 	key = rstring
+	# 		length: 20
+	# 	await Channel.setInfo 'key', key, defer err, whatever
+
+	
+
+	# await Channel.updateAvatar defer err, whatever
 
 app.listen 2912

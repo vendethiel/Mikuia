@@ -42,7 +42,7 @@ class exports.Chat
 					@connected = true
 
 				event.on 'disconnected', (reason) =>
-					@Mikuia.Log.warning 'Disconnected from Twitch IRC. Reason: ' + reason
+					@Mikuia.Log.fatal 'Disconnected from Twitch IRC. Reason: ' + reason
 
 				event.on 'join', (channel) =>
 					@Mikuia.Log.info cli.whiteBright('Joined ' + cli.greenBright(channel) + ' on Twitch IRC.')
@@ -80,7 +80,7 @@ class exports.Chat
 				Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
-		if @joined.indexOf('#' + channel) == -1
+		if @joined.indexOf(channel) == -1
 			limiter.removeTokens 1, (err, rr) =>	
 				@client.join channel
 				if @joined.indexOf(channel) == -1

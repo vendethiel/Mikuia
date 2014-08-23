@@ -1,0 +1,23 @@
+extends layout
+
+block content
+	.splash
+		.avatars
+			ul
+				each avatarFile in Mikuia.Tools.getAvatars(500)
+					li
+						img(src='/img/avatars/' + avatarFile, width='64', height='64')
+		.container
+			.row
+				.col-md-12
+					h1 That's an error!
+	.container
+		.row
+			.col-md-12
+				h3
+					|If the error starts with "TokenError", try refreshing/logging in again!
+					br
+					| For any other errors, please report on forums!
+				br
+				.alert.alert-danger=error.stack
+				- console.log(error)
