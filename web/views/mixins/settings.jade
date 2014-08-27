@@ -3,6 +3,7 @@ mixin settings(settings, userSettings, categories)
 	if categories != undefined
 		each category, categoryName in categories
 			h3=categoryName
+			br
 			each setting, settingName in category
 				+setting(setting, settingName, userSettings)
 	else
@@ -58,14 +59,14 @@ mixin setting(setting, settingName, userSettings)
 								p You can even use multiple functions for some reason.
 								pre <%function1/function2/function3/variable%>
 						.row
-							small.col-sm-4
+							small.col-sm-6
 								h3 Variables
 								table.table.table-condensed.text-muted
 									each variable, name in setting.variables
 										tr
 											td=variable
 											td <%#{name}%>
-							small.col-sm-7.col-sm-offset-1
+							small.col-sm-5.col-sm-offset-1
 								h3 Functions
 								table.table.table-condensed.text-muted
 									tr

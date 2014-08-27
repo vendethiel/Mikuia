@@ -1,4 +1,7 @@
+include mixins/level
+include mixins/levelProgress
 include mixins/stream
+include mixins/userHeader
 
 doctype html
 html
@@ -7,11 +10,14 @@ html
 		link(href='/assets/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
 		link(href='//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/yeti/bootstrap.min.css', rel='stylesheet', type='text/css')
 		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
+		title Mikuia Append
 	body(class=(path == '/' ? 'mikuia' : undefined))
 		nav.navbar.navbar-default.navbar-fixed-top.navbar-mikuia(role='navigation')
 			.container
 				.navbar-header
-					a.navbar-brand(href='/') Mikuia
+					a.navbar-brand(href='/')
+						| Mikuia 
+						small(style='font-size: 12px; top: 0px;') Append
 
 				.collapse.navbar-collapse
 					ul.nav.navbar-nav
@@ -19,6 +25,8 @@ html
 							a(href='/') Home
 						li(class=(path == '/streams' ? 'active' : undefined))
 							a(href='/streams') Streams
+						li(class=(path.indexOf('/levels') == 0 ? 'active' : undefined))
+							a(href='/levels') Levels
 						li
 							a(href='http://forums.mikuia.tv') Forums
 					if !user

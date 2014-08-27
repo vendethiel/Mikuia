@@ -1,16 +1,17 @@
 mixin stream(stream, displayHtml, sortValue)
-	.card.col-md-4.col-sm-3
-		a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
-			img(src=stream.preview, width='260')
-		br
-		a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
-			|  #{stream.status}
-		br
-		small.pull-right!=displayHtml.replace('<%value%>', sortValue)						
-		small.media.text-muted
-			a.pull-left(href='/channel/' + stream.display_name.toLowerCase(), style='margin-right: 5px;')
-				img.media-object(src='/img/avatars/' + stream.display_name.toLowerCase() + '.jpg', width='16', height='16')
-			.media-body
-				.media-heading
-					a(href='/channel/' + stream.display_name.toLowerCase()) #{stream.display_name}
-					|  playing #{stream.game}
+	if stream
+		.card.col-md-4.col-sm-3
+			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
+				img(src=stream.preview, width='260')
+			br
+			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
+				|  #{stream.status}
+			br
+			small.pull-right!=displayHtml.replace('<%value%>', sortValue)						
+			small.media.text-muted
+				a.pull-left(href='/channel/' + stream.display_name.toLowerCase(), style='margin-right: 5px;')
+					img.media-object(src='/img/avatars/' + stream.display_name.toLowerCase() + '.jpg', width='16', height='16')
+				.media-body
+					.media-heading
+						a(href='/channel/' + stream.display_name.toLowerCase()) #{stream.display_name}
+						|  playing #{stream.game}

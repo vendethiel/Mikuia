@@ -19,5 +19,8 @@ block content
 					br
 					| For any other errors, please report on forums!
 				br
-				.alert.alert-danger=error.stack
+				if error && error.stack
+					.alert.alert-danger=error.stack
+				else
+					.alert.alert-danger=error
 				- console.log(error)

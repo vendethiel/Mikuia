@@ -16,7 +16,8 @@ module.exports =
 			Channel = new Mikuia.Models.Channel stream
 			await Mikuia.Streams.get stream, defer err, featuredStream
 			await Channel.getBio defer err, bio
-			featuredStream.bio = bio
+			if featuredStream?
+				featuredStream.bio = bio
 
 		await Mikuia.Element.preparePanels 'community.index', defer panels
 
@@ -31,6 +32,96 @@ module.exports =
 			sorting: sorting
 			streams: streams
 			displayHtml: displayHtml
+
+	levels: (req, res) ->
+		if req.params.userId?
+			Channel = new Mikuia.Models.Channel req.params.userId
+
+			await Channel.exists defer err, exists
+			if !err 
+				if exists
+					await Channel.getDisplayName defer err, displayName
+					await Mikuia.Database.zrevrange 'levels:' + req.params.userId + ':experience', 0, 99, 'withscores', defer err, ranks
+
+					channels = Mikuia.Tools.chunkArray ranks, 2
+					displayNames = {}
+					experience = null
+					isStreamer = {}
+					logos = {}
+					rank = null
+
+					for data in channels
+						if data.length > 0
+							channel = new Mikuia.Models.Channel data[0]
+							experience = data[1]
+
+							await
+								channel.isStreamer defer err, isStreamer[data[0]]
+								channel.getDisplayName defer err, displayNames[data[0]]
+								channel.getLogo defer err, logos[data[0]]
+
+					if req.isAuthenticated()
+						channel = new Mikuia.Models.Channel req.user.username
+						await
+							channel.getExperience req.params.userId, defer err, experience
+							Mikuia.Database.zrevrank 'levels:' + req.params.userId + ':experience', req.user.username, defer err, rank
+
+					res.render 'community/levelsUser',
+						channels: channels
+						displayName: displayName
+						displayNames: displayNames
+						experience: experience
+						isStreamer: isStreamer
+						logos: logos
+						rank: rank + 1
+				else
+					res.render 'community/error',
+						error: 'Channel does not exist.'
+			else
+				res.render 'community/error',
+					error: err
+
+		else
+			await Mikuia.Streams.getAll defer err, streams
+
+			displayNames = {}
+			experience = {}
+			ranks = {}
+			totalLevel = null
+			userCount = {}
+
+			if req.isAuthenticated()
+				Channel = new Mikuia.Models.Channel req.user.username
+
+				await
+					Channel.getAllExperience defer err, data
+					Channel.getTotalLevel defer err, totalLevel	
+
+				for md in data
+					experience[md[0]] = md[1]
+
+					chan = new Mikuia.Models.Channel md[0]
+					await chan.getDisplayName defer err, displayNames[md[0]]
+
+				for stream in streams
+					await Mikuia.Database.zrevrank 'levels:' + stream + ':experience', req.user.username, defer err, ranks[stream]
+
+				for name, rank of ranks
+					ranks[name]++
+
+			for stream in streams
+				chan = new Mikuia.Models.Channel stream
+				await chan.getDisplayName defer err, displayNames[stream]
+				await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
+
+			res.render 'community/levels',
+				displayNames: displayNames
+				experience: experience
+				level: totalLevel
+				ranks: ranks
+				rawExperience: data
+				streams: streams
+				userCount: userCount
 
 	streams: (req, res) ->
 		game = ''
@@ -64,13 +155,43 @@ module.exports =
 			Channel = new Mikuia.Models.Channel req.params.userId
 			
 			await Channel.exists defer err, exists
-			if !err && exists
+			if !err 
+				if exists
 
-				await Channel.getAll defer err, channel
+					channel =
+						name: req.params.userId
+					displayNames = {}
+					ranks = {}
+					await
+						Channel.getAllExperience defer err, channel.experience
+						Channel.getDisplayName defer err, channel.display_name
+						Channel.getTotalLevel defer err, channel.level
+						Channel.getLogo defer err, channel.logo
 
-				res.render 'community/user',
-					Channel: channel
+					for data in channel.experience
+						chan = new Mikuia.Models.Channel data[0]
+						await chan.getDisplayName defer err, displayNames[data[0]]
+						await Mikuia.Database.zrevrank 'levels:' + data[0] + ':experience', req.params.userId, defer err, ranks[data[0]]
+					
+					for name, rank of ranks
+						ranks[name]++
+
+					if req.params.subpage?
+						if req.params.subpage == 'levels'
+							res.render 'community/userLevels',
+								Channel: channel,
+								displayNames: displayNames,
+								ranks: ranks
+					else
+						res.render 'community/user',
+							Channel: channel,
+							displayNames: displayNames
+				else
+					res.render 'community/error',
+						error: 'User does not exist.'
 			else
-				res.render 'error'
+				res.render 'community/error',
+					error: err
 		else
-			res.render 'error'
+			res.render 'community/error',
+				error: 'No user specified.'

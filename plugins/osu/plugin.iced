@@ -186,6 +186,7 @@ checkRankUpdates = (stream, callback) =>
 								Channel.getSetting 'osu', 'rankChangeFormat', defer err, rankChangeFormat
 								Channel.getSetting 'osu', 'updateDelay', defer err, updateDelay
 							if !err && updates
+								Mikuia.Log.info 'Delaying updates for ' + Channel.getName() + ' by ' + (updateDelay * 1000) + '...'
 								setTimeout () =>
 									ppMessage = Mikuia.Format.parse ppChangeFormat,
 										pp_new: stats.pp_raw
@@ -456,7 +457,7 @@ Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 
 # np! continuing the old path so people don't have to reconfigure osu!np
 Mikuia.Web.post '/plugins/osu/post/:username', (req, res) ->
-	console.log req.body
+	#console.log req.body
 
 	res.send 200
 

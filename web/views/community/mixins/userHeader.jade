@@ -1,0 +1,19 @@
+mixin userHeader(Channel)
+	.splash.profile
+		.avatars
+			ul
+				each avatarFile in Mikuia.Tools.getAvatars(500)
+					li
+						img(src='/img/avatars/' + avatarFile, width='64', height='64')
+		.container
+			.row
+				.col-md-12
+					.media
+						.pull-left
+							img.img-circle.media-object(src=Channel.logo, width='120', height='120')
+						.media-body.profile-name
+							h1.media-heading
+								| #{Channel.display_name}
+
+								.pull-right
+									+level(Channel.level)

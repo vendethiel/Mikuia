@@ -8,6 +8,7 @@ class exports.Chat
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 		
+		@chatters = {}
 		@connected = false
 		@joined = []
 		@moderators = {}
@@ -52,6 +53,9 @@ class exports.Chat
 			else
 				@Mikuia.Log.error err
 
+	getChatters: (channel) => 
+		return @chatters[channel]
+
 	handleMessage: (user, to, message) ->
 		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
@@ -80,18 +84,28 @@ class exports.Chat
 				Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
+		if channel.indexOf('#') == -1
+			channel = '#' + channel
 		if @joined.indexOf(channel) == -1
-			limiter.removeTokens 1, (err, rr) =>	
+			console.log 'removing a token'
+			limiter.removeTokens 1, (err, rr) =>
+				console.log 'joining channel'	
 				@client.join channel
-				if @joined.indexOf(channel) == -1
-					@joined.push channel
+				@joined.push channel
+				if callback
+					callback false
+		else
+			if callback
+				callback true
 
-		await @Mikuia.Twitch.getChatters channel, defer err, chatters
-		if !err
-			if chatters.chatters?.moderators?
-				@moderators['#' + channel] = chatters.chatters.moderators
-			Channel = new Mikuia.Models.Channel channel
-			Channel.trackValue 'chatters', chatters.chatter_count
+	joinMultiple: (channels, callback) =>
+		for channel in channels
+			await @join channel, defer whatever
+
+		for channel in channels
+			await @updateChatters channel, defer whatever
+
+		callback false
 
 	mods: (channel) =>
 		if channel.indexOf('#') == -1
@@ -124,22 +138,24 @@ class exports.Chat
 			streamData = {}
 			streamList = []
 			for chunk, i in chunks
-				@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
-				await @Mikuia.Twitch.getStreams chunk, defer err, streams
-				if err then @Mikuia.Log.error err else
-					chunkList = []
-					for stream in streams
-						chunkList.push stream.channel.display_name
-						joinList.push stream.channel.name
-						streamList.push stream
-						streamData[stream.channel.name] = stream
+				if chunk.length > 0
+					@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
+					await @Mikuia.Twitch.getStreams chunk, defer err, streams
+					if err then @Mikuia.Log.error err else
+						chunkList = []
+						for stream in streams
+							chunkList.push stream.channel.display_name
+							if joinList.indexOf(stream.channel.name) == -1
+								joinList.push stream.channel.name
+							streamList.push stream
+							streamData[stream.channel.name] = stream
 
-						Channel = new Mikuia.Models.Channel stream.channel.name
-						Channel.trackValue 'viewers', stream.viewers
+							Channel = new Mikuia.Models.Channel stream.channel.name
+							Channel.trackValue 'viewers', stream.viewers
 
-					@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
-			for channel in joinList
-				@Mikuia.Chat.join '#' + channel
+						@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
+			console.log joinList
+			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 						
 			# Yay, save dat stuff.
 			await @Mikuia.Database.del 'mikuia:streams', defer err, response
@@ -166,3 +182,18 @@ class exports.Chat
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 			@Mikuia.Events.emit 'twitch.updated'
+
+	updateChatters: (channel, callback) =>
+		console.log 'gonna get chatters'
+		await Mikuia.Twitch.getChatters channel, defer err, chatters
+		console.log 'got chatters'
+		if !err
+			if chatters.chatters?
+				@chatters[channel] = chatters.chatters
+			if chatters.chatters?.moderators?
+				@moderators[channel] = chatters.chatters.moderators
+			Channel = new Mikuia.Models.Channel channel
+			Channel.trackValue 'chatters', chatters.chatter_count
+			
+		console.log 'calling back'
+		callback err

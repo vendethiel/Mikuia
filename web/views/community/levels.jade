@@ -1,0 +1,84 @@
+extends layout
+
+block content
+	.splash
+		.avatars
+			ul
+				each avatarFile in Mikuia.Tools.getAvatars(500)
+					li
+						img(src='/img/avatars/' + avatarFile, width='64', height='64')
+		.container
+			.row
+				.col-md-12
+					h1 Levels
+	.container
+		.row
+			.col-md-8
+				table.table.table-bordered.table-striped
+					thead
+						tr
+							th Channel
+							th Users
+							th Your Rank
+							th Your Level
+							th Progress
+					tbody
+						each stream in streams
+							tr
+								td
+									.media
+										a.pull-left(href='/levels/' + stream)
+											img.img-circle.media-object(src='/img/avatars/' + stream + '.jpg', width=32, height=32)
+										.media-body
+											a.btn.btn-info.btn-xs.pull-right(href='http://twitch.tv/' + stream) Watch
+											h4.media-heading
+												a(href='/levels/' + stream) #{displayNames[stream]} Level
+								td
+									h4=userCount[stream]
+								if user
+									if experience[stream] != undefined
+										- var exp = experience[stream]
+										- var level = Mikuia.Tools.getLevel(exp)
+										td
+											h4 ##{ranks[stream]}
+										td.align-center
+											h3
+												+level(level, false, true)
+										td(style='width: 20%;')
+											+levelProgress(exp)
+									else
+										td.text-muted # -
+										td.text-muted -
+										td.text-muted No progress.
+								else
+									td.text-muted -
+									td.text-muted -
+									td.text-muted Login to see your progress!
+			
+			if user
+				.col-md-4
+					h2
+						+level(level)
+					br
+					.panel.panel-default
+						.panel-heading Your Levels
+						.panel-body
+							if rawExperience.length > 0
+								- var i = 0
+								each data in rawExperience
+									if i < 5 && Mikuia.Tools.getLevel(data[1]) > 0
+										.media
+											a.pull-left(href='#')
+												img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
+											.media-body
+												small.text-muted.pull-right #{data[1]} XP
+												| #{displayNames[data[0]]} Level
+												br
+												+level(Mikuia.Tools.getLevel(data[1]), true)
+										- i++
+								if rawExperience.length > 5
+									small.text-muted and #{rawExperience.length - i} more...
+							else
+								.text-muted No data.
+						.panel-footer
+							a(href='/user/' + user.username + '/levels') See more >>

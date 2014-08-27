@@ -1,0 +1,6 @@
+{
+	"name": "Levels",
+	"description": "Mikuia Levels",
+	"baseFile": "plugin.iced",
+	"hidden": true
+}

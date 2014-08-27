@@ -1,0 +1,17 @@
+mixin level(level, mini, noText)
+	if mini == undefined
+		- var mini = false
+	if noText == undefined
+		- var noText = false
+
+	if !mini
+		if !noText
+			| Level 
+		.level
+			span.level-text=level
+	else
+		span(style='font-weight: 300;')
+			if !noText
+				| Level 
+			.level.mini-level
+				span.mini-level-text=level

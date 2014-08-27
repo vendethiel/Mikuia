@@ -1,25 +1,31 @@
 extends layout
 
 block content
-	.splash.profile
-		.avatars
-			ul
-				each avatarFile in Mikuia.Tools.getAvatars(500)
-					li
-						img(src='/img/avatars/' + avatarFile, width='64', height='64')
-		.container
-			.row
-				.col-md-12
-					.media
-						.pull-left
-							img.img-circle.media-object(src=Channel.logo, width='120', height='120')
-						.media-body.profile-name
-							h1.media-heading=Channel.display_name
-
+	+userHeader(Channel)
 	.container
 		.row
-			.col-md-12
+			.col-md-8
 				h2 Derp
-
-block footerScript
-	script(type='text/javascript').
+			.col-md-4
+				.panel.panel-default
+					.panel-heading Levels
+					.panel-body
+						if Channel.experience.length > 0
+							- var i = 0
+							each data in Channel.experience
+								if i < 5 && Mikuia.Tools.getLevel(data[1]) > 0
+									.media
+										a.pull-left(href='#')
+											img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
+										.media-body
+											small.text-muted.pull-right #{data[1]} XP
+											| #{displayNames[data[0]]} Level
+											br
+											+level(Mikuia.Tools.getLevel(data[1]), true)
+									- i++
+							if Channel.experience.length > 5
+								small.text-muted and #{Channel.experience.length - i} more...
+						else
+							.text-muted No data.
+					.panel-footer
+						a(href='/user/' + Channel.name + '/levels') See more >>

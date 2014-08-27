@@ -1,0 +1,43 @@
+extends layout
+
+block content
+	+userHeader(Channel)
+	.container
+		.row
+			.col-md-8
+				table.table.table-bordered.table-striped
+					thead
+						tr
+							th Channel
+							th Level
+							th Experience
+							th Rank
+							th Progress
+					tbody
+						each data in Channel.experience
+							- var experience = data[1]
+							- var level = Mikuia.Tools.getLevel(experience)
+
+							tr
+								td
+									.media
+										a.pull-left(href='#')
+											img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
+										.media-body
+											h4.media-heading #{displayNames[data[0]]} Level
+								td
+									h3
+										+level(level, false, true)
+								td
+									h3 #{data[1]} XP
+								td
+									h4
+										a(href='/levels/' + data[0]) ##{ranks[data[0]]}
+								td(style='width: 20%;')
+									+levelProgress(experience)
+
+			.col-md-4
+				.panel.panel-default
+					.panel-heading What is this?
+					.panel-body
+						.text-muted I don't know yet! I'll write about it later!

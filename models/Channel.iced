@@ -21,6 +21,10 @@ class exports.Channel extends Mikuia.Model
 		await Mikuia.Database.sismember 'mikuia:streams', @getName(), defer err, data
 		callback err, data
 
+	isStreamer: (callback) ->
+		await @_exists 'plugins', defer err, data
+		callback err, data
+
 	# Info & settings
 
 	getAll: (callback) ->
@@ -50,7 +54,8 @@ class exports.Channel extends Mikuia.Model
 
 	setInfo: (field, value, callback) ->
 		await @_hset '', field, value, defer err, data
-		callback err, data
+		if callback
+			callback err, data
 
 	setSetting: (plugin, field, value, callback) ->
 		if value != ''
@@ -153,7 +158,10 @@ class exports.Channel extends Mikuia.Model
 
 	getLogo: (callback) ->
 		await @getInfo 'logo', defer err, data
-		callback err, data
+		if err || data == null
+			callback false, 'http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_300x300.png'
+		else
+			callback err, data
 
 	setBio: (bio, callback) ->
 		await @setInfo 'bio', bio, defer err, data
@@ -180,10 +188,60 @@ class exports.Channel extends Mikuia.Model
 			path = 'web/public/img/avatars/' + @getName() + '.jpg'
 			r = request.get(logo).pipe fs.createWriteStream path
 			r.on 'finish', ->
-				console.log 'i am here'
 				gm(path).resize(64, 64).write(path, (err) ->
-					console.log err
 					callback err
 				)
 		else
 			callback true
+
+	# Levels
+
+	addExperience: (channel, experience, callback) =>
+		bots = ['mikuia', 'mikuia_old', 'lukanya', 'nightbot', 'moobot', 'xanbot']
+
+		if @getName() in bots
+			await @_hset 'experience', channel, 0, defer err, data
+		else
+			await @_hincrby 'experience', channel, experience, defer err, data
+			await @updateTotalLevel defer whatever
+		callback false
+
+	getLevel: => 0
+	getTotalLevel: (callback) =>
+		await @getInfo 'level', defer err, data
+		if err || !data?
+			callback false, 0
+		else
+			callback false, data
+
+		# await @getAllExperience defer err, data
+		# console.log data
+		# callback err, 0
+
+	getExperience: (channel, callback) =>
+		await @_hget 'experience', channel, defer err, data
+		callback err, data
+
+	getAllExperience: (callback) =>
+		await @_hgetall 'experience', defer err, data
+
+		sortable = []
+		for channel, experience of data
+			sortable.push [channel, experience]
+		sortable.sort (a,b) ->
+			return b[1] - a[1]
+
+		callback err, sortable
+
+	updateTotalLevel: (callback) =>
+		totalLevel = 0
+
+		await @getAllExperience defer err, experience
+		for data in experience
+			totalLevel += Mikuia.Tools.getLevel data[1]
+			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer whatever
+
+		await @setInfo 'level', totalLevel, defer whatever
+		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever
+
+		callback false

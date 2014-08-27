@@ -27,6 +27,12 @@ class exports.Model
 		await Mikuia.Database.hgetall @model + ':' + @name + key, defer err, data
 		callback err, data
 
+	_hincrby: (key, field, value, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.hincrby @model + ':' + @name + key, field, value, defer err, data
+		callback err, data
+
 	_hset: (key, field, value, callback) ->
 		if key != ''
 			key = ':' + key

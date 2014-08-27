@@ -99,8 +99,11 @@ app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/', routes.community.index
+app.get '/levels', routes.community.levels
+app.get '/levels/:userId', routes.community.levels
 app.get '/streams', routes.community.streams
 app.get '/user/:userId', routes.community.user
+app.get '/user/:userId/:subpage', routes.community.user
 
 app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read' ] })
 app.get '/auth/twitch/callback', (req, res, next) =>
@@ -116,31 +119,26 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 				return res.render 'community/error',
 					error: err
 
-			console.log user
+			Channel = new Mikuia.Models.Channel user.username
+			await
+				Channel.setDisplayName user._json.display_name, defer err, data
+				Channel.setBio user._json.bio, defer err, data
+				Channel.setEmail user.email, defer err, data
+				Channel.setLogo user._json.logo, defer err, data
+				Channel.enablePlugin 'base', defer err, data
+				Channel.getInfo 'key', defer err, key
+
+			if !key?
+				key = rstring
+					length: 20
+				await Channel.setInfo 'key', key
 
 			if req.session.redirectTo?
 				res.redirect req.session.redirectTo
 			else
 				res.redirect '/dashboard'
+
+			await Channel.updateAvatar defer err, whatever
 	)(req, res, next)
-
-	# Channel = new Mikuia.Models.Channel req.user.username
-	# await
-	# 	Channel.setDisplayName req.user._json.display_name, defer err, data
-	# 	Channel.setBio req.user._json.bio, defer err, data
-	# 	Channel.setEmail req.user.email, defer err, data
-	# 	Channel.setLogo req.user._json.logo, defer err, data
-	# 	Channel.enablePlugin 'base', defer err, data
-	# 	Channel.getInfo 'key', defer err, key
-
-	# # Generating an API key on login if missing
-	# if !key?
-	# 	key = rstring
-	# 		length: 20
-	# 	await Channel.setInfo 'key', key, defer err, whatever
-
-	
-
-	# await Channel.updateAvatar defer err, whatever
 
 app.listen 2912

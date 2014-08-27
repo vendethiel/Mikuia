@@ -15,6 +15,8 @@ class exports.Twitch
 			@Mikuia.Log.fatal 'Please specify correct Twitch API key and secret.'
 
 	getChatters: (channel, callback) ->
+		if channel.indexOf('#') > -1
+			channel = channel.split('#').join('')
 		request 'http://tmi.twitch.tv/group/user/' + channel + '/chatters', (error, response, body) ->
 			if !error && response.statusCode == 200
 				data = {}

@@ -49,6 +49,11 @@ class exports.Database
 		@client.hgetall key, (err, data) ->
 			callback err, data
 
+	hincrby: (key, field, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.hincrby key, field, value, (err, data) ->
+			callback err, data
+
 	hset: (key, field, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.hset key, field, value, (err, data) ->
@@ -92,6 +97,36 @@ class exports.Database
 	zadd: (key, score, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.zadd key, score, member, (err, data) ->
+			callback err, data
+
+	zcard: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zcard key, (err, data) ->
+			callback err, data
+
+	zcount: (key, min, max, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zcount key, min, max, (err, data) ->
+			callback err, data
+
+	zrank: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zrank key, member, (err, data) ->
+			callback err, data
+
+	zrevrange: (key, start, stop, withscores, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		if !callback?
+			callback = withscores
+			@client.zrevrange key, start, stop, (err, data) ->
+				callback err, data
+		else
+			@client.zrevrange key, start, stop, withscores, (err, data) ->
+				callback err, data
+
+	zrevrank: (key, member, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zrevrank key, member, (err, data) ->
 			callback err, data
 
 	zscore: (key, member, callback) ->

@@ -1,0 +1,18 @@
+mixin levelProgress(experience)
+	- var level = Mikuia.Tools.getLevel(experience)
+	- var currentExp = experience - Mikuia.Tools.getExperience(level)
+	- var nextLevelExp = Mikuia.Tools.getExperience(level + 1) - Mikuia.Tools.getExperience(level)
+	- var pct = Math.round((currentExp / nextLevelExp) * 100)
+
+	.progress(style='margin-bottom: 0px;')
+		- var colorClass = 'progress-bar-success'
+		if pct > 25
+			- colorClass = 'progress-bar-info'
+		if pct > 50
+			- colorClass = 'progress-bar-warning'
+		if pct > 75
+			- colorClass = 'progress-bar-danger'
+
+		.progress-bar.progress-bar-striped.active(class=colorClass, role='progressbar', style='line-height: 18px; min-width: 20%; width: ' + pct + '%;', aria-valuenow=currentExp, aria-valuemin=Mikuia.Tools.getExperience(level), aria-valuemax=nextLevelExp)
+			span #{pct}%
+	.align-center #{currentExp} / #{nextLevelExp}

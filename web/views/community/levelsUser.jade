@@ -1,0 +1,65 @@
+extends layout
+
+block content
+	.splash
+		.avatars
+			ul
+				each avatarFile in Mikuia.Tools.getAvatars(500)
+					li
+						img(src='/img/avatars/' + avatarFile, width='64', height='64')
+		.container
+			.row
+				.col-md-12
+					h1 #{displayName} Level's Top 100
+	.container
+		.row
+			.col-md-8
+				table.table.table-bordered.table-striped
+					thead
+						tr
+							th Rank
+							th User
+							th Experience
+							th Level
+							th Progress
+					tbody
+						- var i = 1
+						each data in channels
+							if data.length > 0
+								- var channel = data[0]
+								- var exp = data[1]
+
+								tr(class=(user.username == channel ? 'info' : undefined))
+									td
+										h4 ##{i}
+									td
+										.media
+											a.pull-left(href='/user/' + channel)
+												img.img-circle.media-object(src=logos[channel], width=24, height=24)
+											.media-body
+												h4.media-heading
+													a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
+									td
+										h4 #{exp} XP
+									td
+										h3
+											+level(Mikuia.Tools.getLevel(exp), false, true)
+									td(style='width: 20%;')
+										+levelProgress(exp)
+
+								- i++
+
+			.col-md-4
+				.panel.panel-default
+					.panel-heading Your Stats
+					.panel-body
+						if experience
+							h2
+								+level(Mikuia.Tools.getLevel(experience))
+								br
+								.text-muted #{experience} XP
+								| ##{rank}
+							br
+							+levelProgress(experience)
+						else
+							.text-muted No progress on this channel.

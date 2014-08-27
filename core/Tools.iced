@@ -20,3 +20,16 @@ class exports.Tools
 	getAvatars: (limit) ->
 		files = fs.readdirSync 'web/public/img/avatars'
 		return @fillArray files, limit
+
+	getExperience: (level) ->
+		if level > 0
+			return (((level * 20) * level * 0.8) + level * 100) - 16
+		else
+			return 0
+
+	getLevel: (experience) ->
+		level = 0
+		while experience >= @getExperience level
+			level++
+
+		return level - 1
