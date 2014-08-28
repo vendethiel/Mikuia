@@ -29,6 +29,15 @@
 		}
 	},
 	"settings": {
+		"channel": {
+			"announceLevels": {
+				"name": "Announce Levels",
+				"category": "General",
+				"description": "Announce ALL level ups in the chat.",
+				"default": false,
+				"type": "boolean"
+			}
+		},
 		"server": {
 			"globalCommand": "!mikuia"
 		}

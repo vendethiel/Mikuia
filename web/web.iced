@@ -101,6 +101,7 @@ app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 app.get '/', routes.community.index
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
+app.get '/mlvl', routes.community.mlvl
 app.get '/streams', routes.community.streams
 app.get '/user/:userId', routes.community.user
 app.get '/user/:userId/:subpage', routes.community.user
@@ -124,9 +125,13 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 				Channel.setDisplayName user._json.display_name, defer err, data
 				Channel.setBio user._json.bio, defer err, data
 				Channel.setEmail user.email, defer err, data
-				Channel.setLogo user._json.logo, defer err, data
 				Channel.enablePlugin 'base', defer err, data
 				Channel.getInfo 'key', defer err, key
+
+			if user._json.logo? && user._json.logo.indexOf('http') == 0
+				await Channel.setLogo user._json.logo, defer err, data
+			else
+				await Channel.setLogo 'http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png', defer err, data
 
 			if !key?
 				key = rstring
@@ -136,7 +141,7 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 			if req.session.redirectTo?
 				res.redirect req.session.redirectTo
 			else
-				res.redirect '/dashboard'
+				res.redirect '/'
 
 			await Channel.updateAvatar defer err, whatever
 	)(req, res, next)

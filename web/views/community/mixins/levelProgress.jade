@@ -2,7 +2,7 @@ mixin levelProgress(experience)
 	- var level = Mikuia.Tools.getLevel(experience)
 	- var currentExp = experience - Mikuia.Tools.getExperience(level)
 	- var nextLevelExp = Mikuia.Tools.getExperience(level + 1) - Mikuia.Tools.getExperience(level)
-	- var pct = Math.round((currentExp / nextLevelExp) * 100)
+	- var pct = Math.floor((currentExp / nextLevelExp) * 100)
 
 	.progress(style='margin-bottom: 0px;')
 		- var colorClass = 'progress-bar-success'

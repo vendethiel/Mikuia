@@ -24,10 +24,10 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 
 Mikuia.Events.on 'twitch.updated', =>
 	await Mikuia.Database.get 'mikuia:lastUpdate', defer err, time
-	await Mikuia.Database.set 'mikuia:lastUpdate', parseInt((new Date()).getTime() / 1000), defer err2, response
 	if !err && parseInt((new Date()).getTime() / 1000) > parseInt(time) + 240
+		await Mikuia.Database.set 'mikuia:lastUpdate', parseInt((new Date()).getTime() / 1000), defer err2, response
+		
 		viewers = {}
-
 		await Mikuia.Streams.getAll defer err, streams
 		if !err && streams?
 			for stream in streams

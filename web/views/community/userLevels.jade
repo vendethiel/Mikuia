@@ -21,10 +21,11 @@ block content
 							tr
 								td
 									.media
-										a.pull-left(href='#')
+										a.pull-left(href='/levels/' + data[0])
 											img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
 										.media-body
-											h4.media-heading #{displayNames[data[0]]} Level
+											h4.media-heading
+												a(href='/levels/' + data[0]) #{displayNames[data[0]]} Level
 								td
 									h3
 										+level(level, false, true)
@@ -36,8 +37,9 @@ block content
 								td(style='width: 20%;')
 									+levelProgress(experience)
 
-			.col-md-4
-				.panel.panel-default
-					.panel-heading What is this?
-					.panel-body
-						.text-muted I don't know yet! I'll write about it later!
+			if !user
+				.col-md-4
+					.panel.panel-default
+						.panel-heading Is that you?
+						.panel-body
+							.text-muted Login to track your stats easier!

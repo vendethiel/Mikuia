@@ -4,14 +4,36 @@ mixin level(level, mini, noText)
 	if noText == undefined
 		- var noText = false
 
+	- var color = '#777'	// gray
+	if level >= 10
+		- color = '#d2d500'	// yellow
+	if level >= 20
+		- color = '#b3ee00'	// green
+	if level >= 30
+		- color = '#ff9600'	// orange
+	if level >= 40
+		- color = '#ff0000'	// red
+	if level >= 50
+		- color = '#00ffff'	// cyan
+	if level >= 60
+		- color = '#009fff'	// blue
+	if level >= 70
+		- color = '#7a62d3' // violet
+	if level >= 80
+		- color = '#fc00ff' // pink
+	if level >= 90
+		- color = '#7700a9' // purple
+	if level >= 100
+		- color = '#00a938' // dark green
+
 	if !mini
 		if !noText
 			| Level 
-		.level
+		.level(style='border-color: ' + color + ';')
 			span.level-text=level
 	else
 		span(style='font-weight: 300;')
 			if !noText
 				| Level 
-			.level.mini-level
+			.level.mini-level(style='border-color: ' + color + ';')
 				span.mini-level-text=level

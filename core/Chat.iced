@@ -87,9 +87,7 @@ class exports.Chat
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
 		if @joined.indexOf(channel) == -1
-			console.log 'removing a token'
 			limiter.removeTokens 1, (err, rr) =>
-				console.log 'joining channel'	
 				@client.join channel
 				@joined.push channel
 				if callback
@@ -184,9 +182,7 @@ class exports.Chat
 			@Mikuia.Events.emit 'twitch.updated'
 
 	updateChatters: (channel, callback) =>
-		console.log 'gonna get chatters'
 		await Mikuia.Twitch.getChatters channel, defer err, chatters
-		console.log 'got chatters'
 		if !err
 			if chatters.chatters?
 				@chatters[channel] = chatters.chatters
@@ -195,5 +191,4 @@ class exports.Chat
 			Channel = new Mikuia.Models.Channel channel
 			Channel.trackValue 'chatters', chatters.chatter_count
 			
-		console.log 'calling back'
 		callback err

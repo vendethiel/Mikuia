@@ -1,0 +1,34 @@
+mixin levelOverview(experience, levels, logos)
+	if levels == undefined
+		- var levels = false
+	if logos == undefined
+		- var logos = false
+
+	if experience.length > 0
+		- var i = 0
+		each data in experience
+			if !levels
+				- var level = Mikuia.Tools.getLevel(data[1])
+			else
+				- var level = data[1]
+
+			if data.length == 0
+				- i++
+
+			if i < 5 && level > 0
+				.media
+					a.pull-left(href='#')
+						img.img-circle.media-object(src=(logos ? logos[data[0]] : '/img/avatars/' + data[0] + '.jpg'), width=32, height=32)
+					.media-body
+						if !levels
+							small.text-muted.pull-right #{data[1]} XP
+							| #{displayNames[data[0]]} Level
+						else
+							a(href='/user/' + data[0] + '/levels') #{displayNames[data[0]]}
+						br
+						+level(level, true)
+				- i++
+		if experience.length - i > 0
+			small.text-muted and #{experience.length - i} more...
+	else
+		.text-muted No data.

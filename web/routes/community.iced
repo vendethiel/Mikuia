@@ -86,6 +86,7 @@ module.exports =
 
 			displayNames = {}
 			experience = {}
+			logos = {}
 			ranks = {}
 			totalLevel = null
 			userCount = {}
@@ -114,14 +115,62 @@ module.exports =
 				await chan.getDisplayName defer err, displayNames[stream]
 				await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
 
+			await Mikuia.Database.zrevrange 'mikuia:levels', 0, 4, 'withscores', defer err, totalLevels
+			mlvl = Mikuia.Tools.chunkArray totalLevels, 2
+
+			for md in mlvl
+				if md.length > 0
+					chan = new Mikuia.Models.Channel md[0]
+					await
+						chan.getDisplayName defer err, displayNames[md[0]]
+						chan.getLogo defer err, logos[md[0]]
+
 			res.render 'community/levels',
 				displayNames: displayNames
 				experience: experience
 				level: totalLevel
+				logos: logos
+				mlvl: mlvl
 				ranks: ranks
 				rawExperience: data
 				streams: streams
 				userCount: userCount
+
+	mlvl: (req, res) ->
+		await Mikuia.Database.zrevrange 'mikuia:levels', 0, 249, 'withscores', defer err, ranks
+		channels = Mikuia.Tools.chunkArray ranks, 2
+
+		displayNames = {}
+		isStreamer = {}
+		logos = {}
+		rank = null
+		totalExperience = {}
+		totalLevel = null
+
+		for data in channels
+			if data.length > 0
+				channel = new Mikuia.Models.Channel data[0]
+				experience = data[1]
+
+				await
+					channel.isStreamer defer err, isStreamer[data[0]]
+					channel.getDisplayName defer err, displayNames[data[0]]
+					channel.getTotalExperience defer err, totalExperience[data[0]]
+					channel.getLogo defer err, logos[data[0]]
+
+		if req.isAuthenticated()
+			Channel = new Mikuia.Models.Channel req.user.username
+			await Channel.getTotalLevel defer err, totalLevel
+			await Mikuia.Database.zrevrank 'mikuia:levels', req.user.username, defer err, rank
+
+		res.render 'community/mlvl',
+			channels: channels
+			displayNames: displayNames
+			isStreamer: isStreamer
+			level: totalLevel
+			logos: logos
+			rank: rank
+			totalExperience: totalExperience
 
 	streams: (req, res) ->
 		game = ''

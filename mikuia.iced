@@ -64,3 +64,6 @@ Mikuia.Settings.read ->
 	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
 	viewerLeaderboard.setDisplayName 'Viewers'
 	viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
+
+process.on 'uncaughtException', (err) =>
+	console.log err

@@ -39,7 +39,7 @@ class exports.Channel extends Mikuia.Model
 		await @_hget 'plugin:' + plugin + ':settings', field, defer err, data
 		if Mikuia.Plugin.getManifest(plugin)?.settings?.channel?[field]?
 			setting = Mikuia.Plugin.getManifest(plugin).settings.channel[field]
-			if !data && setting.default?
+			if !data? && setting.default?
 				data = setting.default
 			if setting.type == 'boolean'
 				if data == 'true'
@@ -147,7 +147,7 @@ class exports.Channel extends Mikuia.Model
 
 	getDisplayName: (callback) ->
 		await @getInfo 'display_name', defer err, data
-		if err || data == null
+		if err || !data?
 			callback false, @getName()
 		else
 			callback err, data
@@ -158,8 +158,8 @@ class exports.Channel extends Mikuia.Model
 
 	getLogo: (callback) ->
 		await @getInfo 'logo', defer err, data
-		if err || data == null
-			callback false, 'http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_300x300.png'
+		if err || !data?
+			callback false, 'http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png'
 		else
 			callback err, data
 
@@ -201,12 +201,30 @@ class exports.Channel extends Mikuia.Model
 
 		if @getName() in bots
 			await @_hset 'experience', channel, 0, defer err, data
-		else
-			await @_hincrby 'experience', channel, experience, defer err, data
 			await @updateTotalLevel defer whatever
+		else
+			await @getLevel channel, defer err, level
+			await @_hincrby 'experience', channel, experience, defer err, data
+			await @getLevel channel, defer err, newLevel
+
+			await @updateTotalLevel defer whatever
+
+			otherChannel = new Mikuia.Models.Channel channel
+			await otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
+			if !err && announceLevels && newLevel > level
+				await @getDisplayName defer err, displayName
+				await otherChannel.getDisplayName defer err, otherName
+				Mikuia.Chat.say channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
+
 		callback false
 
-	getLevel: => 0
+	getLevel: (channel, callback) =>
+		await @getExperience channel, defer err, data
+		if !err && data?
+			callback false, Mikuia.Tools.getLevel(data)
+		else
+			callback false, 0
+
 	getTotalLevel: (callback) =>
 		await @getInfo 'level', defer err, data
 		if err || !data?
@@ -233,15 +251,26 @@ class exports.Channel extends Mikuia.Model
 
 		callback err, sortable
 
+	getTotalExperience: (callback) =>
+		await @getInfo 'experience', defer err, data
+		if err || !data?
+			callback false, 0
+		else
+			callback false, data
+
 	updateTotalLevel: (callback) =>
+		totalExperience = 0
 		totalLevel = 0
 
 		await @getAllExperience defer err, experience
 		for data in experience
+			totalExperience += parseInt data[1]
 			totalLevel += Mikuia.Tools.getLevel data[1]
-			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer whatever
+			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
 
-		await @setInfo 'level', totalLevel, defer whatever
-		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever
+		await @setInfo 'level', totalLevel, defer whatever, whatever
+		await @setInfo 'experience', totalExperience, defer whatever, whatever
+		await Mikuia.Database.zadd 'mikuia:experience', totalExperience, @getName(), defer whatever, whatever
+		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
 
-		callback false
+		callback totalLevel

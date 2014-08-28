@@ -10,22 +10,6 @@ block content
 				.panel.panel-default
 					.panel-heading Levels
 					.panel-body
-						if Channel.experience.length > 0
-							- var i = 0
-							each data in Channel.experience
-								if i < 5 && Mikuia.Tools.getLevel(data[1]) > 0
-									.media
-										a.pull-left(href='#')
-											img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
-										.media-body
-											small.text-muted.pull-right #{data[1]} XP
-											| #{displayNames[data[0]]} Level
-											br
-											+level(Mikuia.Tools.getLevel(data[1]), true)
-									- i++
-							if Channel.experience.length > 5
-								small.text-muted and #{Channel.experience.length - i} more...
-						else
-							.text-muted No data.
+						+levelOverview(Channel.experience)
 					.panel-footer
 						a(href='/user/' + Channel.name + '/levels') See more >>

@@ -10,7 +10,7 @@ block content
 		.container
 			.row
 				.col-md-12
-					h1 #{displayName} Level's Top 100
+					h1 Mikuia Level Top 250
 	.container
 		.row
 			.col-md-8
@@ -19,53 +19,38 @@ block content
 						tr
 							th Rank
 							th User
-							th Experience
 							th Level
-							th Progress
+							th Total Experience
 					tbody
 						- var i = 1
 						each data in channels
 							if data.length > 0
 								- var channel = data[0]
-								- var exp = data[1]
+								- var level = data[1]
 
 								tr(class=(user && user.username == channel ? 'info' : undefined))
 									td
 										h4 ##{i}
 									td
 										.media
-											a.pull-left(href='/user/' + channel)
+											a.pull-left(href='/user/' + channel + '/levels')
 												img.img-circle.media-object(src=logos[channel], width=24, height=24)
 											.media-body
 												h4.media-heading
 													a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
 									td
-										h4 #{exp} XP
+										h3
+											+level(level, false, true)
 									td
 										h3
-											+level(Mikuia.Tools.getLevel(exp), false, true)
-									td(style='width: 20%;')
-										+levelProgress(exp)
+											| #{totalExperience[channel]} XP
 								- i++
-
-			if user
-				.col-md-4
+			.col-md-4
+				if user
 					.panel.panel-default
-						.panel-heading Your Stats
+						.panel-heading Your Level
 						.panel-body
-							if experience
-								h2
-									+level(Mikuia.Tools.getLevel(experience))
-									br
-									.text-muted #{experience} XP
-									| ##{rank}
+							h2
+								+level(level)
 								br
-								+levelProgress(experience)
-							else
-								.text-muted No progress on this channel.
-			else
-				.col-md-4
-					.panel.panel-default
-						.panel-heading Your avatar or name broken?
-						.panel-body
-							.text-muted Login to update them!
+								.text-muted ##{rank}

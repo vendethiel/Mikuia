@@ -40,7 +40,8 @@ block content
 										- var exp = experience[stream]
 										- var level = Mikuia.Tools.getLevel(exp)
 										td
-											h4 ##{ranks[stream]}
+											h4
+												a(href='/levels/' + stream) ##{ranks[stream]}
 										td.align-center
 											h3
 												+level(level, false, true)
@@ -63,22 +64,14 @@ block content
 					.panel.panel-default
 						.panel-heading Your Levels
 						.panel-body
-							if rawExperience.length > 0
-								- var i = 0
-								each data in rawExperience
-									if i < 5 && Mikuia.Tools.getLevel(data[1]) > 0
-										.media
-											a.pull-left(href='#')
-												img.img-circle.media-object(src='/img/avatars/' + data[0] + '.jpg', width=32, height=32)
-											.media-body
-												small.text-muted.pull-right #{data[1]} XP
-												| #{displayNames[data[0]]} Level
-												br
-												+level(Mikuia.Tools.getLevel(data[1]), true)
-										- i++
-								if rawExperience.length > 5
-									small.text-muted and #{rawExperience.length - i} more...
-							else
-								.text-muted No data.
+							+levelOverview(rawExperience)
 						.panel-footer
 							a(href='/user/' + user.username + '/levels') See more >>
+
+			.col-md-4
+				.panel.panel-default
+					.panel-heading Top Mikuia Levels
+					.panel-body
+						+levelOverview(mlvl, true, logos)
+					.panel-footer
+						a(href='/mlvl') See full leaderboard >>
