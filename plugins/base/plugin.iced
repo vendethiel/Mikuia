@@ -12,6 +12,14 @@ Mikuia.Events.on 'base.dummy', (data) =>
 	if sendMessage
 		Mikuia.Chat.say data.to, data.settings.message
 
+Mikuia.Events.on 'base.levels', (data) =>
+	Channel = new Mikuia.Models.Channel data.user.username
+	await Channel.getExperience data.to.replace('#', ''), defer err, experience
+	await Mikuia.Database.zrevrank 'levels:' + data.to.replace('#', '') + ':experience', data.user.username, defer err, rank
+
+	level = Mikuia.Tools.getLevel experience
+	Mikuia.Chat.say data.to, data.user.username + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
+
 Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
 	if message.indexOf(globalCommand) == 0
@@ -24,7 +32,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 			Channel = new Mikuia.Models.Channel to
 			isMod = checkMod to, from.username
 			switch trigger
-				when "dummy"
+				when 'dummy'
 					if isMod
 						if tokens.length == 2 || tokens.length == 3
 							Mikuia.Chat.say to, 'Usage: ' + globalCommand + ' dummy [command] [text]'
@@ -39,13 +47,14 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 								Mikuia.Chat.say to, 'Command "' + command + '" probably added.'
 							else
 								Mikuia.Chat.say to, 'Um, something failed. Oops.'
-
-				when "mods"
+				when 'levels'
+					Mikuia.Chat.say to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName()
+				when 'mods'
 					if isMod
 						moderators = Mikuia.Chat.mods to
 						if moderators?
 							Mikuia.Chat.say to, 'This is what I know:' + JSON.stringify(moderators)
-				when "remove"
+				when 'remove'
 					if isMod
 						if tokens.length == 2 || tokens.length > 3
 							Mikuia.Chat.say to, 'Usage: ' + globalCommand + ' remove [command]'

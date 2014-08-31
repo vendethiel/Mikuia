@@ -169,7 +169,7 @@ module.exports =
 			isStreamer: isStreamer
 			level: totalLevel
 			logos: logos
-			rank: rank
+			rank: rank + 1
 			totalExperience: totalExperience
 
 	streams: (req, res) ->

@@ -41,15 +41,21 @@ mixin setting(setting, settingName, userSettings)
 						.input-group
 							.input-group-addon Format
 							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
+							.input-group-btn
+								.btn.red(id=settingName + '_preview') Preview
 					else
 						.input-group
 							.input-group-addon Format
 							input.form-control(type='text', name=settingName, placeholder=setting.default)
 					span.help-block
 						| #{setting.description} 
-						a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle()") Need help?
+						a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle(); return false;") Need help?
 					span.list(name=settingName, style='display: none;')
 						.row
+							.col-sm-12
+								h3 Default format:
+								.alert.alert-warning=setting.default
+
 							.col-sm-12
 								h3 How to use Format?
 								p Insert variables using <% and %> like this:

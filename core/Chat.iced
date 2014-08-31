@@ -13,10 +13,6 @@ class exports.Chat
 		@joined = []
 		@moderators = {}
 
-		setInterval () =>
-			@update()
-		, 300000
-
 	connect: =>
 		setTimeout () =>
 			if !@connected
@@ -106,8 +102,7 @@ class exports.Chat
 		callback false
 
 	mods: (channel) =>
-		if channel.indexOf('#') == -1
-			channel = '#' + channel
+		channel = channel.replace('#', '')
 		if @moderators[channel]?
 			return @moderators[channel]
 		else
@@ -180,6 +175,10 @@ class exports.Chat
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 			@Mikuia.Events.emit 'twitch.updated'
+
+			setTimeout () =>
+				@update()
+			, streamList.length * 4000
 
 	updateChatters: (channel, callback) =>
 		await Mikuia.Twitch.getChatters channel, defer err, chatters

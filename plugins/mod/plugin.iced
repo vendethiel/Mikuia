@@ -39,9 +39,10 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 				timeout = true
 
 		mods = Mikuia.Chat.mods Channel.getName()
-		if timeout && Mikuia.settings.bot.name.toLowerCase() in mods && user.username not in mods
-			Mikuia.Chat.say Channel.getName(), '.timeout ' + user.username + ' 10'
-			Mikuia.Chat.say Channel.getName(), 'MOM GET THE CAMERA, ' + user.username.toUpperCase() + ' JUST GOT REKT!'
+		if mods?
+			if timeout && Mikuia.settings.bot.name.toLowerCase() in mods && user.username not in mods
+				Mikuia.Chat.say Channel.getName(), '.timeout ' + user.username + ' 10'
+				Mikuia.Chat.say Channel.getName(), 'MOM GET THE CAMERA, ' + user.username.toUpperCase() + ' JUST GOT REKT!'
 
 Mikuia.Web.get '/dashboard/plugins/mod', checkAuth, (req, res) ->
 	res.render '../../plugins/mod/views/index'

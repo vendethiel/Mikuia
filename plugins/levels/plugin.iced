@@ -1,9 +1,9 @@
 cli = require 'cli-color'
 
+chatActivity = {}
 lastMessage = {}
 
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
-
 	liveChannel = new Mikuia.Models.Channel to
 	await liveChannel.isLive defer err, live
 
@@ -16,23 +16,30 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 			if (new Date()).getTime() / 1000 > lastMessage[user.username] + 20
 				gibePoints = true
 
+		if !chatActivity[user.username]?
+			chatActivity[user.username] = {}
+			
+		chatActivity[user.username][liveChannel.getName()] = 20
+
 		if gibePoints && user.username != to.replace('#', '')
 			Channel = new Mikuia.Models.Channel user.username
-			await Channel.addExperience to.replace('#', ''), 1, defer whatever
+			await Channel.addExperience to.replace('#', ''), Math.floor(Math.random() * 4), chatActivity[user.username][liveChannel.getName()], defer whatever
 
 			lastMessage[user.username] = (new Date()).getTime() / 1000
 
 Mikuia.Events.on 'twitch.updated', =>
 	await Mikuia.Database.get 'mikuia:lastUpdate', defer err, time
-	if !err && parseInt((new Date()).getTime() / 1000) > parseInt(time) + 240
+	seconds = (((new Date()).getTime() / 1000) - parseInt(time))
+	
+	multiplier = Math.round(seconds / 60)
+	@Plugin.Log.info seconds + ' seconds since last update! (' + multiplier + 'x)'
+	if !err
 		await Mikuia.Database.set 'mikuia:lastUpdate', parseInt((new Date()).getTime() / 1000), defer err2, response
 		
 		viewers = {}
 		await Mikuia.Streams.getAll defer err, streams
 		if !err && streams?
 			for stream in streams
-				@Plugin.Log.info 'Gathering viewers of ' + cli.yellowBright(stream) + '...'
-
 				chatters = Mikuia.Chat.getChatters stream
 
 				for categoryName, category of chatters
@@ -42,17 +49,28 @@ Mikuia.Events.on 'twitch.updated', =>
 						viewers[chatter].push stream
 
 			for viewer, channels of viewers
-				@Plugin.Log.info viewer + ' - ' + channels
 				Channel = new Mikuia.Models.Channel viewer
 				pointsToAdd = 0
 
-				if channels.length == 1
-					pointsToAdd = 20
-				else if channels.length == 2
-					pointsToAdd = 10
-				else if channels.length == 3
-					pointsToAdd = 5
+				activeChannels = 0
+				if chatActivity[viewer]?
+					for activityChannel, activityValue of chatActivity[viewer]
+						if activityValue > 0 && activityChannel in streams
+							activeChannels++
+
+				if activeChannels == 1
+					pointsToAdd = 4
+				else if activeChannels == 2
+					pointsToAdd = 2
+				else if activeChannels == 3
+					pointsToAdd = 1
+
+				pointsToAdd *= multiplier
 
 				for channel in channels
 					if pointsToAdd && viewer != channel
-						await Channel.addExperience channel, pointsToAdd, defer whatever
+						if !chatActivity[viewer]?
+							chatActivity[viewer] = {}
+							chatActivity[viewer][channel] = 0
+						await Channel.addExperience channel, pointsToAdd, chatActivity[viewer][channel], defer whatever
+						chatActivity[viewer][channel] -= multiplier

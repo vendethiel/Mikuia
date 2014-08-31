@@ -48,14 +48,16 @@ block content
 		br
 	.container
 		.row
-			.alert.alert-danger
-				strong Changing stuff up!
-				p
-					| As you may have noticed, the old version is slowly disappearing! Please start migrating to... well... this version!
-					br
-					| If you encounter any problems, please let me know as soon as possible, preferably on forums. 
-					br
-					a(href='http://old.mikuia.tv' style='color: white;') Old version is still available for some time over here, but will soon be gone.
+			.col-md-12
+				.alert.alert-danger
+					strong Changing stuff up!
+					p
+						| As you may have noticed, the old version is slowly disappearing! Please start migrating to... well... this version!
+						br
+						| If you encounter any problems, please let me know as soon as possible, preferably on forums. 
+						br
+						a(href='http://old.mikuia.tv' style='color: white;') Old version is still available for some time over here, but will soon be gone.
+		.row
 			.col-md-8
 				each panel in panels
 					.panel.panel-default

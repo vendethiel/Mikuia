@@ -26,16 +26,26 @@
 					"type": "boolean"
 				}
 			}
+		},
+		"base.levels": {
+			"description": "Shows user's level."
 		}
 	},
 	"settings": {
 		"channel": {
 			"announceLevels": {
 				"name": "Announce Levels",
-				"category": "General",
-				"description": "Announce ALL level ups in the chat.",
+				"category": "Levels",
+				"description": "Announce level ups in the chat.",
 				"default": false,
 				"type": "boolean"
+			},
+			"announceLimit": {
+				"name": "Announcing Limit",
+				"category": "Levels",
+				"description": "Announce every X level up. (ex. 5 will announce 5, 10, 15)",
+				"default": 1,
+				"type": "number"
 			}
 		},
 		"server": {
