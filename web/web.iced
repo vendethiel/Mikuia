@@ -10,6 +10,8 @@ request = require 'request'
 rstring = require 'random-string'
 session = require 'express-session'
 
+iced.catchExceptions()
+
 RedisStore = require('connect-redis')(session)
 TwitchStrategy = require('passport-twitchtv').Strategy
 

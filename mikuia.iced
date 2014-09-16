@@ -9,6 +9,8 @@ fs = require 'fs'
 iced = require('iced-coffee-script').iced
 path = require 'path'
 
+iced.catchExceptions()
+
 # So yeah, let's see what happens if we go with this.
 {EventEmitter} = require 'events'
 
@@ -60,10 +62,9 @@ Mikuia.Settings.read ->
 	Mikuia.Twitch.init()
 	Mikuia.Chat.update()
 
+	# Some keys...
+
 	# Stock Leaderboards
 	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
 	viewerLeaderboard.setDisplayName 'Viewers'
 	viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
-
-process.on 'uncaughtException', (err) =>
-	console.log err

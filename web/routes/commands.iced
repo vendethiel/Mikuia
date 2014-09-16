@@ -53,7 +53,7 @@ module.exports =
 
 	settings: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
-
+		
 		settings = null
 		userSettings = null
 		if req.params.name?
