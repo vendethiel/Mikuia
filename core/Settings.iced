@@ -7,6 +7,7 @@ defaultSettings =
 		debug: false
 		name: 'YourBotNameHere'
 		oauth: 'oauth:YOUR_TWITCH_IRC_OAUTH_KEY'
+		autojoin: ['hatsuney']
 	plugins: {}
 	redis:
 		host: '127.0.0.1'

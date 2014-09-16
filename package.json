@@ -1,6 +1,9 @@
 {
   "name": "Mikuia",
   "version": "0.0.1",
+  "scripts": {
+    "start": "./node_modules/iced-coffee-script/bin/coffee mikuia.iced"
+  },
   "dependencies": {
     "body-parser": "1.8.1",
     "cli-color": "0.3.2",
