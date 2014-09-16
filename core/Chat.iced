@@ -127,7 +127,7 @@ class exports.Chat
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
-			joinList = ['hatsuney']
+			joinList = @Mikuia.settings.bot.autojoin
 			streamData = {}
 			streamList = []
 			for chunk, i in chunks
