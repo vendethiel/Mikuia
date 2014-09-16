@@ -49,10 +49,8 @@ class exports.Settings
 				try
 					@Mikuia.settings = JSON.parse data
 					@Mikuia.Log.success 'Loaded settings from settings.json.'
-					callback null
 				catch e
 					@Mikuia.Log.error 'Failed to parse settings.json file: ' + e
-					callback e
 			@setDefaults()
 			callback settingsErr
 	
