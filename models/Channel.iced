@@ -203,29 +203,35 @@ class exports.Channel extends Mikuia.Model
 	addExperience: (channel, experience, activity, callback) =>
 		await @isBot defer err, isBot
 
-		if isBot
-			await @_hdel 'experience', channel, defer err, data
-			await @updateTotalLevel defer whatever
-		else
+		if !isBot
+		# 	await @_hset 'experience', channel, 0, defer err, data
+		# 	await @updateTotalLevel defer whatever
+		# 	await @_hdel 'experience', channel, defer err, data
+		# else
 			await @getLevel channel, defer err, level
 			Mikuia.Log.info 'Adding ' + experience + ' XP to ' + channel + ' Level for ' + @getName() + ' (activity: ' + activity + ')'
 			if activity < 1 || !activity? || isNaN activity
 				Mikuia.Log.info 'Nevermind, giving 0-1 XP.'
-				experience = Math.round(Math.random() * 1)
-			await @_hincrby 'experience', channel, experience, defer err, data
-			await @getLevel channel, defer err, newLevel
-
-			await @updateTotalLevel defer whatever
+				#experience = Math.round(Math.random() * 1)
+				experience = 0
 
 			otherChannel = new Mikuia.Models.Channel channel
-			await
-				otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
-				otherChannel.getSetting 'base', 'announceLimit', defer err2, announceLimit
-			if !err && announceLevels && newLevel > level
-				if !err2 && newLevel % announceLimit == 0 && activity > 0
-					await @getDisplayName defer err, displayName
-					await otherChannel.getDisplayName defer err, otherName
-					Mikuia.Chat.say channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
+			await otherChannel.getSetting 'base', 'disableLevels', defer err, disableLevels
+
+			if !disableLevels
+				await @_hincrby 'experience', channel, experience, defer err, data
+				await @getLevel channel, defer err, newLevel
+
+				await @updateTotalLevel defer whatever
+
+				await
+					otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
+					otherChannel.getSetting 'base', 'announceLimit', defer err2, announceLimit
+				if !err && announceLevels && newLevel > level
+					if !err2 && newLevel % announceLimit == 0 && activity > 0
+						await @getDisplayName defer err, displayName
+						await otherChannel.getDisplayName defer err, otherName
+						Mikuia.Chat.say channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
 
 		callback false
 

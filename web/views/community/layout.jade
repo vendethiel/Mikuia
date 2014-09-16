@@ -22,8 +22,6 @@ html
 
 				.collapse.navbar-collapse
 					ul.nav.navbar-nav
-						li(class=(path == '/' ? 'active' : undefined))
-							a(href='/') Home
 						li(class=(path == '/streams' ? 'active' : undefined))
 							a(href='/streams') Streams
 						li(class=(path.indexOf('/levels') == 0 ? 'active' : undefined))
@@ -31,7 +29,7 @@ html
 						li
 							a(href='http://forums.mikuia.tv') Forums
 						li
-							a(rel='tooltip', data-placement='bottom' href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=psqmaxor%40gmail%2ecom&lc=GB&item_name=Mikuia&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted', title='Stahp! If you donate at least $10, you are eligible for a badge! Just please add your Twitch name in the message! :3') Donate
+							a(href='/donate') Donate
 					if !user
 						ul.nav.navbar-nav.navbar-right.pull-right
 							li

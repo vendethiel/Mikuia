@@ -33,6 +33,13 @@
 	},
 	"settings": {
 		"channel": {
+			"disableLevels": {
+				"name": "Disable Levels",
+				"category": "Levels",
+				"description": "Disable Mikuia Levels.",
+				"default": false,
+				"type": "boolean"
+			},
 			"announceLevels": {
 				"name": "Announce Levels",
 				"category": "Levels",

@@ -13,17 +13,17 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 		if user.username not in Object.keys(lastMessage)
 			gibePoints = true
 		else
-			if (new Date()).getTime() / 1000 > lastMessage[user.username] + 20
+			if (new Date()).getTime() / 1000 > lastMessage[user.username] + 60
 				gibePoints = true
 
 		if !chatActivity[user.username]?
 			chatActivity[user.username] = {}
 			
-		chatActivity[user.username][liveChannel.getName()] = 20
+		chatActivity[user.username][liveChannel.getName()] = 10
 
 		if gibePoints && user.username != to.replace('#', '')
 			Channel = new Mikuia.Models.Channel user.username
-			await Channel.addExperience to.replace('#', ''), Math.floor(Math.random() * 4), chatActivity[user.username][liveChannel.getName()], defer whatever
+			await Channel.addExperience to.replace('#', ''), Math.round(Math.random() * 1), chatActivity[user.username][liveChannel.getName()], defer whatever
 
 			lastMessage[user.username] = (new Date()).getTime() / 1000
 
@@ -59,7 +59,7 @@ Mikuia.Events.on 'twitch.updated', =>
 							activeChannels++
 
 				if activeChannels == 1
-					pointsToAdd = 4
+					pointsToAdd = Math.round(Math.random() * 1) + 3
 				else if activeChannels == 2
 					pointsToAdd = 2
 				else if activeChannels == 3

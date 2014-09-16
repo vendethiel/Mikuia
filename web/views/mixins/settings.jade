@@ -41,8 +41,6 @@ mixin setting(setting, settingName, userSettings)
 						.input-group
 							.input-group-addon Format
 							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName])
-							.input-group-btn
-								.btn.red(id=settingName + '_preview') Preview
 					else
 						.input-group
 							.input-group-addon Format

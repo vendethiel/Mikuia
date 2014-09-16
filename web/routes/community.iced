@@ -1,4 +1,28 @@
 module.exports =
+	donate: (req, res) ->
+		await Mikuia.Database.zrevrange 'mikuia:donators', 0, -1, defer err, donators
+		
+		displayNames = {}
+		logos = {}
+		total = 0
+
+		for channel in donators
+			Channel = new Mikuia.Models.Channel channel
+			await
+				Channel.getDisplayName defer err, displayNames[channel]
+				Channel.getLogo defer err, logos[channel]
+
+		if req.isAuthenticated()
+			await Mikuia.Database.zscore 'mikuia:donators', req.user.username, defer err, data
+			if data? && data > 0
+				total = data
+
+		res.render 'community/donate',
+			displayNames: displayNames
+			donators: donators
+			logos: logos
+			total: total
+
 	index: (req, res) ->
 		await Mikuia.Streams.getAllSorted Mikuia.settings.web.featureMethod, defer sorting, streams
 

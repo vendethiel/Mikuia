@@ -99,6 +99,7 @@ app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/', routes.community.index
+app.get '/donate', routes.community.donate
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.get '/mlvl', routes.community.mlvl

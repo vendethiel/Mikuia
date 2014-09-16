@@ -5,10 +5,11 @@ net = require 'net'
 request = require 'request'
 RateLimiter = require('limiter').RateLimiter
 
-apiLimiter = new RateLimiter 120, 60000
+apiLimiter = new RateLimiter 180, 60000
 banchoLimiter = new RateLimiter 1, 'second'
 codes = {}
 limits = {}
+userBest = {}
 userData = {}
 
 modes = [
@@ -91,7 +92,7 @@ checkForRequest = (user, Channel, message) =>
 				if !err && beatmaps.length
 					switch match[1]
 						when 'b'
-							sendRequest Channel, user, username, beatmaps[0]
+							sendRequest Channel, user, username, beatmaps[0], message
 						when 's'
 							customModes = false
 							preferredMode = '0'
@@ -121,7 +122,28 @@ checkForRequest = (user, Channel, message) =>
 										highestDifficultyRating = map.difficultyrating
 										highestDifficultyMap = map
 
-							sendRequest Channel, user, username, highestDifficultyMap
+							sendRequest Channel, user, username, highestDifficultyMap, message
+
+updateUserBest = (stream, callback) =>
+	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
+	if err || game != 'Osu!'
+		callback err, null
+	else
+		Channel = new Mikuia.Models.Channel stream
+		await
+			Channel.getSetting 'osu', 'name', defer err, name
+			Channel.getSetting 'osu', 'mode', defer err2, mode
+		if !err
+			if err2
+				mode = 0
+
+			await getUserBest name, mode, defer err, best
+			if !userBest[name]?
+				userBest[name] = {}
+
+			userBest[name][mode] = best
+			Mikuia.Log.info 'Updated best ranks for ' + cli.cyanBright(name) + '.'
+		callback false, null
 
 checkRankUpdates = (stream, callback) =>
 	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
@@ -278,7 +300,19 @@ makeAPIRequest = (link, callback) =>
 			else
 				callback true, null
 
-sendRequest = (Channel, user, username, map) =>
+makeTillerinoRequest = (beatmap_id, mods, callback) =>
+	request 'http://bot.tillerino.org:1666/beatmapinfo?k=' + @Plugin.getSetting('tillerinoKey') + '&wait=2000&beatmapid=' + beatmap_id + '&mods=' + mods, (error, response, body) ->
+		if !error && response.statusCode == 200
+			data = {}
+			try
+				data = JSON.parse body
+			catch e
+				console.log e
+			callback false, data
+		else
+			callback true, null
+
+sendRequest = (Channel, user, username, map, message) =>
 	continueRequest = true
 
 	await Channel.getSetting 'osu', 'requestMapLimit', defer err, requestMapLimit
@@ -292,6 +326,93 @@ sendRequest = (Channel, user, username, map) =>
 			Channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
 			Channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
 			Channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
+
+		modValue = 0
+		modString = ''
+
+		if message.indexOf('+DT') > -1
+			modValue += 64
+			modString += '+DoubleTime'
+		if message.indexOf('+NC') > -1
+			modValue += 512
+			modString += '+Nightcore'
+		if message.indexOf('+HR') > -1
+			modValue += 16
+			modString += '+HardRock'
+		if message.indexOf('+HD') > -1
+			modValue += 8
+			modString += '+Hidden'
+		if message.indexOf('+EZ') > -1
+			modValue += 2
+			modString += '+Easy'
+		if message.indexOf('+HT') > -1
+			modValue += 256
+			modString += '+HalfTime'
+		if message.indexOf('+SO') > -1
+			modValue += 4096
+			modString += '+SpunOut'
+		if message.indexOf('+NF') > -1
+			modValue += 1
+			modString += '+NoFail'
+
+		if map.approved > 0
+			await makeTillerinoRequest map.beatmap_id, modValue, defer err4, tillerinoData
+
+		accuracies = {}
+		maxRange = 0
+		maxRangeString = ''
+		minRange = 0
+		minRangeString = ''
+		wholeString = ''
+
+		console.log cli.redBright 'BIG PP STUFF OVER HERE ================'
+
+		if userBest[username]?[map.mode]?
+			best = userBest[username][map.mode]
+			
+			maxRange = best[0].pp
+			console.log cli.yellowBright 'maxRange = ' + maxRange
+			minRange = best[24].pp
+			console.log cli.yellowBright 'minRange = ' + minRange
+		
+		if tillerinoData?.ppForAcc?.entry?
+			maxDiff = 0
+			minDiff = 0
+			for entry in tillerinoData.ppForAcc.entry
+				if !maxDiff
+					maxDiff = maxRange - entry.value
+					maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+					console.log cli.yellowBright 'maxDiff = ' + maxDiff
+					minDiff = minRange - entry.value
+					minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+					console.log cli.yellowBright 'minDiff = ' + minDiff
+					console.log cli.yellowBright 'maxRangeString = ' + maxRangeString
+					console.log cli.yellowBright 'minRangeString = ' + minRangeString
+
+				else
+					if maxDiff > Math.abs(maxRange - entry.value)
+						console.log cli.yellowBright 'maxDiff > abs'
+						maxDiff = Math.abs(maxRange - entry.value)
+						maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+						console.log cli.yellowBright 'maxDiff = ' + maxDiff
+						console.log cli.yellowBright 'maxRangeString = ' + maxRangeString
+
+					if minDiff > Math.abs(minRange - entry.value)
+						console.log cli.yellowBright 'minDiff > abs'
+						minDiff = Math.abs(minRange - entry.value)
+						minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+						console.log cli.yellowBright 'minDiff = ' + minDiff
+						console.log cli.yellowBright 'minRangeString = ' + minRangeString
+
+			if minRangeString == maxRangeString
+				wholeString = minRangeString
+			else
+				wholeString = minRangeString + ' | ' + maxRangeString
+		else
+			wholeString = 'no pp data'
+
+		console.log wholeString
+		console.log cli.redBright '================ END OF BIG PP STUFF OVER HERE'
 
 		modeText = 'osu!'
 		approvedText = 'Ranked'
@@ -330,6 +451,8 @@ sendRequest = (Channel, user, username, map) =>
 			diff_drain: map.diff_drain
 			mode: map.mode
 			modeText: modeText
+			modString: modString
+			ppString: wholeString
 
 		if !limits[Channel.getName()]?
 			limits[Channel.getName()] =
@@ -357,10 +480,14 @@ getUser = (name, mode, callback) ->
 	await makeAPIRequest '/get_user?u=' + name + '&m=' + mode + '&type=string', defer err, data
 	callback err, data
 
+getUserBest = (name, mode, callback) ->
+	await makeAPIRequest '/get_user_best?u=' + name + '&m=' + mode + '&type=string&limit=25', defer err, data
+	callback err, data
+
 Mikuia.Events.on 'twitch.connected', =>
 	stream = net.connect
 		port: 6667
-		host: 'cho.ppy.sh'
+		host: 'irc.ppy.sh'
 
 	@bancho = irc stream
 	@bancho.pass @Plugin.getSetting 'password'
@@ -462,9 +589,25 @@ Mikuia.Web.post '/plugins/osu/post/:username', (req, res) ->
 	res.send 200
 
 # Updating ranks!
+
 setInterval () =>
 	await Mikuia.Streams.getAll defer err, streams
 	if !err && streams?
 		for stream in streams
 			await checkRankUpdates stream, defer err, status
 , 15000
+
+setInterval () =>
+	await Mikuia.Streams.getAll defer err, streams
+	if !err && streams?
+		for stream in streams
+			await updateUserBest stream, defer err, whatever
+, 60000
+
+Mikuia.Events.on 'twitch.updated', =>
+	console.log Object.keys(userBest).length
+	if Object.keys(userBest).length == 0
+		await Mikuia.Streams.getAll defer err, streams
+		if !err && streams?
+			for stream in streams
+				await updateUserBest stream, defer err, whatever

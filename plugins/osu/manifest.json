@@ -130,7 +130,7 @@
 				"name": "In-game request text",
 				"category": "Requests",
 				"description": "Format of the request text in-game.",
-				"default": "New request from <%requester%>: [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]] (<%round/bpm%> BPM, ★<%round2/difficultyrating%>)",
+				"default": "<%requester%> > [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]]<%modString%> (<%round/bpm%> BPM, ★<%round2/difficultyrating%>) (<%ppString%>)",
 				"type": "format",
 				"variables": {
 					"requester": "Username of the requester",
@@ -154,14 +154,16 @@
 					"diff_approach": "AR (Approach Rate)",
 					"diff_drain": "HP (HP Drain Rate)",
 					"mode": "Mode ID",
-					"modeText": "Mode"
+					"modeText": "Mode",
+					"modString": "Requested Mods",
+					"ppString": "Calculated PP Values"
 				}
 			},
 			"chatRequestFormat": {
 				"name": "Chat request text",
 				"category": "Requests",
 				"description": "Format of the request map info on chat.",
-				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>] (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars",
+				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>]<%modString%> (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars (<%ppString%>)",
 				"type": "format",
 				"variables": {
 					"requester": "Username of the requester",
@@ -185,7 +187,9 @@
 					"diff_approach": "AR (Approach Rate)",
 					"diff_drain": "HP (HP Drain Rate)",
 					"mode": "Mode ID",
-					"modeText": "Mode"
+					"modeText": "Mode",
+					"modString": "Requested Mods",
+					"ppString": "Calculated PP Values"
 				}
 			},
 			"updates": {
@@ -279,7 +283,8 @@
 			"blockedWords": [],
 			"debug": false,
 			"name": "OSU_USERNAME_HERE",
-			"password": "OSU_IRC_AUTH_PASS"
+			"password": "OSU_IRC_AUTH_PASS",
+			"tillerinoKey": "HAHA_GOOD_LUCK_WITH_THAT_ONE"
 		}
 	}
 }
