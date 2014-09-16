@@ -44,17 +44,17 @@ class exports.Settings
 		fs.readFile 'settings.json', (settingsErr, data) =>
 			if settingsErr
 				@Mikuia.Log.warning 'Settings file doesn\'t exist, creating one.'
-				callback(settingsErr)
 			else
 				# A better way to parse JSON would be nice... errors here tend to crash everything.
 				try
 					@Mikuia.settings = JSON.parse data
 					@Mikuia.Log.success 'Loaded settings from settings.json.'
-					callback(null)
+					callback null
 				catch e
 					@Mikuia.Log.error 'Failed to parse settings.json file: ' + e
-					callback(e)
+					callback e
 			@setDefaults()
+			callback settingsErr
 	
 	save: ->
 		fs.writeFileSync 'settings.json', JSON.stringify @Mikuia.settings, null, '\t'
