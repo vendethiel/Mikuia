@@ -18,8 +18,7 @@ class exports.Tools
 		return _.shuffle array
 
 	getAvatars: (limit) ->
-		avatarFolder = 'web/public/img/avatars'
-		files = fs.readdirSync avatarFolder
+		files = fs.readdirSync 'web/public/img/avatars'
 		return @fillArray files, limit
 
 	getExperience: (level) ->
