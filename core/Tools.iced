@@ -18,6 +18,8 @@ class exports.Tools
 		return _.shuffle array
 
 	getAvatars: (limit) ->
+		if not fs.existsSyncpath
+			return []
 		files = fs.readdirSync 'web/public/img/avatars'
 		return @fillArray files, limit
 
