@@ -18,9 +18,10 @@ class exports.Tools
 		return _.shuffle array
 
 	getAvatars: (limit) ->
-		if not fs.existsSyncpath
+		avatarFolder = 'web/public/img/avatars'
+		if not fs.existsSyncpath avatarFolder
 			return []
-		files = fs.readdirSync 'web/public/img/avatars'
+		files = fs.readdirSync avatarFolder
 		return @fillArray files, limit
 
 	getExperience: (level) ->
