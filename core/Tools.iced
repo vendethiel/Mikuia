@@ -19,8 +19,6 @@ class exports.Tools
 
 	getAvatars: (limit) ->
 		avatarFolder = 'web/public/img/avatars'
-		if not fs.existsSyncpath avatarFolder
-			return []
 		files = fs.readdirSync avatarFolder
 		return @fillArray files, limit
 
