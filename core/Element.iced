@@ -9,12 +9,13 @@ class exports.Element
 		panels = @getAll key + '.panel'
 		results = []
 
-		for panel in panels
-			plugin = Mikuia.Plugin.get panel.plugin
-			await plugin.getPanel panel.id, defer response
-			results.push
-				title: panel.title,
-				content: response
+		if panels?.length
+			for panel in panels
+				plugin = Mikuia.Plugin.get panel.plugin
+				await plugin.getPanel panel.id, defer response
+				results.push
+					title: panel.title,
+					content: response
 
 		callback results			
 
