@@ -370,10 +370,11 @@ sendRequest = (Channel, user, username, map, message) =>
 		if userBest[username]?[map.mode]?
 			best = userBest[username][map.mode]
 			
-			maxRange = best[0].pp
-			console.log cli.yellowBright 'maxRange = ' + maxRange
-			minRange = best[24].pp
-			console.log cli.yellowBright 'minRange = ' + minRange
+			if best[0]?.pp? && best[24]?.pp?
+				maxRange = best[0].pp
+				console.log cli.yellowBright 'maxRange = ' + maxRange
+				minRange = best[24].pp
+				console.log cli.yellowBright 'minRange = ' + minRange
 		
 		if tillerinoData?.ppForAcc?.entry?
 			maxDiff = 0

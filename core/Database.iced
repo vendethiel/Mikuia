@@ -124,6 +124,16 @@ class exports.Database
 			@client.zrevrange key, start, stop, withscores, (err, data) ->
 				callback err, data
 
+	zrevrangebyscore: (key, max, min, withscores, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		if !callback?
+			callback = withscores
+			@client.zrevrangebyscore key, max, min, (err, data) ->
+				callback err, data
+		else
+			@client.zrevrangebyscore key, max, min, withscores, (err, data) ->
+				callback err, data
+
 	zrevrank: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.zrevrank key, member, (err, data) ->
