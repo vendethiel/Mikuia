@@ -21,17 +21,54 @@ block content
 			.panel.panel-default
 				.panel-heading
 					h3.panel-title Command settings for #{command}
-				if settings
-					.panel-body.form
-						form.form-horizontal(action='/dashboard/commands/save/' + command, method='post', role='form')
-							.form-body
+				.panel-body.form
+					form.form-horizontal(action='/dashboard/commands/save/' + command, method='post', role='form')
+						.form-body
+							.well
+								h3 Command properties
+								br
+								.form-group
+									label.col-sm-3.control-label Only Mods
+									.col-sm-8
+										.checkbox
+											label
+												if userSettings && userSettings._onlyMods
+													if userSettings._onlyMods == 'true'
+														input(type='checkbox', name='_onlyMods', checked)
+													else
+														input(type='checkbox', name='_onlyMods')
+												else
+													input(type='checkbox', name='_onlyMods')
+												| Only allow moderators to use the command.
+								.form-group
+									label.col-sm-3.control-label Only Subs
+									.col-sm-8
+										.checkbox
+											label
+												if userSettings && userSettings._onlySubs
+													if userSettings._onlySubs == 'true'
+														input(type='checkbox', name='_onlySubs', checked)
+													else
+														input(type='checkbox', name='_onlySubs')
+												else
+													input(type='checkbox', name='_onlySubs')
+												| Only allow subscribers to use the command.
+								.form-group
+									label.col-sm-3.control-label Minimal Level
+									.col-sm-8
+										if userSettings && userSettings._minLevel
+											input.form-control(type='number', name='_minLevel', placeholder='0', value=userSettings._minLevel)
+										else
+											input.form-control(type='number', name='_minLevel', placeholder='0')
+										span.help-block Minimal Level required to use the command.
+							if settings
+								h3 Command-specific settings
+								br
 								+settings(settings, userSettings)
-							.form-actions
-								button.btn.blue(type='submit') Save
-				else
-					.panel-body
-						.well.well-lg
-							h4.block This command has no configurable settings.
-							p
-								| Uh, well, that happens. Please don't cry. Why are you crying? Now I'm crying too... ;_;
-						a.btn.red(href='/dashboard/commands') Take me back, please...
+							else
+								.well.well-lg
+									h4.block There are no command-specific configurable settings.
+									p
+										| Uh, well, that happens. Please don't cry. Why are you crying? Now I'm crying too... ;_;
+						.form-actions
+							button.btn.blue(type='submit') Save

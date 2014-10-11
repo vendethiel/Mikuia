@@ -107,6 +107,12 @@ class exports.Channel extends Mikuia.Model
 			for settingName, setting of Mikuia.Plugin.getHandler(handler).settings
 				if !settings[settingName]?
 					settings[settingName] = setting.default
+				else
+					if setting.type == 'boolean'
+						if settings[settingName] == 'true'
+							settings[settingName] = true
+						if settings[settingName] == 'false'
+							settings[settingName] = false
 
 		callback err, settings
 
@@ -119,6 +125,7 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	setCommandSetting: (command, key, value, callback) ->
+		console.log 'command: ' + command + ', key: ' + key + ', value: ' + value
 		if value != ''
 			await @_hset 'command:' + command, key, value, defer err, data
 		else
@@ -182,6 +189,18 @@ class exports.Channel extends Mikuia.Model
 	setLogo: (logo, callback) ->
 		await @setInfo 'logo', logo, defer err, data
 		callback err, data
+
+	# Moderatoring (LOL)
+
+	isModOf: (channel, callback) ->
+		if channel == @getName()
+			return true
+		else
+			moderators = Mikuia.Chat.mods channel
+			if moderators? && @getName() in moderators
+				return true
+			else
+				return false
 
 	# :D
 

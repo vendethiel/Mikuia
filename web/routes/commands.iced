@@ -42,12 +42,29 @@ module.exports =
 		Channel = new Mikuia.Models.Channel req.user.username
 
 		await Channel.getCommand req.params.name, defer err, data
-		if !err && data? && Mikuia.Plugin.getHandler(data).settings?
-			settings = Mikuia.Plugin.getHandler(data).settings
-			for setting, value of req.body
-				if settings[setting]?
-					# To do: stuff
-					await Channel.setCommandSetting req.params.name, setting, value, defer err, data
+		if !err && data?
+			if Mikuia.Plugin.getHandler(data).settings?
+				settings = Mikuia.Plugin.getHandler(data).settings
+			else
+				settings = {}
+			settings._onlyMods =
+				type: 'boolean'
+			settings._onlySubs =
+				type: 'boolean'
+			settings._minLevel =
+				type: 'number'
+			for settingName, setting of settings
+				if setting.type == 'boolean'
+					if req.body[settingName]? && req.body[settingName] == 'on'
+							req.body[settingName] = true
+						else 
+							req.body[settingName] = false
+				if req.body[settingName]? && setting.type != 'disabled'
+					if setting.type == 'number'
+						req.body[settingName] = parseFloat req.body[settingName]
+						if isNaN(req.body[settingName])
+							req.body[settingName] = ''
+					await Channel.setCommandSetting req.params.name, settingName, req.body[settingName], defer err, data
 
 		res.redirect '/dashboard/commands'
 
@@ -61,9 +78,9 @@ module.exports =
 			if !err && data? && Mikuia.Plugin.handlerExists data
 				if Mikuia.Plugin.getHandler(data).settings?
 					settings = Mikuia.Plugin.getHandler(data).settings
-					await Channel.getCommandSettings req.params.name, false, defer err, data
-					if !err && data?
-						userSettings = data
+				await Channel.getCommandSettings req.params.name, false, defer err, data
+				if !err && data?
+					userSettings = data
 
 			res.render 'command',
 				command: req.params.name

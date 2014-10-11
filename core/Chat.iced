@@ -66,7 +66,25 @@ class exports.Chat
 			Channel.getCommand trigger, defer commandError, command
 			Channel.getCommandSettings trigger, true, defer settingsError, settings
 
-		if !commandError && command?
+		continueCommand = true
+
+		if !settingsError && user.username != to
+			Chatter = new @Mikuia.Models.Channel user.username
+
+			if settings?._minLevel?
+				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
+				if userLevel < settings._minLevel
+					continueCommand = false
+
+			if settings?._onlyMods?
+				if not Chatter.isModOf Channel.getName()
+					continueCommand = false
+
+			if settings?._onlySubs?
+				if user.special.indexOf('subscriber') == -1
+					continueCommand = false
+
+		if !commandError && command? && continueCommand
 			handler = @Mikuia.Plugin.getHandler command
 			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
 
