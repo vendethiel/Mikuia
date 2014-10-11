@@ -4,6 +4,9 @@
 	"baseFile": "plugin.iced",
 	"hidden": true,
 	"handlers": {
+		"base.add.dummy": {
+			"description": "Adds/edits a dummy command."
+		},
 		"base.dummy": {
 			"description": "Shows a text message.",
 			"settings": {
@@ -29,6 +32,9 @@
 		},
 		"base.levels": {
 			"description": "Shows user's level."
+		},
+		"base.remove": {
+			"description": "Removes a command."
 		}
 	},
 	"settings": {
