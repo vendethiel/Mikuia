@@ -36,18 +36,7 @@ Mikuia.Events.on 'base.add.dummy', (data) =>
 	addDummy data.user.username, data.to, data.tokens
 
 Mikuia.Events.on 'base.dummy', (data) =>
-	sendMessage = true
-
-	if data.settings.onlyMods
-		if !checkMod data.to, data.user.username
-			sendMessage = false
-
-	if data.settings.onlySubs
-		if 'subscriber' not in data.user.special
-			sendMessage = false
-
-	if sendMessage
-		Mikuia.Chat.say data.to, data.settings.message
+	Mikuia.Chat.say data.to, data.settings.message
 
 Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username

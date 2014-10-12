@@ -68,19 +68,19 @@ class exports.Chat
 
 		continueCommand = true
 
-		if !settingsError && user.username != to
+		if !settingsError && user.username != Channel.getName()
 			Chatter = new @Mikuia.Models.Channel user.username
 
-			if settings?._minLevel?
+			if settings?._minLevel? && settings._minLevel > 0
 				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
 				if userLevel < settings._minLevel
 					continueCommand = false
 
-			if settings?._onlyMods?
+			if settings?._onlyMods? && settings._onlyMods
 				if not Chatter.isModOf Channel.getName()
 					continueCommand = false
 
-			if settings?._onlySubs?
+			if settings?._onlySubs? && settings._onlySubs
 				if user.special.indexOf('subscriber') == -1
 					continueCommand = false
 

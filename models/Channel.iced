@@ -101,18 +101,19 @@ class exports.Channel extends Mikuia.Model
 			@_hgetall 'command:' + command, defer err, settings
 			@getCommand command, defer commandError, handler
 
-		if defaults && !commandError && Mikuia.Plugin.getHandler(handler)?.settings?
-			if !settings?
-				settings = {}
+		if !settings?
+			settings = {}
+
+		if !commandError && Mikuia.Plugin.getHandler(handler)?.settings?
+			for settingName, setting of settings
+				if settings[settingName] == 'true'
+					settings[settingName] = true
+				if settings[settingName] == 'false'
+					settings[settingName] = false
+
 			for settingName, setting of Mikuia.Plugin.getHandler(handler).settings
-				if !settings[settingName]?
-					settings[settingName] = setting.default
-				else
-					if setting.type == 'boolean'
-						if settings[settingName] == 'true'
-							settings[settingName] = true
-						if settings[settingName] == 'false'
-							settings[settingName] = false
+				if defaults && !settings[settingName]?
+					settings[settingName] = setting.default				
 
 		callback err, settings
 

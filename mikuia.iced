@@ -9,6 +9,10 @@ fs = require 'fs'
 iced = require('iced-coffee-script').iced
 path = require 'path'
 
+fs.exists 'newrelic.js', (exists) =>
+	if exists
+		require 'newrelic'
+
 iced.catchExceptions()
 
 # So yeah, let's see what happens if we go with this.
