@@ -3,11 +3,11 @@ extends layout
 block content
 	if featured
 		.splash.splash-index.featured
-			.avatars
-				ul
-					each avatarFile in Mikuia.Tools.getAvatars(1000)
-						li
-							img(src='/img/avatars/' + avatarFile, width='64', height='64')
+			//- .avatars
+			//- 	ul
+			//- 		each avatarFile in Mikuia.Tools.getAvatars(1000)
+			//- 			li
+			//- 				img(src='/img/avatars/' + avatarFile, width='64', height='64')
 			.container
 				.row
 					.col-xs-4
@@ -75,7 +75,12 @@ block content
 	.well
 		.container
 			.row
-				.col-md-12
+				.col-md-9
 					h1 Other Streams
 					each miniData in sorting
 						+stream(streams[miniData[0]], displayHtml, miniData[1])
+				.col-md-3
+					h1 Woo, Twitter
+					a.twitter-timeline(href='https://twitter.com/Maxorq', data-widget-id='540548781029462017') Tweets by @Maxorq
+					script(type='text/javascript').
+						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
