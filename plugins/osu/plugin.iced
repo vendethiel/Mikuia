@@ -58,7 +58,7 @@ banchoSay = (name, message) =>
 			for match in matches
 				if match?
 					message = message.replace match[0], insertStars match[0].length
-					fs.appendFileSync 'logs/' + name + '.txt', 'Lukanya: ' + cleanMessage + '\n'
+					fs.appendFileSync 'logs/osu/' + name + '.txt', 'Mikuia: ' + cleanMessage + '\n'
 		@bancho.send name, message
 
 checkForRequest = (user, Channel, message) =>
@@ -140,8 +140,16 @@ updateUserBest = (stream, callback) =>
 			await getUserBest name, mode, defer err, best
 			if !userBest[name]?
 				userBest[name] = {}
+			else
+				for score, i in best
+					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
+						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
+						console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
+						if Channel.getName() == 'hatsuney'
+							Mikuia.Chat.say 'hatsuney', '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
 
 			userBest[name][mode] = best
+			userBest[name].timeUpdated = (new Date()).getTime() + (8 * 60 * 60 * 1000)
 			Mikuia.Log.info 'Updated best ranks for ' + cli.cyanBright(name) + '.'
 		callback false, null
 
