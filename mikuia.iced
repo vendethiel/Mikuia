@@ -8,6 +8,7 @@ cli = require 'cli-color'
 fs = require 'fs'
 iced = require('iced-coffee-script').iced
 path = require 'path'
+repl = require 'repl'
 
 fs.exists 'newrelic.js', (exists) =>
 	if exists
@@ -72,3 +73,6 @@ Mikuia.Settings.read ->
 	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
 	viewerLeaderboard.setDisplayName 'Viewers'
 	viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
+
+r = repl.start 'Mikuia> '
+r.context.Mikuia = Mikuia
