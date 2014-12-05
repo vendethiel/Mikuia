@@ -67,6 +67,9 @@ Mikuia.Events.on 'twitch.updated', =>
 
 				pointsToAdd *= multiplier
 
+				if pointsToAdd > 20
+					pointsToAdd = 20
+
 				for channel in channels
 					if pointsToAdd && viewer != channel
 						if !chatActivity[viewer]?
