@@ -13,6 +13,11 @@ class exports.Chat
 		@joined = []
 		@moderators = {}
 
+	broadcast: (message) =>
+		await Mikuia.Streams.getAll defer err, streams
+		for stream in streams
+			@say stream, '.me broadcast: ' + message
+
 	connect: =>
 		setTimeout () =>
 			if !@connected
@@ -53,7 +58,10 @@ class exports.Chat
 		return @chatters[channel]
 
 	handleMessage: (user, to, message) ->
-		@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
+		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf('hatsuney') > -1
+			@Mikuia.Log.info cli.bgMagenta '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
+		else
+			@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
 
 		Channel = new @Mikuia.Models.Channel to
@@ -111,7 +119,7 @@ class exports.Chat
 				callback true
 
 	joinMultiple: (channels, callback) =>
-		for channel in channels
+		for channel, i in channels
 			await @join channel, defer whatever
 
 		for channel in channels
@@ -141,6 +149,9 @@ class exports.Chat
 				@client.say channel, line
 				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
 
+	sayRaw: (channel, message) =>
+		@client.say channel, message
+
 	update: =>
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
@@ -165,7 +176,6 @@ class exports.Chat
 							Channel.trackValue 'viewers', stream.viewers
 
 						@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
-			console.log joinList
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 						
 			# Yay, save dat stuff.
