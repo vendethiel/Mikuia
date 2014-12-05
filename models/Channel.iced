@@ -231,7 +231,6 @@ class exports.Channel extends Mikuia.Model
 		# 	await @_hdel 'experience', channel, defer err, data
 		# else
 			await @getLevel channel, defer err, level
-			Mikuia.Log.info 'Adding ' + experience + ' XP to ' + channel + ' Level for ' + @getName() + ' (activity: ' + activity + ')'
 			if activity < 1 || !activity? || isNaN activity
 				Mikuia.Log.info 'Nevermind, giving 0-1 XP.'
 				#experience = Math.round(Math.random() * 1)
@@ -299,13 +298,15 @@ class exports.Channel extends Mikuia.Model
 
 	updateTotalLevel: (callback) =>
 		totalExperience = 0
-		totalLevel = 0
+		#totalLevel = 0
 
 		await @getAllExperience defer err, experience
 		for data in experience
 			totalExperience += parseInt data[1]
-			totalLevel += Mikuia.Tools.getLevel data[1]
+			#totalLevel += Mikuia.Tools.getLevel data[1]
 			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
+
+		totalLevel = Mikuia.Tools.getLevel totalExperience
 
 		await @setInfo 'level', totalLevel, defer whatever, whatever
 		await @setInfo 'experience', totalExperience, defer whatever, whatever
