@@ -1,18 +1,23 @@
 cli = require 'cli-color'
+fs = require 'fs'
 moment = require 'moment'
 
 class exports.Log
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 
+	consoleLog: (message) =>
+		console.log message
+		fs.appendFileSync 'logs/' + moment().format('YYYY-MM-DD') + '.txt', message
+
 	log: (message, status, color) ->
 		if status?
 			if color?
-				console.log moment().format('HH:mm:ss') + ' [' + color(status) + '] ' + message
+				@consoleLog moment().format('HH:mm:ss') + ' [' + color(status) + '] ' + message
 			else
-				console.log moment().format('HH:mm:ss') + ' [' + status + '] ' + message
+				@consoleLog moment().format('HH:mm:ss') + ' [' + status + '] ' + message
 		else
-			console.log moment().format('HH:mm:ss') + '[UNKNOWN] ' + message
+			@consoleLog moment().format('HH:mm:ss') + '[UNKNOWN] ' + message		
 
 	success: (message) ->
 		@log message, 'Success', cli.greenBright
