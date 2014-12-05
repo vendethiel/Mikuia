@@ -40,11 +40,12 @@ Mikuia.Events.on 'base.dummy', (data) =>
 
 Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username
-	await Channel.getExperience data.to.replace('#', ''), defer err, experience
-	await Mikuia.Database.zrevrank 'levels:' + data.to.replace('#', '') + ':experience', data.user.username, defer err, rank
+	if Channel.getName() != data.to
+		await Channel.getExperience data.to.replace('#', ''), defer err, experience
+		await Mikuia.Database.zrevrank 'levels:' + data.to.replace('#', '') + ':experience', data.user.username, defer err, rank
 
-	level = Mikuia.Tools.getLevel experience
-	Mikuia.Chat.say data.to, data.user.username + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
+		level = Mikuia.Tools.getLevel experience
+		Mikuia.Chat.say data.to, data.user.username + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
 
 Mikuia.Events.on 'base.remove', (data) =>
 	removeCommand data.user.username, data.to, data.tokens
