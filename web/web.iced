@@ -1,7 +1,7 @@
 bodyParser = require 'body-parser'
 cookieParser = require 'cookie-parser'
 express = require 'express.io'
-fs = require 'fs'
+fs = require 'fs-extra'
 gm = require 'gm'
 morgan = require 'morgan'
 passport = require 'passport'
@@ -79,6 +79,8 @@ app.use (req, res, next) ->
 	res.locals.pages = pages
 	next()
 
+fs.mkdirs 'web/public/img/avatars'
+
 fileList = fs.readdirSync 'web/routes'
 for file in fileList
 	filePath = path.resolve 'web/routes/' + file
@@ -149,4 +151,4 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 			await Channel.updateAvatar defer err, whatever
 	)(req, res, next)
 
-app.listen 2912
+app.listen Mikuia.settings.web.port
