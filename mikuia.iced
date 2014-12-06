@@ -27,8 +27,15 @@ Mikuia =
 global.iced = iced
 global.Mikuia = Mikuia
 
-fs.mkdirSync 'logs'
-fs.mkdirSync 'logs/mikuia'
+paths = [
+	'logs'
+	'logs/mikuia'
+]
+
+for path in paths
+	await fs.exists path, (exists) =>
+		if !exists
+			fs.mkdirSync path
 
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
