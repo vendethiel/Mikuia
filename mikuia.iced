@@ -5,7 +5,7 @@
 ###
 
 cli = require 'cli-color'
-fs = require 'fs'
+fs = require 'fs-extra'
 iced = require('iced-coffee-script').iced
 path = require 'path'
 repl = require 'repl'
@@ -27,15 +27,7 @@ Mikuia =
 global.iced = iced
 global.Mikuia = Mikuia
 
-paths = [
-	'logs'
-	'logs/mikuia'
-]
-
-for path in paths
-	await fs.exists path, (exists) =>
-		if !exists
-			fs.mkdirSync path
+fs.mkdirs 'logs/mikuia'
 
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
