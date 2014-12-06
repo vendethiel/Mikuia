@@ -28,6 +28,7 @@ global.iced = iced
 global.Mikuia = Mikuia
 
 fs.mkdirSync 'logs'
+fs.mkdirSync 'logs/mikuia'
 
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
