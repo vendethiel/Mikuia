@@ -27,6 +27,8 @@ Mikuia =
 global.iced = iced
 global.Mikuia = Mikuia
 
+fs.mkdirSync 'logs'
+
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
 	filePath = path.resolve './', 'core', fileName
