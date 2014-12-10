@@ -145,11 +145,11 @@ a.navbar-brand {
 }
 
 .splash {
-	background-color: #7a62d3;
-	background-image: -webkit-linear-gradient(top, #7a62d3, #000000);
-	background-image:    -moz-linear-gradient(top, #7a62d3, #000000);
-	background-image:      -o-linear-gradient(top, #7a62d3, #000000);
-	background-image:         linear-gradient(to bottom, #7a62d3, #000000);
+	background-color: #a190e0;
+	background-image: -webkit-linear-gradient(top, #a190e0, #7a62d3);
+	background-image:    -moz-linear-gradient(top, #a190e0, #7a62d3);
+	background-image:      -o-linear-gradient(top, #a190e0, #7a62d3);
+	background-image:         linear-gradient(to bottom, #a190e0, #7a62d3);
 	box-shadow: 0px 0px 50px black;
 	color: #fff;
 	height: 12em;
