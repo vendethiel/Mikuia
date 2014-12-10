@@ -240,6 +240,7 @@ module.exports =
 						Channel.getDisplayName defer err, channel.display_name
 						Channel.getTotalLevel defer err, channel.level
 						Channel.getLogo defer err, channel.logo
+						Channel.getProfileBanner defer err, channel.profileBanner
 
 					for data in channel.experience
 						chan = new Mikuia.Models.Channel data[0]
