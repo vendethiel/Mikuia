@@ -202,6 +202,11 @@ class exports.Chat
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
+
+						if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
+							Channel = new Mikuia.Models.Channel stream.channel.name
+							Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
+
 			@Mikuia.Events.emit 'twitch.updated'
 
 			setTimeout () =>

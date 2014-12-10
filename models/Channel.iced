@@ -175,6 +175,10 @@ class exports.Channel extends Mikuia.Model
 		else
 			callback err, data
 
+	getProfileBanner: (callback) ->
+		await @getInfo 'profileBanner', defer err, data
+		callback err, data
+
 	setBio: (bio, callback) ->
 		await @setInfo 'bio', bio, defer err, data
 		callback err, data
@@ -189,6 +193,10 @@ class exports.Channel extends Mikuia.Model
 
 	setLogo: (logo, callback) ->
 		await @setInfo 'logo', logo, defer err, data
+		callback err, data
+
+	setProfileBanner: (profileBanner, callback) ->
+		await @setInfo 'profileBanner', profileBanner, defer err, data
 		callback err, data
 
 	# Moderatoring (LOL)
