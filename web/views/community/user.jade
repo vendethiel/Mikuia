@@ -5,7 +5,13 @@ block content
 	.container
 		.row
 			.col-md-8
-				h2 Derp
+				.panel.panel-default
+					.panel-heading Bio
+					.panel-body
+						if Channel.bio != 'null' && Channel.bio != null
+							i=Channel.bio
+						else
+							i.text-muted No bio.
 			.col-md-4
 				.panel.panel-default
 					.panel-heading Levels

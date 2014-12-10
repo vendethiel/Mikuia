@@ -239,10 +239,11 @@ module.exports =
 					ranks = {}
 					await
 						Channel.getAllExperience defer err, channel.experience
+						Channel.getBio defer err, channel.bio
 						Channel.getDisplayName defer err, channel.display_name
-						Channel.getTotalLevel defer err, channel.level
 						Channel.getLogo defer err, channel.logo
 						Channel.getProfileBanner defer err, channel.profileBanner
+						Channel.getTotalLevel defer err, channel.level
 
 					for data in channel.experience
 						chan = new Mikuia.Models.Channel data[0]
