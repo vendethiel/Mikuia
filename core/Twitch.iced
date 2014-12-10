@@ -29,9 +29,18 @@ class exports.Twitch
 				callback true, null
 
 	getStreams: (channels, callback) ->
+		completed = false
+		setTimeout () =>
+			if !completed
+				callback true, 'Timed out.'
+		, 10000
 		@twitch._get 'streams/?channel=' + channels.join(','), (err, result) =>
 			if err || not result.req.res.body?.streams?
-				@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
-				callback true, null
+				if !completed
+					@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
+					callback true, null
+					completed = true
 			else
-				callback err, result.req.res.body.streams
+				if !completed
+					callback err, result.req.res.body.streams
+					completed = true
