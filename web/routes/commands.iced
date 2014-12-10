@@ -25,9 +25,12 @@ module.exports =
 
 		if data.command? && data.handler? && Mikuia.Plugin.handlerExists data.handler
 			# To do: maybe some validation, I dunno.
-			await Channel.addCommand data.command.split(' ').join(''), data.handler, defer err, data
+			commandName = data.command.split(' ').join('')
 
-		res.redirect '/dashboard/commands'
+			await Channel.addCommand commandName, data.handler, defer err, data
+			res.redirect '/dashboard/commands/settings/' + commandName
+		else
+			res.redirect '/dashboard/commands'
 
 	remove: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
