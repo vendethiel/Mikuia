@@ -65,6 +65,7 @@ module.exports =
 			if !err 
 				if exists
 					await Channel.getDisplayName defer err, displayName
+					await Channel.getProfileBanner defer err, profileBanner
 					await Mikuia.Database.zrevrange 'levels:' + req.params.userId + ':experience', 0, 99, 'withscores', defer err, ranks
 
 					channels = Mikuia.Tools.chunkArray ranks, 2
@@ -97,6 +98,7 @@ module.exports =
 						experience: experience
 						isStreamer: isStreamer
 						logos: logos
+						profileBanner: profileBanner
 						rank: rank + 1
 				else
 					res.render 'community/error',
