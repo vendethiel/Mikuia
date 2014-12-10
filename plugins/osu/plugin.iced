@@ -133,14 +133,14 @@ updateUserBest = (stream, callback) =>
 		await
 			Channel.getSetting 'osu', 'name', defer err, name
 			Channel.getSetting 'osu', 'mode', defer err2, mode
-		if !err
+		if !err && name?
 			if err2
 				mode = 0
 
 			await getUserBest name, mode, defer err, best
 			if !userBest[name]?
 				userBest[name] = {}
-			else
+			else if best?
 				for score, i in best
 					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
 						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
