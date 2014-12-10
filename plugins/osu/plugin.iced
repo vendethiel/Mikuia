@@ -509,7 +509,7 @@ Mikuia.Events.on 'twitch.connected', =>
 	@bancho.on 'message', (message) =>
 		@Plugin.Log.info cli.yellowBright(message.from) + ': ' + cli.whiteBright(message.message)
 		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
-		if message.message == '!verify'
+		if message.message == @Plugin.getSetting 'verifyCommand'
 			code = Math.floor(Math.random() * 900000) + 100000
 			codes[code] = message.from
 			banchoSay message.from, 'Your code is ' + code + '. You have only a minute to save the wo... I mean to put it on page...'
@@ -578,8 +578,9 @@ Mikuia.Events.on 'osu.stats', (data) =>
 				rank_a: user[0].count_rank_a
 				country: user[0].country
 
-Mikuia.Web.get '/dashboard/plugins/osu/auth', (req, res) ->
-	res.render '../../plugins/osu/views/auth'
+Mikuia.Web.get '/dashboard/plugins/osu/auth', (req, res) =>
+	res.render '../../plugins/osu/views/auth',
+		verifyCommand: @Plugin.getSetting 'verifyCommand'
 
 Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 	if req.body.authCode? && codes[req.body.authCode]?

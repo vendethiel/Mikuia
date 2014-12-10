@@ -284,7 +284,8 @@
 			"debug": false,
 			"name": "OSU_USERNAME_HERE",
 			"password": "OSU_IRC_AUTH_PASS",
-			"tillerinoKey": "HAHA_GOOD_LUCK_WITH_THAT_ONE"
+			"tillerinoKey": "HAHA_GOOD_LUCK_WITH_THAT_ONE",
+			"verifyCommand": "!verify"
 		}
 	}
 }
