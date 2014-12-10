@@ -120,7 +120,10 @@ class exports.Chat
 
 	joinMultiple: (channels, callback) =>
 		for channel, i in channels
-			await @join channel, defer whatever
+			await
+				setTimeout () =>
+					@join channel, defer whatever
+				, 1000
 
 		for channel in channels
 			await @updateChatters channel, defer whatever
