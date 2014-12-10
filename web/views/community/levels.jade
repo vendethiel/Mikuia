@@ -55,9 +55,8 @@ block content
 									td.text-muted -
 									td.text-muted -
 									td.text-muted Login to see your progress!
-			
-			if user
-				.col-md-4
+			.col-md-4
+				if user
 					h2
 						+level(level)
 					br
@@ -68,7 +67,6 @@ block content
 						.panel-footer
 							a(href='/user/' + user.username + '/levels') See more >>
 
-			.col-md-4
 				.panel.panel-default
 					.panel-heading Top Mikuia Levels
 					.panel-body
