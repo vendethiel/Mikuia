@@ -122,7 +122,7 @@ class exports.Chat
 		for channel, i in channels
 			await
 				@join channel, defer whatever
-				setTimeout(defer(), 1000)
+				setTimeout(defer(), 1500)
 
 		for channel in channels
 			await @updateChatters channel, defer whatever
@@ -211,9 +211,13 @@ class exports.Chat
 
 			@Mikuia.Events.emit 'twitch.updated'
 
+			updateTimeout = streamList.length * 4000
+			if updateTimeout < 60000
+				updateTimeout = 60000
+
 			setTimeout () =>
 				@update()
-			, streamList.length * 4000
+			, updateTimeout
 
 	updateChatters: (channel, callback) =>
 		await Mikuia.Twitch.getChatters channel, defer err, chatters
