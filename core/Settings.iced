@@ -5,6 +5,7 @@ fs = require 'fs'
 defaultSettings =
 	bot:
 		debug: false
+		disableChat: false
 		name: 'YourBotNameHere'
 		oauth: 'oauth:YOUR_TWITCH_IRC_OAUTH_KEY'
 		autojoin: []

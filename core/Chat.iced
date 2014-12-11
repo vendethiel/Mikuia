@@ -147,8 +147,9 @@ class exports.Chat
 			channel = '#' + channel
 		lines = message.split '\\n'
 		for line in lines
-			limiter.removeTokens 1, (err, rr) =>	
-				@client.say channel, line
+			limiter.removeTokens 1, (err, rr) =>
+				if !Mikuia.settings.bot.disableChat
+					@client.say channel, line
 				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
 
 	sayRaw: (channel, message) =>
