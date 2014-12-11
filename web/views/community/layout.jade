@@ -50,7 +50,6 @@ html
 										a(href='/dashboard') Dashboard
 									li
 										a(href='/logout') Logout
-					p.navbar-text.navbar-right#ticker This is a random chat ticker!
 		block content
 		.container
 			hr
@@ -76,14 +75,6 @@ html
 				container: 'body'
 			})
 			$('.timeago').timeago()
-
-			var socket = io.connect()
-			socket.on('ticker', function(message) {
-				$('#ticker').fadeOut(1000, 'swing', function() {
-					$('#ticker').html(message)
-					$('#ticker').fadeIn()
-				})
-			})
 
 		script.
 			var _prum = [['id', '548875e2abe53d37782bdebd'],
