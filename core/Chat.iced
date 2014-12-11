@@ -2,7 +2,7 @@ cli = require 'cli-color'
 irc = require 'node-twitch-irc'
 RateLimiter = require('limiter').RateLimiter
 
-limiter = new RateLimiter 15, 30000
+limiter = new RateLimiter 10, 30000
 
 class exports.Chat
 	constructor: (Mikuia) ->
