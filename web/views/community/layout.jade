@@ -50,6 +50,8 @@ html
 										a(href='/dashboard') Dashboard
 									li
 										a(href='/logout') Logout
+					if Mikuia.settings.bot.disableChat
+						p.navbar-text.navbar-right.navbar-alert Mikuia is currently globally banned from the chat.
 		block content
 		.container
 			hr
