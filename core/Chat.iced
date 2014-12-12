@@ -2,7 +2,8 @@ cli = require 'cli-color'
 irc = require 'node-twitch-irc'
 RateLimiter = require('limiter').RateLimiter
 
-limiter = new RateLimiter 10, 30000
+joinLimiter = new RateLimiter 50, 10000
+messageLimiter = new RateLimiter 10, 30000
 
 class exports.Chat
 	constructor: (Mikuia) ->
@@ -109,7 +110,7 @@ class exports.Chat
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
 		if @joined.indexOf(channel) == -1
-			limiter.removeTokens 1, (err, rr) =>
+			joinLimiter.removeTokens 1, (err, rr) =>
 				@client.join channel
 				@joined.push channel
 				if callback
@@ -137,7 +138,7 @@ class exports.Chat
 			return null
 
 	part: (channel, callback) =>
-		limiter.removeTokens 1, (err, rr) =>	
+		messageLimiter.removeTokens 1, (err, rr) =>	
 			@client.part channel
 			if @joined.indexOf(channel) > -1
 				@joined.splice @joined.indexOf(channel), 1
@@ -147,7 +148,7 @@ class exports.Chat
 			channel = '#' + channel
 		lines = message.split '\\n'
 		for line in lines
-			limiter.removeTokens 1, (err, rr) =>
+			messageLimiter.removeTokens 1, (err, rr) =>
 				if !Mikuia.settings.bot.disableChat
 					@client.say channel, line
 				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
