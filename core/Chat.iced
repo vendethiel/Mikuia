@@ -81,9 +81,9 @@ class exports.Chat
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
 		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
-			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.yellow(message))
+			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
 		else
-			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.yellow(message)
+			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
 		
 		Channel.trackIncrement 'messages', 1
