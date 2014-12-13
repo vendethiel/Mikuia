@@ -58,9 +58,9 @@ Mikuia.Settings.read ->
 	# Let's load plugins.
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		if pluginDirErr
-			Mikuia.Log.warning 'Can\'t access plugin directory.'
+			Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Can\'t access plugin directory.')
 		else
-			Mikuia.Log.info 'Found ' + cli.greenBright(fileList.length) + ' directories in plugin directory.'
+			Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Found ') + cli.greenBright(fileList.length) + cli.whiteBright(' plugin directories.')
 			
 		for file in fileList
 			Mikuia.Plugin.load file

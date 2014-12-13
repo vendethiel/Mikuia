@@ -126,7 +126,6 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	setCommandSetting: (command, key, value, callback) ->
-		console.log 'command: ' + command + ', key: ' + key + ', value: ' + value
 		if value != ''
 			await @_hset 'command:' + command, key, value, defer err, data
 		else
@@ -234,14 +233,9 @@ class exports.Channel extends Mikuia.Model
 		await @isBot defer err, isBot
 
 		if !isBot
-		# 	await @_hset 'experience', channel, 0, defer err, data
-		# 	await @updateTotalLevel defer whatever
-		# 	await @_hdel 'experience', channel, defer err, data
-		# else
 			await @getLevel channel, defer err, level
 			if activity < 1 || !activity? || isNaN activity
 				Mikuia.Log.info 'Nevermind, giving 0-1 XP.'
-				#experience = Math.round(Math.random() * 1)
 				experience = 0
 
 			otherChannel = new Mikuia.Models.Channel channel
@@ -278,10 +272,6 @@ class exports.Channel extends Mikuia.Model
 		else
 			callback false, data
 
-		# await @getAllExperience defer err, data
-		# console.log data
-		# callback err, 0
-
 	getExperience: (channel, callback) =>
 		await @_hget 'experience', channel, defer err, data
 		callback err, data
@@ -306,12 +296,10 @@ class exports.Channel extends Mikuia.Model
 
 	updateTotalLevel: (callback) =>
 		totalExperience = 0
-		#totalLevel = 0
 
 		await @getAllExperience defer err, experience
 		for data in experience
 			totalExperience += parseInt data[1]
-			#totalLevel += Mikuia.Tools.getLevel data[1]
 			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
 
 		totalLevel = Mikuia.Tools.getLevel totalExperience

@@ -31,18 +31,16 @@ class exports.Plugin
 	handlerExists: (handler) -> @handlers[handler]?
 
 	load: (name) ->
-		@Mikuia.Log.info 'Reading directory: ' + cli.yellowBright(name)
-
 		fs.readFile 'plugins/' + name + '/manifest.json', (err, json) =>
 			if !err
 				try
 					manifest = JSON.parse json
 				catch e
-					@Mikuia.Log.error 'Failed to parse manifest of plugin: ' + cli.yellowBright(name)
+					@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse manifest of plugin: ') + cli.yellowBright(name)
 
 				if manifest?
 					if manifest.baseFile?
-						@Mikuia.Log.info 'Loading plugin: ' + cli.yellowBright(name + '/' + manifest.baseFile)
+						@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loading plugin: ') + cli.yellowBright(name + '/' + manifest.baseFile)
 
 						filePath = path.resolve('plugins/' + name + '/' + manifest.baseFile)
 						@plugins[name] =
@@ -74,10 +72,10 @@ class exports.Plugin
 								@handlers[handlerName] = handler
 								@handlers[handlerName].plugin = name
 					else
-						@Mikuia.Log.error 'Plugin ' + cli.yellowBright(name) + ' does not specify base file.'
+						@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Plugin ') + cli.yellowBright(name) + cli.whiteBright(' doesn\'t specify a base file.')
 					
 			else
-				@Mikuia.Log.error 'Failed to read manifest of plugin ' + cli.yellowBright(name)
+				@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to read manifest of plugin ') + cli.yellowBright(name) + cli.whiteBright('.')
 
 		
 

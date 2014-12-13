@@ -22,7 +22,7 @@ class exports.Chat
 	connect: =>
 		setTimeout () =>
 			if !@connected
-				@Mikuia.Log.fatal 'Sorry, but Twitch is being a fucking dick.'
+				@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Sorry, but Twitch is being a fucking dick.')
 		, 10000
 		@client = new irc.connect
 			autoreconnect: true
@@ -40,18 +40,21 @@ class exports.Chat
 					@handleMessage user, channel, message
 
 				event.on 'connected', =>
-					@Mikuia.Log.info 'Connected to Twitch IRC.'
+					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to IRC.')
 					@Mikuia.Events.emit 'twitch.connected'
 					@connected = true
 
 				event.on 'disconnected', (reason) =>
-					@Mikuia.Log.fatal 'Disconnected from Twitch IRC. Reason: ' + reason
+					@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
 
 				event.on 'join', (channel) =>
-					@Mikuia.Log.info cli.whiteBright('Joined ' + cli.greenBright(channel) + ' on Twitch IRC.')
+					Channel = new Mikuia.Models.Channel channel
+					await Channel.getDisplayName defer err, displayName
+
+					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel.')
 
 				event.on 'part', (channel) =>
-					@Mikuia.Log.info cli.whiteBright('Left ' + cli.redBright(channel) + ' on Twitch IRC.')
+					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 			else
 				@Mikuia.Log.error err
 
@@ -59,13 +62,27 @@ class exports.Chat
 		return @chatters[channel]
 
 	handleMessage: (user, to, message) ->
-		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf('hatsuney') > -1
-			@Mikuia.Log.info cli.bgMagenta '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
-		else
-			@Mikuia.Log.info '(' + cli.greenBright(to) + ') ' + cli.yellowBright(user.username) + ': ' + cli.whiteBright(message)
-		@Mikuia.Events.emit 'twitch.message', user, to, message
-
 		Channel = new @Mikuia.Models.Channel to
+		Chatter = new @Mikuia.Models.Channel user.username
+		await Channel.getDisplayName defer err, displayName
+
+		chatterUsername = cli.whiteBright user.username
+
+		if Chatter.isModOf Channel.getName()
+			chatterUsername = cli.greenBright user.username
+
+		if user.username == Mikuia.settings.bot.admin
+			chatterUsername = cli.redBright user.username
+
+		if user.special.indexOf('subscriber') > -1
+			chatterUsername = cli.blueBright '[s] ' + chatterUsername
+
+		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
+			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + message)
+		else
+			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + message
+		@Mikuia.Events.emit 'twitch.message', user, to, message
+		
 		Channel.trackIncrement 'messages', 1
 
 		tokens = message.split ' '
@@ -78,8 +95,7 @@ class exports.Chat
 		continueCommand = true
 
 		if !settingsError && user.username != Channel.getName()
-			Chatter = new @Mikuia.Models.Channel user.username
-
+			
 			if settings?._minLevel? && settings._minLevel > 0
 				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
 				if userLevel < settings._minLevel
@@ -149,7 +165,11 @@ class exports.Chat
 			messageLimiter.removeTokens 1, (err, rr) =>
 				if !Mikuia.settings.bot.disableChat
 					@client.say channel, line
-				@Mikuia.Log.info '(' + cli.greenBright(channel) + ') ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.whiteBright(Math.floor(rr)) + '): ' + cli.whiteBright(line)
+
+				Channel = new @Mikuia.Models.Channel channel
+				await Channel.getDisplayName defer err, displayName
+
+				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(rr)) + '): ' + message
 
 	sayRaw: (channel, message) =>
 		@client.say channel, message
@@ -163,7 +183,7 @@ class exports.Chat
 			streamList = []
 			for chunk, i in chunks
 				if chunk.length > 0
-					@Mikuia.Log.info 'Asking Twitch API for chunk ' + (i + 1) + ' out of ' + chunks.length + '...'
+					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Checking channels live... (' + (i + 1) + '/' + chunks.length + ')')
 					await @Mikuia.Twitch.getStreams chunk, defer err, streams
 					if err then @Mikuia.Log.error err else
 						chunkList = []
@@ -177,7 +197,7 @@ class exports.Chat
 							Channel = new Mikuia.Models.Channel stream.channel.name
 							Channel.trackValue 'viewers', stream.viewers
 
-						@Mikuia.Log.info 'Channels obtained from chunk ' + (i + 1) + ': ' + cli.whiteBright(chunkList.join(', '))
+						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 						
 			# Yay, save dat stuff.

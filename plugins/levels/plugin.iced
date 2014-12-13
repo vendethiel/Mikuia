@@ -32,7 +32,7 @@ Mikuia.Events.on 'twitch.updated', =>
 	seconds = (((new Date()).getTime() / 1000) - parseInt(time))
 	
 	multiplier = Math.round(seconds / 60)
-	@Plugin.Log.info seconds + ' seconds since last update! (' + multiplier + 'x)'
+	Mikuia.Log.info cli.yellowBright('Levels') + ' / ' + cli.whiteBright('Updating levels with a ') + cli.yellowBright(multiplier + 'x') + cli.whiteBright(' multiplier... (') + cli.yellowBright(Math.floor(seconds) + 's') + cli.whiteBright(' since last update)')
 	if !err
 		await Mikuia.Database.set 'mikuia:lastUpdate', parseInt((new Date()).getTime() / 1000), defer err2, response
 		

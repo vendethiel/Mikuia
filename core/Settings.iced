@@ -4,6 +4,7 @@ fs = require 'fs'
 # Some default fields for settings.
 defaultSettings =
 	bot:
+		admin: 'hatsuney'
 		debug: false
 		disableChat: false
 		name: 'YourBotNameHere'
@@ -39,20 +40,20 @@ class exports.Settings
 
 	pluginSet: (plugin, key, value) ->
 		@Mikuia.settings.plugins[plugin][key] = value
-		@Mikuia.Log.info 'Setting ' + cli.greenBright('plugins/' + plugin + '/' + key) + ' to ' + cli.yellowBright(value)
+		@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + 'Setting ' + cli.greenBright('plugins/' + plugin + '/' + key) + ' to ' + cli.yellowBright(value)
 		@save()
 
 	read: (callback) ->
 		fs.readFile 'settings.json', (settingsErr, data) =>
 			if settingsErr
-				@Mikuia.Log.warning 'Settings file doesn\'t exist, creating one.'
+				@Mikuia.Log.warning cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Settings file doesn\'t exist, creating one.')
 			else
 				# A better way to parse JSON would be nice... errors here tend to crash everything.
 				try
 					@Mikuia.settings = JSON.parse data
-					@Mikuia.Log.success 'Loaded settings from settings.json.'
+					@Mikuia.Log.success cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loaded settings from settings.json.')
 				catch e
-					@Mikuia.Log.error 'Failed to parse settings.json file: ' + e
+					@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e)
 			@setDefaults()
 			callback settingsErr
 	
@@ -61,7 +62,7 @@ class exports.Settings
 
 	set: (category, key, value) ->
 		@Mikuia.settings[category][key] = value
-		@Mikuia.Log.info 'Setting ' + cli.greenBright(category + '.' + key) + ' to ' + cli.yellowBright(value)
+		@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Setting ' + cli.greenBright(category + '.' + key) + ' to ' + cli.yellowBright(value))
 		@save()
 
 	setDefaults: () ->

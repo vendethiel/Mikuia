@@ -6,13 +6,13 @@ class exports.Database
 		@Mikuia = Mikuia
 
 	connect: (host, port, options) ->
-		@Mikuia.Log.info 'Attempting to connect with ' + cli.redBright('Redis') + ' server at ' + host + ':' + port + '...'
+		@Mikuia.Log.info cli.redBright('Redis') + ' / ' + cli.whiteBright('Attempting to connect with the server at ' + host + ':' + port + '...')
 		@client = redis.createClient port, host, options
 		@client.on 'ready', =>
-			@Mikuia.Log.success 'Connected to the database.'
+			@Mikuia.Log.success cli.redBright('Redis') + ' / ' + cli.whiteBright('Connected to the database.')
 		@client.on 'error', (err) =>
 			console.trace()
-			@Mikuia.Log.fatal 'Database error: ' + err
+			@Mikuia.Log.fatal cli.redBright('Redis') + ' / ' + cli.whiteBright('Database error: ' + err)
 
 	del: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db

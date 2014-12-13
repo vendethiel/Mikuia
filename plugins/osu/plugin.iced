@@ -131,6 +131,7 @@ updateUserBest = (stream, callback) =>
 	else
 		Channel = new Mikuia.Models.Channel stream
 		await
+			Channel.getDisplayName defer errer, displayName
 			Channel.getSetting 'osu', 'name', defer err, name
 			Channel.getSetting 'osu', 'mode', defer err2, mode
 		if !err && name?
@@ -145,12 +146,12 @@ updateUserBest = (stream, callback) =>
 					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
 						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
 						console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
-						if Channel.getName() == 'hatsuney'
-							Mikuia.Chat.say 'hatsuney', '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
+						if Channel.getName() == Mikuia.settings.bot.admin
+							Mikuia.Chat.say Mikuia.settings.bot.admin, '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
 
 			userBest[name][mode] = best
 			userBest[name].timeUpdated = (new Date()).getTime() + (8 * 60 * 60 * 1000)
-			Mikuia.Log.info 'Updated best ranks for ' + cli.cyanBright(name) + '.'
+			Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Updated best ranks for ' + cli.cyanBright(name) + '.')
 		callback false, null
 
 checkRankUpdates = (stream, callback) =>
@@ -373,16 +374,12 @@ sendRequest = (Channel, user, username, map, message) =>
 		minRangeString = ''
 		wholeString = ''
 
-		console.log cli.redBright 'BIG PP STUFF OVER HERE ================'
-
 		if userBest[username]?[map.mode]?
 			best = userBest[username][map.mode]
 			
 			if best[0]?.pp? && best[24]?.pp?
 				maxRange = best[0].pp
-				console.log cli.yellowBright 'maxRange = ' + maxRange
 				minRange = best[24].pp
-				console.log cli.yellowBright 'minRange = ' + minRange
 		
 		if tillerinoData?.ppForAcc?.entry?
 			maxDiff = 0
@@ -391,27 +388,17 @@ sendRequest = (Channel, user, username, map, message) =>
 				if !maxDiff
 					maxDiff = maxRange - entry.value
 					maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-					console.log cli.yellowBright 'maxDiff = ' + maxDiff
 					minDiff = minRange - entry.value
 					minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-					console.log cli.yellowBright 'minDiff = ' + minDiff
-					console.log cli.yellowBright 'maxRangeString = ' + maxRangeString
-					console.log cli.yellowBright 'minRangeString = ' + minRangeString
 
 				else
 					if maxDiff > Math.abs(maxRange - entry.value)
-						console.log cli.yellowBright 'maxDiff > abs'
 						maxDiff = Math.abs(maxRange - entry.value)
 						maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-						console.log cli.yellowBright 'maxDiff = ' + maxDiff
-						console.log cli.yellowBright 'maxRangeString = ' + maxRangeString
 
 					if minDiff > Math.abs(minRange - entry.value)
-						console.log cli.yellowBright 'minDiff > abs'
 						minDiff = Math.abs(minRange - entry.value)
 						minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-						console.log cli.yellowBright 'minDiff = ' + minDiff
-						console.log cli.yellowBright 'minRangeString = ' + minRangeString
 
 			if minRangeString == maxRangeString
 				wholeString = minRangeString
@@ -419,9 +406,6 @@ sendRequest = (Channel, user, username, map, message) =>
 				wholeString = minRangeString + ' | ' + maxRangeString
 		else
 			wholeString = 'no pp data'
-
-		console.log wholeString
-		console.log cli.redBright '================ END OF BIG PP STUFF OVER HERE'
 
 		modeText = 'osu!'
 		approvedText = 'Ranked'
@@ -504,10 +488,10 @@ Mikuia.Events.on 'twitch.connected', =>
 	@bancho.user @Plugin.getSetting 'name', 'Mikuia - a Twitch.tv bot // http://mikuia.tv'
 
 	@bancho.on 'welcome', (nick) =>
-		@Plugin.Log.success 'Logged in to osu!Bancho as ' + nick + '.'
+		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Logged in to Bancho as ' + cli.magentaBright(nick) + '.')
 
 	@bancho.on 'message', (message) =>
-		@Plugin.Log.info cli.yellowBright(message.from) + ': ' + cli.whiteBright(message.message)
+		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright(message.from) + ': ' + message.message
 		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
 		if message.message == @Plugin.getSetting 'verifyCommand'
 			code = Math.floor(Math.random() * 900000) + 100000
@@ -615,7 +599,6 @@ setInterval () =>
 , 60000
 
 Mikuia.Events.on 'twitch.updated', =>
-	console.log Object.keys(userBest).length
 	if Object.keys(userBest).length == 0
 		await Mikuia.Streams.getAll defer err, streams
 		if !err && streams?
