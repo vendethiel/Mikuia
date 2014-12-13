@@ -58,7 +58,7 @@ app.use session
 	secret: 'oijt09j4g09qjg90q3jk90q3'
 	store: store
 app.use passport.initialize()
-app.use passport.session
+app.use passport.session()
 app.use (req, res, next) ->
 	res.locals.Mikuia = Mikuia
 	res.locals.path = req.path
