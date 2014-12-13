@@ -78,3 +78,4 @@ Mikuia.Settings.read ->
 
 r = repl.start 'Mikuia> '
 r.context.Mikuia = Mikuia
+console.log '\n'
