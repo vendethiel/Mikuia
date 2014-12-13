@@ -49,15 +49,16 @@ passport.use new TwitchStrategy
 
 app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
-#app.use morgan 'dev'
 app.use express.static __dirname + '/public'
 app.use cookieParser 'oijt09j4g09qjg90q3jk90q3'
-app.use bodyParser()
+app.use bodyParser.json()
 app.use session
+	resave: false
+	saveUninitialized: true
 	secret: 'oijt09j4g09qjg90q3jk90q3'
 	store: store
 app.use passport.initialize()
-app.use passport.session()
+app.use passport.session
 app.use (req, res, next) ->
 	res.locals.Mikuia = Mikuia
 	res.locals.path = req.path
