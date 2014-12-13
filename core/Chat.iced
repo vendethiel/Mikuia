@@ -54,6 +54,9 @@ class exports.Chat
 					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel.')
 
 				event.on 'part', (channel) =>
+					Channel = new Mikuia.Models.Channel channel
+					await Channel.getDisplayName defer err, displayName
+
 					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 			else
 				@Mikuia.Log.error err
@@ -66,21 +69,21 @@ class exports.Chat
 		Chatter = new @Mikuia.Models.Channel user.username
 		await Channel.getDisplayName defer err, displayName
 
-		chatterUsername = cli.whiteBright user.username
-
-		if Chatter.isModOf Channel.getName()
-			chatterUsername = cli.greenBright user.username
+		chatterUsername = cli.yellow user.username
 
 		if user.username == Mikuia.settings.bot.admin
 			chatterUsername = cli.redBright user.username
+
+		if Chatter.isModOf Channel.getName()
+			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
 		if user.special.indexOf('subscriber') > -1
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
 		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
-			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + message)
+			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.yellowBright(message))
 		else
-			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + message
+			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.yellowBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
 		
 		Channel.trackIncrement 'messages', 1
