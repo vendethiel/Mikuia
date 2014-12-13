@@ -144,14 +144,14 @@ updateUserBest = (stream, callback) =>
 			else if best?
 				for score, i in best
 					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
-						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
-						console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
+						#console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
+						#console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
 						if Channel.getName() == Mikuia.settings.bot.admin
 							Mikuia.Chat.say Mikuia.settings.bot.admin, '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
 
 			userBest[name][mode] = best
 			userBest[name].timeUpdated = (new Date()).getTime() + (8 * 60 * 60 * 1000)
-			Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Updated best ranks for ' + cli.cyanBright(name) + '.')
+			Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Updated best ranks for ' + cli.cyanBright(name) + '.')
 		callback false, null
 
 checkRankUpdates = (stream, callback) =>
