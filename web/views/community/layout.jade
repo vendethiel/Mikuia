@@ -11,14 +11,12 @@ html
 		link(href='/assets/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
 		link(href='//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/yeti/bootstrap.min.css', rel='stylesheet', type='text/css')
 		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
-		title Mikuia Append
+		title=Mikuia.settings.bot.name
 	body(class=(path == '/' ? 'mikuia' : undefined))
 		nav.navbar.navbar-default.navbar-fixed-top.navbar-mikuia(role='navigation')
 			.container
 				.navbar-header
-					a.navbar-brand(href='/')
-						| Mikuia 
-						small(style='font-size: 12px; top: 0px;') Append
+					a.navbar-brand(href='/')=Mikuia.settings.bot.name
 
 				.collapse.navbar-collapse
 					ul.nav.navbar-nav
@@ -53,7 +51,7 @@ html
 									li
 										a(href='/logout') Logout
 					if Mikuia.settings.bot.disableChat
-						p.navbar-text.navbar-right.navbar-alert Mikuia is currently globally banned from the chat.
+						p.navbar-text.navbar-right.navbar-alert #{Mikuia.settings.bot.name} is currently globally banned from the chat.
 		block content
 		.container
 			hr
