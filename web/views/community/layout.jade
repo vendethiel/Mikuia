@@ -30,6 +30,8 @@ html
 							a(href='http://forums.mikuia.tv') Forums
 						li
 							a(href='/donate') Donate
+						li(class=(path == '/stats' ? 'active' : undefined))
+							a(href='/stats') Statistics
 						li
 							a(href='http://status.mikuia.tv') Status
 					if !user

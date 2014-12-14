@@ -110,6 +110,7 @@ app.get '/donate', routes.community.donate
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.get '/mlvl', routes.community.mlvl
+app.get '/stats', routes.community.stats
 app.get '/streams', routes.community.streams
 app.get '/user/:userId', routes.community.user
 app.get '/user/:userId/:subpage', routes.community.user

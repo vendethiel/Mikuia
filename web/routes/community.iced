@@ -198,6 +198,9 @@ module.exports =
 			rank: rank + 1
 			totalExperience: totalExperience
 
+	stats: (req, res) ->
+		res.render 'community/stats'
+
 	streams: (req, res) ->
 		game = ''
 
