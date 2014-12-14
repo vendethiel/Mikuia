@@ -69,6 +69,11 @@ class exports.Database
 		@client.sadd key, member, (err, data) ->
 			callback err, data
 
+	scard: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.scard key, (err, data) ->
+			callback err, data
+
 	set: (key, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.set key, value, (err, data) ->
