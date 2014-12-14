@@ -178,6 +178,8 @@ class exports.Chat
 		@client.say channel, message
 
 	update: =>
+		twitchFailure = false
+
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
@@ -188,7 +190,10 @@ class exports.Chat
 				if chunk.length > 0
 					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Checking channels live... (' + (i + 1) + '/' + chunks.length + ')')
 					await @Mikuia.Twitch.getStreams chunk, defer err, streams
-					if err then @Mikuia.Log.error err else
+					if err
+						@Mikuia.Log.error err
+						twitchFailure = true
+					else
 						chunkList = []
 						for stream in streams
 							chunkList.push stream.channel.display_name
@@ -204,39 +209,40 @@ class exports.Chat
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 						
 			# Yay, save dat stuff.
-			await @Mikuia.Database.del 'mikuia:streams', defer err, response
-			if !err
-				await
-					for stream in streamList
-						@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
-						
-						things = [
-							'display_name'
-							'followers'
-							'game'
-							'logo'
-							'mature'
-							'profile_banner'
-							'status'
-							'views'
-						]
+			if !twitchFailure
+				await @Mikuia.Database.del 'mikuia:streams', defer err, response
+				
+			await
+				for stream in streamList
+					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
+					
+					things = [
+						'display_name'
+						'followers'
+						'game'
+						'logo'
+						'mature'
+						'profile_banner'
+						'status'
+						'views'
+					]
 
-						for thing in things
-							@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, thing, stream.channel[thing], defer err, whatever
+					for thing in things
+						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, thing, stream.channel[thing], defer err, whatever
 
-						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
-						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
-						@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
+					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
+					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
+					@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 
-						if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
-							Channel = new Mikuia.Models.Channel stream.channel.name
-							Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
+					if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
+						Channel = new Mikuia.Models.Channel stream.channel.name
+						Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
 
 			@Mikuia.Events.emit 'twitch.updated'
 
-			updateTimeout = streamList.length * 4000
-			if updateTimeout < 60000
-				updateTimeout = 60000
+			updateTimeout = streamList.length * 2000
+			if updateTimeout < 15000
+				updateTimeout = 15000
 
 			setTimeout () =>
 				@update()
