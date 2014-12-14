@@ -15,6 +15,7 @@ block content
 						#streamsLive
 			.col-md-3
 				#channelsEnabled
+				br
 				#uniqueChatters
 
 block footerScript
@@ -35,18 +36,38 @@ block footerScript
 
 			var streamsLive = new Keen.Query('maximum', {
 				eventCollection: 'streamsLive',
-				timeframe: 'previous_24_hours',
+				timeframe: 'previous_3600_minutes',
 				targetProperty: 'streams',
-				interval: 'every_10_minutes'
+				interval: 'every_5_minutes'
 			})
 
-			keen.draw(streamsLive, document.getElementById('streamsLive'), {
-				chartType: 'areachart',
-				title: false,
-				width: 'auto'
+			var uniqueChatters = new Keen.Query('maximum', {
+				eventCollection: 'uniqueChatters',
+				timeframe: 'previous_10_minutes',
+				targetProperty: 'chatters'
 			})
 
 			keen.draw(channelsEnabled, document.getElementById('channelsEnabled'), {
+				colors: ['#7a62d3'],
+				title: 'Channels Enabled'
+			})
 
+			keen.draw(streamsLive, document.getElementById('streamsLive'), {
+				chartOptions: {
+					chartArea: {
+						height: '85%',
+						left: '5%',
+						top: '5%',
+						width: '100%'
+					}
+				},
+				chartType: 'linechart',
+				colors: ['#7a62d3'],
+				title: ' '
+			})
+
+			keen.draw(uniqueChatters, document.getElementById('uniqueChatters'), {
+				colors: ['#7a62d3'],
+				title: 'Unique Chatters'
 			})
 		})
