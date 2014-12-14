@@ -141,15 +141,20 @@ module.exports =
 				await chan.getDisplayName defer err, displayNames[stream]
 				await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
 
-			await Mikuia.Database.zrevrange 'mikuia:levels', 0, 4, 'withscores', defer err, totalLevels
-			mlvl = Mikuia.Tools.chunkArray totalLevels, 2
+			await Mikuia.Database.zrevrange 'mikuia:experience', 0, 4, 'withscores', defer err, totalLevels
+			mexp = Mikuia.Tools.chunkArray totalLevels, 2
 
-			for md in mlvl
+			mlvl = []
+			for md in mexp
 				if md.length > 0
 					chan = new Mikuia.Models.Channel md[0]
 					await
 						chan.getDisplayName defer err, displayNames[md[0]]
 						chan.getLogo defer err, logos[md[0]]
+					mlvl.push [
+						md[0]
+						Mikuia.Tools.getLevel md[1]
+					]
 
 			res.render 'community/levels',
 				displayNames: displayNames
@@ -163,14 +168,15 @@ module.exports =
 				userCount: userCount
 
 	mlvl: (req, res) ->
-		await Mikuia.Database.zrevrange 'mikuia:levels', 0, 249, 'withscores', defer err, ranks
-		channels = Mikuia.Tools.chunkArray ranks, 2
+		await Mikuia.Database.zrevrange 'mikuia:experience', 0, 249, 'withscores', defer err, expData
+		channels = Mikuia.Tools.chunkArray expData, 2
+
+		console.log expData
 
 		displayNames = {}
 		isStreamer = {}
 		logos = {}
 		rank = null
-		totalExperience = {}
 		totalLevel = null
 
 		for data in channels
@@ -181,13 +187,12 @@ module.exports =
 				await
 					channel.isStreamer defer err, isStreamer[data[0]]
 					channel.getDisplayName defer err, displayNames[data[0]]
-					channel.getTotalExperience defer err, totalExperience[data[0]]
 					channel.getLogo defer err, logos[data[0]]
 
 		if req.isAuthenticated()
 			Channel = new Mikuia.Models.Channel req.user.username
 			await Channel.getTotalLevel defer err, totalLevel
-			await Mikuia.Database.zrevrank 'mikuia:levels', req.user.username, defer err, rank
+			await Mikuia.Database.zrevrank 'mikuia:experience', req.user.username, defer err, rank
 
 		res.render 'community/mlvl',
 			channels: channels
@@ -196,7 +201,6 @@ module.exports =
 			level: totalLevel
 			logos: logos
 			rank: rank + 1
-			totalExperience: totalExperience
 
 	stats: (req, res) ->
 		res.render 'community/stats'
