@@ -205,13 +205,17 @@ class exports.Chat
 							Channel = new Mikuia.Models.Channel stream.channel.name
 							Channel.trackValue 'viewers', stream.viewers
 
+							await Channel.isSupporter defer err, isSupporter
+							if isSupporter
+								Channel.trackValue 'supporterValue', Math.floor(Math.random() * 10000)
+
 						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 						
 			# Yay, save dat stuff.
 			if !twitchFailure
 				await @Mikuia.Database.del 'mikuia:streams', defer err, response
-				
+
 			await
 				for stream in streamList
 					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever

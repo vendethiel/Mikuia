@@ -20,13 +20,6 @@ class exports.Channel extends Mikuia.Model
 		await Mikuia.Database.sismember 'mikuia:bots', @getName(), defer err, data
 		callback err, data
 
-	isDonator: (callback) ->
-		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
-		if data? && data >= 10
-			callback err, true
-		else
-			callback err, false
-
 	isLive: (callback) ->
 		# This is bad D:
 		await Mikuia.Database.sismember 'mikuia:streams', @getName(), defer err, data
@@ -317,3 +310,27 @@ class exports.Channel extends Mikuia.Model
 		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
 
 		callback totalLevel
+
+	# Donator / Supporter stuff
+
+	getSupporterStart: (callback) =>
+		await @getInfo 'supporterStart', defer err, data
+		callback err, data
+
+	getSupporterStatus: (callback) ->
+		await Mikuia.Database.zscore 'mikuia:supporters', @getName(), defer err, data
+		callback err, data
+
+	isDonator: (callback) ->
+		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
+		if data? && data >= 10
+			callback err, true
+		else
+			callback err, false
+	
+	isSupporter: (callback) ->
+		await @getSupporterStatus defer err, data
+		if data > (new Date()).getTime() / 1000
+			callback err, true
+		else
+			callback err, false
