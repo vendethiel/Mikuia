@@ -171,8 +171,6 @@ module.exports =
 		await Mikuia.Database.zrevrange 'mikuia:experience', 0, 249, 'withscores', defer err, expData
 		channels = Mikuia.Tools.chunkArray expData, 2
 
-		console.log expData
-
 		displayNames = {}
 		isStreamer = {}
 		logos = {}
