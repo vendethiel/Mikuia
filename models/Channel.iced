@@ -20,6 +20,13 @@ class exports.Channel extends Mikuia.Model
 		await Mikuia.Database.sismember 'mikuia:bots', @getName(), defer err, data
 		callback err, data
 
+	isDonator: (callback) ->
+		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
+		if data? && data >= 10
+			callback err, true
+		else
+			callback err, false
+
 	isLive: (callback) ->
 		# This is bad D:
 		await Mikuia.Database.sismember 'mikuia:streams', @getName(), defer err, data
