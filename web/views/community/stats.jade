@@ -1,0 +1,52 @@
+extends layout
+
+block content
+	.splash
+		.container
+			.row
+				.col-md-12
+					h1 Stats
+	.container
+		.row
+			.col-md-9
+				.panel.panel-default
+					.panel-heading Streams Live (last 24 hours)
+					.panel-body
+						#streamsLive
+			.col-md-3
+				#channelsEnabled
+				#uniqueChatters
+
+block footerScript
+	script(type='text/javascript').
+		!function(a,b){a('Keen',"https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+
+		var keen = new Keen({
+			projectId: '548ccdfa90e4bd2427852b04',
+			readKey: 'd7630d579a75e6dd3e21d6114b223ce56c25db7d188b8219af8fcf645ae9770ebaefa2185893691fdb6d95be30f6b31854cda1e0168cd3c2d36466928e3b2f5f2c8908e8432ad82e94dabc0efc7dfdf76da756b9c00be2c3ea772a1e904bf4f1581b21af1d6f9e3c9719ae606cce44c0'
+		})
+
+		Keen.ready(function() {
+			var channelsEnabled = new Keen.Query('maximum', {
+				eventCollection: 'channelsEnabled',
+				timeframe: 'previous_10_minutes',
+				targetProperty: 'channels'
+			})
+
+			var streamsLive = new Keen.Query('maximum', {
+				eventCollection: 'streamsLive',
+				timeframe: 'previous_24_hours',
+				targetProperty: 'streams',
+				interval: 'every_10_minutes'
+			})
+
+			keen.draw(streamsLive, document.getElementById('streamsLive'), {
+				chartType: 'areachart',
+				title: false,
+				width: 'auto'
+			})
+
+			keen.draw(channelsEnabled, document.getElementById('channelsEnabled'), {
+
+			})
+		})
