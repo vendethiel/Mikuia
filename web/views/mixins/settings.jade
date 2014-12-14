@@ -17,8 +17,8 @@ mixin setting(setting, settingName, userSettings)
 			.col-sm-8
 				case setting.type
 					when 'boolean'
-						.checkbox
-							label
+						.checkbox-list
+							label.checkbox-inline
 								if userSettings && userSettings[settingName]
 									if userSettings[settingName] == 'true'
 										input(type='checkbox', name=settingName, checked)
@@ -28,7 +28,7 @@ mixin setting(setting, settingName, userSettings)
 									input(type='checkbox', name=settingName, checked)
 								else
 									input(type='checkbox', name=settingName)
-								| #{setting.description}
+								.help-inline #{setting.description}
 					when 'disabled'
 						if userSettings && userSettings[settingName]
 							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)

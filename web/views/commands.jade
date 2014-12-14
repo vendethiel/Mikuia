@@ -1,39 +1,48 @@
 extends layout
 
 block content
-	.row
-		.col-sm-12
-			h3.page-title
+	.page-head
+		.page-title
+			h1
 				| Commands
 				small  those things you write and they do things
-			ul.page-breadcrumb.breadcrumb
-				li
-					i.fa.fa-home
-					a(href='/dashboard') Dashboard
-					i.fa.fa-angle-right
-				li
-					a(href='/dashboard/commands') Commands
+	ul.page-breadcrumb.breadcrumb
+		li
+			a(href='/dashboard') Dashboard
+			i.fa.fa-circle
+		li
+			a(href='/dashboard/commands') Commands
 	.row
 		.col-sm-8
-			table.table.table-bordered
-				thead
-					tr
-						td Command
-						td Handler
-						td Actions
-				tbody
-					each command, commandName in commands
-						tr
-							td=commandName
-							td #{command.handler} - #{command.description}
-							td
-								a.btn.input-sm.green.command-settings(href='/dashboard/commands/settings/' + commandName) Settings
-								a.btn.input-sm.red.command-remove(href='#', title=commandName) Remove
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs
+						span.caption-subject.bold.uppercase Commands
+						span.caption-helper  this is a list of them
+				.portlet-body
+					table.table.table-bordered
+						thead
+							tr
+								td Command
+								td Handler
+								td Actions
+						tbody
+							each command, commandName in commands
+								tr
+									td=commandName
+									td #{command.handler} - #{command.description}
+									td
+										a.btn.input-sm.green.command-settings(href='/dashboard/commands/settings/' + commandName) Settings
+										a.btn.input-sm.red.command-remove(href='#', title=commandName) Remove
 		.col-sm-4
-			.panel.panel-info
-				.panel-heading
-					h3.panel-title Add a command
-				.panel-body
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-blue-sharp
+						span.caption-subject.bold.uppercase.font-blue-sharp Add a command
+						span.caption-helper  why not
+				.portlet-body.form
 					form.form-horizontal(action='/dashboard/commands/add', method='post', role='form')
 						.form-body
 							.form-group
@@ -47,7 +56,10 @@ block content
 									select.form-control(name='handler')
 										each handler, handlerName in handlers
 											if enabledPlugins.indexOf(handler.plugin) > -1
-												option(value=handlerName) #{handlerName} - #{handler.description}
+												if handlerName == 'base.dummy'
+													option(value=handlerName, selected=true) #{handlerName} - #{handler.description}
+												else
+													option(value=handlerName) #{handlerName} - #{handler.description}
 									span.help-block This specifies what you expect the command to do.
 						.form-actions
 							button.btn.blue(type='submit') Add

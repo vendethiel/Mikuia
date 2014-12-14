@@ -1,15 +1,16 @@
 extends layout
 
 block content
-	.row
-		.col-md-12
-			h3.page-title
+	.page-head
+		.page-title
+			h1
 				| Dashboard
 				small  stuff and more stuff
-			ul.page-breadcrumb.breadcrumb
-				li
-					i.fa.fa-home
-					a(href='/dashboard') Dashboard
+	ul.page-breadcrumb.breadcrumb
+		li
+			a(href='/dashboard') Dashboard
+	.row
+		.col-md-12
 			if !enabled
 				.alert.alert-block.alert-danger
 					h4.alert-heading Mikuia is not enabled on your channel!
@@ -20,42 +21,137 @@ block content
 	.row
 		if live
 			.col-lg-3.col-md-3.col-sm-16.col-xs-12
-				.dashboard-stat.red-intense
-					.visual
-						i.fa.fa-user
-					.details
-						.number=tracker.viewers
-						.desc Viewers
-					a.more(href='#') 
-						| View more 
-						i.m-icon-swapright.m-icon-white
+				.dashboard-stat2
+					.display
+						.number
+							h3.font-red-haze=tracker.viewers
+							small Viewers
+						.icon
+							i.icon-user
 			.col-lg-3.col-md-3.col-sm-16.col-xs-12
-				.dashboard-stat.blue-madison
-					.visual
-						i.fa.fa-group
-					.details
-						.number=tracker.chatters
-						.desc Chatters
-					a.more(href='#') 
-						| View more 
-						i.m-icon-swapright.m-icon-white
+				.dashboard-stat2
+					.display
+						.number
+							h3.font-blue-sharp=tracker.chatters
+							small Chatters
+						.icon
+							i.icon-users
 		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			.dashboard-stat.grey-gallery
-				.visual
-					i.fa.fa-wrench
-				.details
-					.number=tracker.commands
-					.desc Total Commands Handled
-				a.more(href='#') 
-					| View more 
-					i.m-icon-swapright.m-icon-white
+			.dashboard-stat2
+				.display
+					.number
+						h3.font-green-sharp=tracker.commands
+						small Total Commands Handled
+					.icon
+						i.icon-wrench
 		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			.dashboard-stat.grey-gallery
-				.visual
-					i.fa.fa-comments
-				.details
-					.number=tracker.messages
-					.desc Total Chat Messages
-				a.more(href='#') 
-					| View more 
-					i.m-icon-swapright.m-icon-white
+			.dashboard-stat2
+				.display
+					.number
+						h3.font-green-sharp=tracker.messages
+						small Total Chat Messages
+					.icon
+						i.icon-speech
+		if donator
+			.col-lg-6.col-md-6.col-sm-16.col-xs-12
+				.portlet.light
+					.portlet-title
+						.caption
+							i.fa.fa-cogs
+							span.caption-subject.bold.uppercase Viewers & Chatters
+							span.caption-helper  last 24 hours
+					.portlet-body
+						#viewerChart
+
+block footerScript
+	if donator
+		script(type='text/javascript').
+			!function(a,b){a('Keen','https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js',b)}(function(a,b,c){var d,e,f;c['_'+a]={},c[a]=function(b){c['_'+a].clients=c['_'+a].clients||{},c['_'+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c['_'+a].ready=c['_'+a].ready||[],c['_'+a].ready.push(b)},d=['addEvent','setGlobalProperties','trackExternalLink','on'];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this['_'+a]=this['_'+a]||[],this['_'+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement('script'),e.async=!0,e.src=b,f=document.getElementsByTagName('script')[0],f.parentNode.insertBefore(e,f)},this);
+
+			var keen = new Keen({
+				projectId: '548ccdfa90e4bd2427852b04',
+				readKey: 'd7630d579a75e6dd3e21d6114b223ce56c25db7d188b8219af8fcf645ae9770ebaefa2185893691fdb6d95be30f6b31854cda1e0168cd3c2d36466928e3b2f5f2c8908e8432ad82e94dabc0efc7dfdf76da756b9c00be2c3ea772a1e904bf4f1581b21af1d6f9e3c9719ae606cce44c0'
+			})
+
+			Keen.ready(function() {
+				var interval = 'every_10_minutes'
+				var timeframe = 'previous_3600_minutes'
+
+				var chatterQuery = new Keen.Query('maximum', {
+					eventCollection: 'channelStats',
+					timeframe: timeframe,
+					targetProperty: 'chatters',
+					interval: interval,
+					groupBy: 'channel',
+					filters: [{
+						'property_name': 'channel',
+						'operator': 'eq',
+						'property_value': 'hatsuney'
+					}]
+				})
+
+				var viewerQuery = new Keen.Query('maximum', {
+					eventCollection: 'channelStats',
+					timeframe: timeframe,
+					targetProperty: 'viewers',
+					interval: interval,
+					groupBy: 'channel',
+					filters: [{
+						'property_name': 'channel',
+						'operator': 'eq',
+						'property_value': 'hatsuney'
+					}]
+				})
+
+				keen.run([chatterQuery, viewerQuery], function(response) {
+					var result1 = response[0].result
+					var result2 = response[1].result
+					var data = []
+					var i = 0
+
+					while(i < result1.length) {
+
+						data[i] = {
+							timeframe: result1[i].timeframe,
+							value: [
+								{
+									category: 'Chatters',
+									result: result1[i].value[0].result
+								},
+								{
+									category: 'Viewers',
+									result: result2[i].value[0].result
+								}
+							]
+						}
+						i++
+					}
+
+					window.chart = new Keen.Visualization({
+						result: data
+					}, document.getElementById('viewerChart'), {
+						chartOptions: {
+							chartArea: {
+								height: '85%',
+								left: '5%',
+								top: '10%',
+								width: '90%'
+							},
+							crosshair: {
+								color: '#333',
+								trigger: 'focus'
+							},
+							curveType: 'function',
+							hAxis: {
+								gridlines: {
+									count: 12
+								}
+							},
+							legend: 'top'
+						},
+						chartType: 'areachart',
+						title: ' '
+					})
+					console.log(data)
+				})
+			})

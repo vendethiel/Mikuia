@@ -2,8 +2,9 @@ module.exports = (req, res) ->
 	Channel = new Mikuia.Models.Channel req.user.username
 
 	await
-		Channel.isEnabled defer err, enabled
-		Channel.isLive defer err2, live
+		Channel.isDonator defer err, donator
+		Channel.isEnabled defer err2, enabled
+		Channel.isLive defer err3, live
 
 	tracker = {}
 	if live
@@ -16,8 +17,11 @@ module.exports = (req, res) ->
 	# Best error handling EUNE
 	if err then console.log err
 	if err2 then console.log err2
+	if err3 then console.log err3
+	# DURRR
 
 	res.render 'dashboard',
+		donator: donator
 		enabled: enabled
 		live: live
 		tracker: tracker

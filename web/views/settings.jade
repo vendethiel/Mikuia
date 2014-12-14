@@ -1,40 +1,47 @@
 extends layout
 
 block content
-	.row
-		.col-sm-12
-			h3.page-title
+	.page-head
+		.page-title
+			h1
 				| Settings
 				small  where you change stuff
-			ul.page-breadcrumb.breadcrumb
-				li
-					i.fa.fa-home
-					a(href='/dashboard') Dashboard
-					i.fa.fa-angle-right
-				li
-					a(href='/dashboard/settings') Settings
+	ul.page-breadcrumb.breadcrumb
+		li
+			a(href='/dashboard') Dashboard
+			i.fa.fa-circle
+		li
+			a(href='/dashboard/settings') Settings			
 	.row
-		.col-sm-4
+
+		.col-md-4
 			if !enabled
-				- var className = 'panel-warning'
+				- var className = 'font-red-sunglo'
 			else
-				- var className = 'panel-success'
-			.panel(class=className)
-				.panel-heading
-					h3.panel-title Status
-				.panel-body
+				- var className = 'font-green-sharp'
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs(class=className)
+						span.caption-subject.bold.uppercase(class=className) Status
+						span.caption-helper  help me
+				.portlet-body
 					if enabled
 						p.lead Mikuia is enabled.
-						a.btn.red(onclick="toggle('disable')") Disable
+						a.btn.default(onclick="toggle('disable')") Disable
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(onclick="toggle('enable')") Enable
+			
 		.col-sm-8
 			if enabled
-				.panel.panel-info
-					.panel-heading
-						h3.panel-title Plugins
-					.panel-body
+				.portlet.light
+					.portlet-title
+						.caption
+							i.fa.fa-cogs.font-blue-sharp
+							span.caption-subject.bold.uppercase.font-blue-sharp Plugins
+							span.caption-helper  they make stuff do stuff
+					.portlet-body
 						table.table
 							thead
 								tr
@@ -56,18 +63,21 @@ block content
 		each pluginName in enabledPlugins
 			- var plugin = plugins[pluginName]
 			.col-sm-6
-				.panel.panel-default
-					.panel-heading
-						h3.panel-title=plugin.manifest.name
+				.portlet.light
+					.portlet-title
+						.caption
+							i.fa.fa-cogs
+							span.caption-subject.bold.uppercase.=plugin.manifest.name
+							span.caption-helper  plugin settings
 					if plugin.manifest.settings && plugin.manifest.settings.channel
-						.panel-body.form
+						.portlet-body.form
 							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 								.form-body
 									+settings(plugin.manifest.settings.channel, settings[pluginName], categories[pluginName])
 								.form-actions
 									button.btn.blue(type='submit') Save
 					else
-						.panel-body
+						.portlet-body
 							.text-muted This plugin has no configurable settings.
 
 block footerScript
