@@ -52,8 +52,10 @@ block content
 						small Total Chat Messages
 					.icon
 						i.icon-speech
-		if supporter
-			.col-lg-9.col-md-9.col-sm-16.col-xs-12
+							
+	.row
+		.col-lg-9.col-md-9.col-sm-16.col-xs-12
+			if supporter
 				.portlet.light
 					.portlet-title
 						.caption
@@ -63,7 +65,27 @@ block content
 							span.caption-helper  last 24 hours
 					.portlet-body
 						#viewerChart
-			.col-lg-3.col-md-3.col-sm-16.col-xs-12
+
+				.portlet.light
+					.portlet-title
+						.caption
+							i.fa.fa-cogs
+							i.icon-heart
+							span.caption-subject.bold.uppercase Insert Chart Here
+							span.caption-helper  last 24 hours
+					.portlet-body
+						#followerChart
+
+		.col-lg-3.col-md-3.col-sm-16.col-xs-12
+			.dashboard-stat2
+					.display
+						.number
+							h3.font-purple-plum=followers
+							small Followers
+						.icon
+							i.icon-users
+
+			if supporter
 				- var supporterLeft = supporterStatus - (new Date()).getTime() / 1000
 				- var supporterPercent = Math.floor(100 - (supporterLeft / (supporterStatus - supporterStart)) * 100)
 				.dashboard-stat2
@@ -80,6 +102,8 @@ block content
 						.status
 							.status-title progress
 							.status-number #{supporterPercent}%
+
+
 
 block footerScript
 	if supporter
@@ -104,7 +128,7 @@ block footerScript
 					filters: [{
 						'property_name': 'channel',
 						'operator': 'eq',
-						'property_value': 'hatsuney'
+						'property_value': '#{channel}'
 					}]
 				})
 
@@ -117,7 +141,7 @@ block footerScript
 					filters: [{
 						'property_name': 'channel',
 						'operator': 'eq',
-						'property_value': 'hatsuney'
+						'property_value': '#{channel}'
 					}]
 				})
 
@@ -163,6 +187,7 @@ block footerScript
 								trigger: 'focus'
 							},
 							curveType: 'function',
+							explorer: {},
 							hAxis: {
 								gridlines: {
 									count: 12

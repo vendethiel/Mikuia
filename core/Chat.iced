@@ -244,6 +244,7 @@ class exports.Chat
 
 					if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
 						Channel = new Mikuia.Models.Channel stream.channel.name
+						Channel.setFollowers stream.channel.followers, defer err, whatever
 						Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
 
 			@Mikuia.Events.emit 'twitch.updated'
