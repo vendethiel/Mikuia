@@ -2,6 +2,7 @@ cli = require 'cli-color'
 irc = require 'node-twitch-irc'
 RateLimiter = require('limiter').RateLimiter
 
+channelLimiter = {}
 joinLimiter = new RateLimiter 25, 10000
 messageLimiter = new RateLimiter 10, 30000
 
@@ -51,7 +52,9 @@ class exports.Chat
 					Channel = new Mikuia.Models.Channel channel
 					await Channel.getDisplayName defer err, displayName
 
-					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel.')
+					channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
+					rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
+					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
 
 				event.on 'part', (channel) =>
 					Channel = new Mikuia.Models.Channel channel
@@ -155,24 +158,25 @@ class exports.Chat
 			return null
 
 	part: (channel, callback) =>
-		messageLimiter.removeTokens 1, (err, rr) =>	
+		joinLimiter.removeTokens 1, (err, rr) =>	
 			@client.part channel
 			if @joined.indexOf(channel) > -1
 				@joined.splice @joined.indexOf(channel), 1
 
 	say: (channel, message) =>
+		Channel = new Mikuia.Models.Channel channel
+
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
 		lines = message.split '\\n'
 		for line in lines
-			messageLimiter.removeTokens 1, (err, rr) =>
-				if !Mikuia.settings.bot.disableChat
-					@client.say channel, line
+			if !Mikuia.settings.bot.disableChat
+				messageLimiter.removeTokens 1, (err, twitchRR) =>
+					channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
+						@client.say channel, line
 
-				Channel = new @Mikuia.Models.Channel channel
-				await Channel.getDisplayName defer err, displayName
-
-				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(rr)) + '): ' + message
+						await Channel.getDisplayName defer err, displayName
+						@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
 
 	sayRaw: (channel, message) =>
 		@client.say channel, message
@@ -234,6 +238,7 @@ class exports.Chat
 					for thing in things
 						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, thing, stream.channel[thing], defer err, whatever
 
+					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'created_at', stream.created_at, defer err, whatever
 					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
 					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 					@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
