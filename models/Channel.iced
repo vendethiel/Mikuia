@@ -164,7 +164,7 @@ class exports.Channel extends Mikuia.Model
 			callback false, @getName()
 		else
 			if !err2 && isSupporter
-				callback err, '★ ' + data
+				callback err, '❤ ' + data
 			else
 				callback err, data
 
