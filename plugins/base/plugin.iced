@@ -50,6 +50,32 @@ Mikuia.Events.on 'base.levels', (data) =>
 Mikuia.Events.on 'base.remove', (data) =>
 	removeCommand data.user.username, data.to, data.tokens
 
+Mikuia.Events.on 'base.uptime', (data) =>
+	Channel = new Mikuia.Models.Channel data.to
+	await Channel.isLive defer err, isLive
+
+	if isLive
+		await Mikuia.Streams.get Channel.getName(), defer err, stream
+
+		startTime = (new Date(stream.created_at)).getTime() / 1000
+		endTime = Math.floor((new Date()).getTime() / 1000)
+
+		totalTime = endTime - startTime
+
+		seconds = totalTime % 60
+		minutes = ((totalTime - seconds) / 60) % 60
+		hours = ((totalTime - seconds) - (60 * minutes)) / 3600
+
+		if minutes < 10
+			minutes = '0' + minutes
+
+		if seconds < 10
+			seconds = '0' + seconds
+
+		Mikuia.Chat.say data.to, 'Uptime: ' + hours + 'h ' + minutes + 'm ' + seconds + 's'
+	else
+		Mikuia.Chat.say data.to, 'The stream is not live.'		
+
 Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
 	if message.indexOf(globalCommand) == 0

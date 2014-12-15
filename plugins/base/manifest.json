@@ -23,6 +23,9 @@
 		},
 		"base.remove": {
 			"description": "Removes a command."
+		},
+		"base.uptime": {
+			"description": "Shows the current stream uptime."
 		}
 	},
 	"settings": {
