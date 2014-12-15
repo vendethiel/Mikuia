@@ -157,11 +157,16 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	getDisplayName: (callback) ->
-		await @getInfo 'display_name', defer err, data
+		await
+			@getInfo 'display_name', defer err, data
+			@isSupporter defer err2, isSupporter
 		if err || !data?
 			callback false, @getName()
 		else
-			callback err, data
+			if !err2 && isSupporter
+				callback err, '★ ' + data
+			else
+				callback err, data
 
 	getEmail: (callback) ->
 		await @getInfo 'email', defer err, data

@@ -38,10 +38,15 @@ module.exports =
 		featuredStream = null
 		if stream
 			Channel = new Mikuia.Models.Channel stream
-			await Mikuia.Streams.get stream, defer err, featuredStream
-			await Channel.getBio defer err, bio
+			await
+				Mikuia.Streams.get stream, defer err, featuredStream
+				Channel.getBio defer err, bio
+				Channel.isSupporter defer err, isSupporter
+
 			if featuredStream?
 				featuredStream.bio = bio
+				featuredStream.name = featuredStream.display_name
+				featuredStream.display_name = '✪' + featuredStream.display_name
 
 		await Mikuia.Element.preparePanels 'community.index', defer panels
 

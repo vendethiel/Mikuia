@@ -11,12 +11,12 @@ block content
 			.container
 				.row
 					.col-xs-4
-						object.player(type='application/x-shockwave-flash', height='225', width='369', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel=' + featured.display_name)
+						object.player(type='application/x-shockwave-flash', height='225', width='369', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel=' + featured.name)
 							param(name='allowFullScreen', value='true')
 							param(name='allowScriptAccess', value='always')
 							param(name='allowNetworking', value='all')
 							param(name='movie', value='http://www.twitch.tv/widgets/live_embed_player.swf')
-							param(name='flashvars', value='hostname=www.twitch.tv&channel=' + featured.display_name + '&auto_play=true&start_volume=0')
+							param(name='flashvars', value='hostname=www.twitch.tv&channel=' + featured.name + '&auto_play=true&start_volume=0')
 					.col-xs-8.blackbox
 						.pull-right
 							i.fa.fa-user(style='color: red;')
@@ -38,7 +38,7 @@ block content
 						br
 						br
 						.blackbox-buttons
-							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.display_name)
+							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.name)
 								img(src='/img/glitch.png', height='18', width='18')
 								|  Watch on Twitch.tv
 	else
