@@ -165,6 +165,7 @@ class exports.Chat
 
 	say: (channel, message) =>
 		Channel = new Mikuia.Models.Channel channel
+		await Channel.getDisplayName defer err, displayName
 
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
@@ -174,8 +175,6 @@ class exports.Chat
 				messageLimiter.removeTokens 1, (err, twitchRR) =>
 					channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
 						@client.say channel, line
-
-						await Channel.getDisplayName defer err, displayName
 						@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
 
 	sayRaw: (channel, message) =>
