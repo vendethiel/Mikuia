@@ -29,20 +29,20 @@ block footerScript
 
 		Keen.ready(function() {
 			var channelsEnabled = new Keen.Query('maximum', {
-				eventCollection: 'channelsEnabled',
+				eventCollection: 'mikuiaStats',
 				timeframe: 'previous_10_minutes',
 				targetProperty: 'channels'
 			})
 
 			var streamsLive = new Keen.Query('maximum', {
-				eventCollection: 'streamsLive',
+				eventCollection: 'mikuiaStats',
 				timeframe: 'previous_3600_minutes',
 				targetProperty: 'streams',
 				interval: 'every_5_minutes'
 			})
 
 			var uniqueChatters = new Keen.Query('maximum', {
-				eventCollection: 'uniqueChatters',
+				eventCollection: 'mikuiaStats',
 				timeframe: 'previous_10_minutes',
 				targetProperty: 'chatters'
 			})
