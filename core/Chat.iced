@@ -50,16 +50,24 @@ class exports.Chat
 
 				event.on 'join', (channel) =>
 					Channel = new Mikuia.Models.Channel channel
-					await Channel.getDisplayName defer err, displayName
+					await
+						Channel.getDisplayName defer err, displayName
+						Channel.isSupporter defer err, isSupporter
 
-					channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
-					rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
+					if isSupporter
+						channelLimiter[Channel.getName()] = new RateLimiter 3, 10000
+						rateLimitingProfile = cli.redBright 'Supporter (3 per 10s)'
+					else
+						channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
+						rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
+					
 					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
 
 				event.on 'part', (channel) =>
 					Channel = new Mikuia.Models.Channel channel
 					await Channel.getDisplayName defer err, displayName
 
+					delete channelLimiter[Channel.getName()]
 					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 			else
 				@Mikuia.Log.error err
@@ -242,9 +250,9 @@ class exports.Chat
 					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 					@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 
+					Channel.setFollowers stream.channel.followers, defer err, whatever
 					if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
 						Channel = new Mikuia.Models.Channel stream.channel.name
-						Channel.setFollowers stream.channel.followers, defer err, whatever
 						Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
 
 			@Mikuia.Events.emit 'twitch.updated'
