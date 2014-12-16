@@ -46,7 +46,9 @@ module.exports =
 			if featuredStream?
 				featuredStream.bio = bio
 				featuredStream.name = featuredStream.display_name
-				featuredStream.display_name = '❤' + featuredStream.display_name
+
+				if isSupporter
+					featuredStream.display_name = '❤' + featuredStream.display_name
 
 		await Mikuia.Element.preparePanels 'community.index', defer panels
 
