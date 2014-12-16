@@ -237,6 +237,9 @@ module.exports =
 			sortMethod: sortMethod
 			streams: streams
 
+	support: (req, res) ->
+		res.render 'community/supporter'
+
 	user: (req, res) ->
 		if req.params.userId?
 			Channel = new Mikuia.Models.Channel req.params.userId

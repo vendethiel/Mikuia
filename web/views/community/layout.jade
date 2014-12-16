@@ -26,8 +26,8 @@ html
 							a(href='/levels') Levels
 						li
 							a(href='http://forums.mikuia.tv') Forums
-						li
-							a(href='/donate') Donate
+						li(class=(path == '/supporter' ? 'active' : undefined))
+							a(href='/supporter') Supporter
 						li(class=(path == '/stats' ? 'active' : undefined))
 							a(href='/stats') Statistics
 						li
@@ -59,6 +59,10 @@ html
 				.col-md-3
 				.col-md-3
 				.col-md-3
+					small.text-muted
+						b Art by 
+						a(href='http://pixiv.me/cillia') cillia 
+						|  <3
 				.col-md-3
 					small.text-muted
 						b Made by:

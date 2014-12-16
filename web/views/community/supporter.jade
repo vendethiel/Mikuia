@@ -1,0 +1,116 @@
+extends layout
+
+block content
+	.splash
+		.avatars
+			ul
+				each avatarFile in Mikuia.Tools.getAvatars(500)
+					li
+						img(src='/img/avatars/' + avatarFile, width='64', height='64')
+		.container
+			.row
+				.col-md-12
+					h1 Supporter
+	.container
+		.row
+			.col-md-9
+				h1 Well, hello there!
+				h4
+					| If you're here, it means you have interest in supporting the project!
+					br
+					| As you may know or not, things in this world cost money. Lots of money.
+					br
+					| Servers, services, even time is money.
+					br
+					| Let's make a deal. You help us out with few dollars, and we'll give you some additional features!
+					br
+					| Mikuia will always be free to use, and all the main features will never get hidden behind a paywall.
+					br
+					| This is how you can help holding that promise unchanged!
+
+				h1.text-success
+					i.fa.fa-star-o
+					|  Features
+
+				.col-md-6
+					h3.text-warning
+						i.fa.fa-star-o
+						|  Featured Channel
+					p.text-muted
+						| Your channel will be more likely to get featured on Mikuia.tv frontpage!
+						br
+						| In case you're the only Supporter live, you'll be featured always, and if there are multiple, the featured channel will be chosen at random.
+
+					br
+					h3.text-muted
+						i.fa.fa-users
+						|  Offline Joining
+					p.text-muted
+						| Normally, Mikuia checks for new streams going live every few minutes, and joins those chats soon after.
+						br
+						| This perk makes her join the channel always, not only when you're live, so your viewers can use commands even when you're offline.
+
+					br
+					h3.text-danger
+						i.fa.fa-heart
+						|  Heart Icon
+					p.text-muted
+						| Featured Channel, profile pages, level lists, level-up notifications - the heart icon will make everyone aware that you support the project! 
+
+				.col-md-6
+					h3.text-success
+						i.fa.fa-comments
+						|  Higher Rate Limits
+					p.text-muted
+						| Your rate limits on the chat will be slightly higher, letting your viewers use commands with a shorter delay.
+
+					br
+					h3.text-primary
+						i.fa.fa-line-chart
+						|  Viewer & Chatter Graphs
+					p.text-muted
+						| Check your viewership stats from last 24 hours directly on Mikuia Dashboard.
+
+					br
+					h3(style='color: #FC74B0;')
+						i.fa.fa-thumbs-down
+						|  (osu!) In-Game Twitch Chat Moderation
+					p.text-muted
+						| Use Twitch chat moderation commands straight from the game chat, in the same box you get requests from!
+						br
+						| Examples: !ban, !slow, !subscribers, !timeout, !unban (!host / !unhost require you to set Mikuia as an editor of your channel)
+
+			.col-md-3
+				form(action='https://www.paypal.com/cgi-bin/webscr', method='post', role='form')
+					.panel.panel-default
+						.panel-heading Buy Supporter
+						.panel-body
+								input(type='hidden', name='business', value='psqmaxor@gmail.com')
+								input(type='hidden', name='charset', value='utf-8')
+								input(type='hidden', name='cmd', value='_xclick')
+								input(type='hidden', name='currency_code', value='USD')
+								input(type='hidden', name='item_name', value='Mikuia Supporter')
+								input(type='hidden', name='notify_url', value='http://mikuia.tv/ipn')
+
+								.form-group
+									label(for='custom') Twitch Username (double-check!)
+									input.form-control.input-xs(type='text', name='custom', value=(user) ? user.username : null)
+								.form-group
+									label(for='amount') Duration
+									select.form-control.input-xs(name='amount')
+										option(value='5.00') 1 Month - $5.00
+										option(value='9.00') 2 Months - $9.00 (-10%)
+										option(value='13.50') 3 Months - $13.50 (-15%)
+										option(value='16.00') 4 Months - $16.00 (-20%)
+										option(value='21.00') 6 Months - $21.00 (-30%)
+										option(value='36.00') 12 Months - $36.00 (-40%)
+						.panel-footer
+							button.btn.btn-danger.btn-sm(type='submit', name='submit') Buy Now
+							small.text-muted.pull-right
+								| Powered by 
+								i.fa.fa-paypal
+
+				small.text-muted
+					| If you have any problems, please contact psqmaxor@gmail.com as soon as possible!
+					br
+					| Also, if you donated in the past, you can get few months of supporter from your previous donations, just send me an email about it!

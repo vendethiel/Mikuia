@@ -22,6 +22,7 @@
     "node-twitch-irc": "1.1.0",
     "passport": "0.2.1",
     "passport-twitchtv": "0.1.4",
+    "paypal-ipn": "3.0.0",
     "random-string": "0.1.1",
     "redis": "0.12.1",
     "request": "2.50.0",
