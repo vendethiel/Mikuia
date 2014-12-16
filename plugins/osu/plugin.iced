@@ -21,6 +21,21 @@ modes = [
 
 patterns = [/(http|https):\/\/(?!osu.ppy.sh\/).+/ig]
 
+twitchCommands = [
+	'ban'
+	'clear'
+	'host'
+	'r9kbeta'
+	'r9kbetaoff'
+	'slow'
+	'slowoff'
+	'subscribers'
+	'subscribersoff'
+	'timeout'
+	'unban'
+	'unhost'
+]
+
 # Crucial stuff, whatever!
 
 osuLeaderboard = new Mikuia.Models.Leaderboard 'osuRankMode0'
@@ -174,7 +189,10 @@ checkRankUpdates = (stream, callback) =>
 				if err2
 					mode = 0
 
-				await getUser name, mode, defer err, stats
+				await
+					getUser name, mode, defer err, stats
+					Mikuia.Database.hset 'plugin:osu:channels', name, Channel.getName(), defer errar, whatever
+				
 				if err
 					callback true, null
 				else if stats?[0]?
@@ -500,6 +518,23 @@ Mikuia.Events.on 'twitch.connected', =>
 			setTimeout () ->
 				delete codes[code]
 			, 60000
+		else
+			if message.message.indexOf('!') == 0
+				tokens = message.message.split ' '
+				trigger = tokens[0].replace '!', ''
+				
+				if trigger in twitchCommands
+					await
+						Mikuia.Database.hget 'plugin:osu:channels', message.from, defer err, name
+					
+					Channel = new Mikuia.Models.Channel name
+					await Channel.isSupporter defer err, isSupporter
+
+					if name?
+						if isSupporter
+							Mikuia.Chat.say name, message.message.replace '!', '.'
+						else
+							banchoSay message.from, 'This feature is available only for Mikuia Supporters.'
 
 	for word in @Plugin.getSetting('blockedWords')
 		patterns.push new RegExp word, 'ig'
