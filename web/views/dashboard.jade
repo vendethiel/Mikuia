@@ -41,7 +41,10 @@ block content
 			.dashboard-stat2
 					.display
 						.number
-							h3.font-purple-plum=followers
+							if tracker.followers
+								h3.font-purple-plum=tracker.followers
+							else
+								h3.font-purple-plum N/A
 							small Followers
 						.icon
 							i.icon-users

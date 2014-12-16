@@ -172,10 +172,6 @@ class exports.Channel extends Mikuia.Model
 		await @getInfo 'email', defer err, data
 		callback err, data
 
-	getFollowers: (callback) ->
-		await @getInfo 'followers', defer err, data
-		callback err, data
-
 	getLogo: (callback) ->
 		await @getInfo 'logo', defer err, data
 		if err || !data?
@@ -197,10 +193,6 @@ class exports.Channel extends Mikuia.Model
 
 	setEmail: (email, callback) ->
 		await @setInfo 'email', email, defer err, data
-		callback err, data
-
-	setFollowers: (followers, callback) ->
-		await @setInfo 'followers', followers, defer err, data
 		callback err, data
 
 	setLogo: (logo, callback) ->

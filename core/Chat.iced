@@ -214,6 +214,7 @@ class exports.Chat
 							streamData[stream.channel.name] = stream
 
 							Channel = new Mikuia.Models.Channel stream.channel.name
+							Channel.trackValue 'followers', stream.channel.followers
 							Channel.trackValue 'viewers', stream.viewers
 
 							await Channel.isSupporter defer err, isSupporter
@@ -250,7 +251,6 @@ class exports.Chat
 					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
 					@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 
-					Channel.setFollowers stream.channel.followers, defer err, whatever
 					if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
 						Channel = new Mikuia.Models.Channel stream.channel.name
 						Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever

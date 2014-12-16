@@ -4,7 +4,6 @@ module.exports = (req, res) ->
 	Channel = new Mikuia.Models.Channel req.user.username
 
 	await
-		Channel.getFollowers defer err, followers
 		Channel.getSupporterStart defer err, supporterStart
 		Channel.getSupporterStatus defer err, supporterStatus
 		Channel.isEnabled defer err2, enabled
@@ -17,6 +16,7 @@ module.exports = (req, res) ->
 			Channel.trackGet 'viewers', defer err, tracker.viewers
 			Channel.trackGet 'chatters', defer err, tracker.chatters
 	await Channel.trackGet 'commands', defer err, tracker.commands
+	await Channel.trackGet 'followers', defer err, tracker.followers
 	await Channel.trackGet 'messages', defer err, tracker.messages
 
 	supporterLeftText = moment.unix(supporterStatus).fromNow()
@@ -30,7 +30,6 @@ module.exports = (req, res) ->
 	res.render 'dashboard',
 		channel: Channel.getName()
 		enabled: enabled
-		followers: followers
 		live: live
 		supporter: supporter
 		supporterLeftText: supporterLeftText
