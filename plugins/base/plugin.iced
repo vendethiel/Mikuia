@@ -42,7 +42,7 @@ Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username
 	if Channel.getName() != data.to
 		await
-			Channel.getDisplayName() defer err, displayName
+			Channel.getDisplayName defer err, displayName
 			Channel.getExperience data.to.replace('#', ''), defer err2, experience
 			Mikuia.Database.zrevrank 'levels:' + data.to.replace('#', '') + ':experience', data.user.username, defer err3, rank
 
