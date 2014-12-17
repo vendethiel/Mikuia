@@ -105,9 +105,10 @@ body.mikuia {
 
 .infobox-mikuia {
 	background-image: url('/img/mikuia.png');
-	background-position: 660px -630px;
+	background-position: 100% -630px;
 	background-repeat: no-repeat;
 	height: 100%;
+	text-shadow: 0px 0px 10px black;
 }
 
 .level {
