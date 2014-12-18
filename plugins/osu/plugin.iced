@@ -439,8 +439,11 @@ sendRequest = (Channel, user, username, map, message) =>
 			when '-1' then approvedText = 'WIP'
 			when '-2' then approvedText = 'Graveyard'
 
+		Requester = new Mikuia.Models.Channel user.username
+		await Requester.getDisplayName defer err, requesterDisplayName
+
 		data =
-			requester: user.username
+			requester: requesterDisplayName
 			beatmapset_id: map.beatmapset_id
 			beatmap_id: map.beatmap_id
 			approved: map.approved
