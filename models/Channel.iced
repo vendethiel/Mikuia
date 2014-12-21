@@ -240,7 +240,6 @@ class exports.Channel extends Mikuia.Model
 		if !isBot
 			await @getLevel channel, defer err, level
 			if activity < 1 || !activity? || isNaN activity
-				Mikuia.Log.info 'Nevermind, giving 0-1 XP.'
 				experience = 0
 
 			otherChannel = new Mikuia.Models.Channel channel
