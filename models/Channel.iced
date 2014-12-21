@@ -339,3 +339,28 @@ class exports.Channel extends Mikuia.Model
 			callback err, true
 		else
 			callback err, false
+
+	# Badges
+
+	addBadge: (badgeId, callback) =>
+		await @_sadd 'badges', badgeId, defer err, data
+		callback err, data
+
+	getBadges: (callback) =>
+		await @_smembers 'badges', defer err, data
+		callback err, data
+
+	getBadgesWithInfo: (callback) =>
+		await @getBadges defer err, data
+		
+		badgeInfo = {}
+		for badgeId in data
+			Badge = new Mikuia.Models.Badge badgeId
+
+			await Badge.getAll defer err, badgeInfo[badgeId]
+
+		callback err, badgeInfo
+
+	removeBadge: (badgeId, callback) =>
+		await @_srem 'badges', badgeId, defer err, data
+		callback err, data

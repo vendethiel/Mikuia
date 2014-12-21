@@ -13,6 +13,16 @@ block content
 						else
 							i.text-muted No bio.
 			.col-md-4
+
+				.panel.panel-default
+					.panel-heading Badges
+					.panel-body
+						if Object.keys(Channel.badges).length > 0
+							each badge, badgeId in Channel.badges
+								img(src='/img/badges/' + badgeId + '.png', width='64', height='64', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
+						else
+							.text-muted No badges yet.
+
 				.panel.panel-default
 					.panel-heading Levels
 					.panel-body

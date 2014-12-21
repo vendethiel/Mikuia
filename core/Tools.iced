@@ -11,6 +11,23 @@ class exports.Tools
 			R.push array.slice i, i + size
 		return R
 
+	colorRarity: (rarity) ->
+		switch rarity
+			when 'common'
+				return '<span style="color: white;">Common</span>';
+			when 'uncommon'
+				return '<span style="color: #1eff00;">Uncommon</span>';
+			when 'rare'
+				return '<span style="color: #338BFF;">Rare</span>';
+			when 'epic'
+				return '<span style="color: #B356F0;">Epic</span>';
+			when 'legendary'
+				return '<span style="color: #FF9933;">Legendary</span>';
+			when 'unique'
+				return '<span style="color: #e6cc80;">Unique</span>';
+			else
+				return '<span style="color: red;">UNKNOWN</span>';
+
 	fillArray: (data, size) ->
 		array = data.slice 0
 		while array.length < size

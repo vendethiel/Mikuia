@@ -254,6 +254,7 @@ module.exports =
 					ranks = {}
 					await
 						Channel.getAllExperience defer err, channel.experience
+						Channel.getBadgesWithInfo defer err, channel.badges
 						Channel.getBio defer err, channel.bio
 						Channel.getDisplayName defer err, channel.display_name
 						Channel.getLogo defer err, channel.logo
