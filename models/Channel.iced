@@ -344,6 +344,7 @@ class exports.Channel extends Mikuia.Model
 
 	addBadge: (badgeId, callback) =>
 		await @_sadd 'badges', badgeId, defer err, data
+		await Mikuia.Database.sadd 'badge:' + badgeId + ':members', @getName(), defer err2, data2
 		callback err, data
 
 	getBadges: (callback) =>
@@ -363,4 +364,5 @@ class exports.Channel extends Mikuia.Model
 
 	removeBadge: (badgeId, callback) =>
 		await @_srem 'badges', badgeId, defer err, data
+		await Mikuia.Database.srem 'badge:' + badgeId + ':members', @getName(), defer err2, data2
 		callback err, data
