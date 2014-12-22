@@ -7,11 +7,16 @@ block content
 		.infobox.infobox-live
 			.container
 				.row
-					.col-md-2
+					.col-md-2.visible-lg-block
 						a(href='http://twitch.tv/' + Channel.name, target='_blank')
 							img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
-					.col-md-9
-						h1
+					.col-md-10
+						h1.hidden-xs
+							i.fa.fa-circle(style='color: red;')
+							|  Currently Live 
+							small playing #{Channel.stream.game}
+						h2.visible-xs-block
+							br
 							i.fa.fa-circle(style='color: red;')
 							|  Currently Live 
 							small playing #{Channel.stream.game}
@@ -30,7 +35,6 @@ block content
 						else
 							i.text-muted No bio.
 			.col-md-4
-
 				.panel.panel-default
 					.panel-heading Badges
 					.panel-body
@@ -40,6 +44,10 @@ block content
 									img(src='/img/badges/' + badgeId + '.png', width='64', height='64', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
 						else
 							.text-muted No badges yet.
+
+				.visible-xs-block
+					h1
+						+level(Channel.level)
 
 				.panel.panel-default
 					.panel-heading Levels
