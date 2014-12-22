@@ -45,6 +45,12 @@ class exports.Model
 		await Mikuia.Database.sadd @model + ':' + @name + key, member, defer err, data
 		callback err, data
 
+	_scard: (key, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.scard @model + ':' + @name + key, defer err, data
+		callback err, data
+
 	_sismember: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
