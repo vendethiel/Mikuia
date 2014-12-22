@@ -2,6 +2,22 @@ extends layout
 
 block content
 	+userHeader(Channel)
+	
+	if Channel.isLive
+		.infobox.infobox-live
+			.container
+				.row
+					.col-md-2
+						img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
+					.col-md-9
+						h1
+							i.fa.fa-circle(style='color: red;')
+							|  Currently Live 
+							small playing #{Channel.stream.game}
+						p
+							h4.text-muted
+								| #{Channel.stream.status} >> 
+								a(href='#') Watch on Twitch
 	.container
 		.row
 			.col-md-8

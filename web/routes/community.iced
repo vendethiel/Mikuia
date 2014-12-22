@@ -260,6 +260,10 @@ module.exports =
 						Channel.getLogo defer err, channel.logo
 						Channel.getProfileBanner defer err, channel.profileBanner
 						Channel.getTotalLevel defer err, channel.level
+						Channel.isLive defer err, channel.isLive
+
+					if channel.isLive
+						await Mikuia.Streams.get req.params.userId, defer err, channel.stream
 
 					for data in channel.experience
 						chan = new Mikuia.Models.Channel data[0]

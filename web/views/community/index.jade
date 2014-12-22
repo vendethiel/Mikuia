@@ -2,7 +2,7 @@ extends layout
 
 block content
 	if featured
-		.splash.splash-index.featured(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
+		.splash.splash-index.featured.nomargin(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
 			//- .avatars
 			//- 	ul
 			//- 		each avatarFile in Mikuia.Tools.getAvatars(1000)
