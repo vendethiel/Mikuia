@@ -58,6 +58,31 @@ block content
 	.container
 		.row
 			.col-md-8
+				.panel.panel-default
+					.panel-heading Changelog
+					.panel-body
+
+						each commit in Mikuia.Stuff.githubCommits
+							- var date = moment(commit.commit.author.date).format('MMMM Do, YYYY')
+							
+							if previousDate
+								if date != previousDate
+									br
+									h3.text-primary=date
+									br
+							else
+								h3.text-primary=date
+								br
+
+							- var previousDate = date						
+
+							.media.nomargin
+								a.pull-left(href=commit.author.html_url)
+									img.media-object(src=commit.author.avatar_url, width='20', height='20')
+								.media-body
+									a(href=commit.html_url)
+										h5.media-heading!=commit.commit.message
+				
 				each panel in panels
 					.panel.panel-default
 						.panel-heading=panel.title
@@ -66,7 +91,7 @@ block content
 				.panel.panel-info
 					.panel-heading Guide
 					.panel-body
-						h2 Get everything out of Mikuia
+						h2 How to use Mikuia?
 						p Read the guide!
 						a.btn.btn-info.btn-xs.pull-right(href='http://forums.mikuia.tv/topic/6/how-to-use-mikuia') Guide
 				.panel.panel-danger

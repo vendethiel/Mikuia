@@ -3,6 +3,7 @@ cookieParser = require 'cookie-parser'
 express = require 'express.io'
 fs = require 'fs-extra'
 gm = require 'gm'
+moment = require 'moment'
 morgan = require 'morgan'
 passport = require 'passport'
 path = require 'path'
@@ -63,6 +64,7 @@ app.use passport.initialize()
 app.use passport.session()
 app.use (req, res, next) ->
 	res.locals.Mikuia = Mikuia
+	res.locals.moment = moment
 	res.locals.path = req.path
 	res.locals.user = req.user
 
@@ -156,3 +158,41 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 	)(req, res, next)
 
 app.listen Mikuia.settings.web.port
+
+updateGithub = (callback) =>
+	request 
+		url: 'https://api.github.com/repos/Maxorq/Mikuia/commits'
+		headers: 
+			'User-Agent': 'Mikuia/0.0.0.0.1'
+	, (error, response, body) =>
+		if !error
+			try
+				json = JSON.parse body
+			catch error
+				if error
+					Mikuia.Log.error error
+
+			if json
+				Mikuia.Stuff.githubCommits = json
+
+				for commit in Mikuia.Stuff.githubCommits
+					if commit.commit.message.indexOf('[') == 0
+						commit.commit.message = commit.commit.message.replace '[add]', '<span class="label label-primary">add</span>'
+						commit.commit.message = commit.commit.message.replace '[del]', '<span class="label label-danger">del</span>'
+						commit.commit.message = commit.commit.message.replace '[fix]', '<span class="label label-success">fix</span>'
+
+						commit.commit.message = commit.commit.message.replace '[bot]', '<span class="label label-default">bot</span>'
+						commit.commit.message = commit.commit.message.replace '[fun]', '<span class="label label-primary">fun</span>'
+						commit.commit.message = commit.commit.message.replace '[osu]', '<span class="label label-warning">osu</span>'
+						commit.commit.message = commit.commit.message.replace '[web]', '<span class="label label-info">web</span>'
+						commit.commit.message = commit.commit.message.replace '[wow]', '<span class="label label-warning">wow</span>'
+				
+		else
+			Mikuia.Log.error error
+		callback error
+
+setInterval () =>
+	await updateGithub defer whatever
+, 300000
+Mikuia.Stuff.githubCommits = []
+await updateGithub defer whatever

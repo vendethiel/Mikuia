@@ -187,6 +187,10 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 	margin-top: 13px;
 }
 
+.nomargin {
+	margin: 0;
+}
+
 .profile-name {
 	padding-top: 32px;
 }

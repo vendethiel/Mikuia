@@ -22,6 +22,7 @@ iced.catchExceptions()
 Mikuia =
 	Events: new EventEmitter
 	Models: {}
+	Stuff: {}
 	settings: {}
 
 global.iced = iced
