@@ -1,0 +1,38 @@
+extends layout
+
+block content
+	.splash.profile
+		.container
+			.row
+				.col-md-12
+					.media
+						.pull-left
+							img.img-circle.media-object(src='/img/badges/' + badgeId + '.png', width='120', height='120')
+						.media-body.profile-name
+							h1.media-heading
+								| #{Badge.displayName}
+
+								.pull-right
+									h2!=Mikuia.Tools.colorRarity(Badge.rarity)
+							small=Badge.description
+	.container
+		.row
+			.col-md-12
+				h2
+					if members.length == 1
+						| 1 user has this badge 
+					else
+						| #{members.length} users have this badge 
+					| (out of #{uniqueChatters})
+		br
+		.row
+			each memberName in members
+				- var member = memberData[memberName]
+				.col-md-3
+					a(href='/user/' + memberName)
+						.well.well-sm
+							.media
+								.pull-left
+									img.img-circle.media-object(src=member.logo, width='32', height='32')
+								.media-body
+									span.media-heading=member.displayName
