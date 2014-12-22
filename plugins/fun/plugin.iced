@@ -1,4 +1,7 @@
 Mikuia.Events.on 'fun.roll', (data) =>
+	Channel = new Mikuia.Models.Channel data.user.username
+	await Channel.getDisplayName defer err, displayName
+
 	if data.settings?.limit? && !isNaN data.settings.limit
 		limit = data.settings.limit
 	else
@@ -10,4 +13,4 @@ Mikuia.Events.on 'fun.roll', (data) =>
 				limit = data.tokens[1]
 
 	roll = Math.floor(Math.random() * limit)
-	Mikuia.Chat.say data.to, data.user.username + ' rolled ' + roll + '.'
+	Mikuia.Chat.say data.to, displayName + ' rolled ' + roll + '.'
