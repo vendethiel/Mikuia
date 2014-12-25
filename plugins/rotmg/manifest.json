@@ -1,0 +1,44 @@
+{
+	"name": "Realm of the Mad God",
+	"description": "Plugin for RotMG (using RealmEye API)",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"rotmg.rank": {
+			"description": "Shows the rank and some basic stats of a player.",
+			"settings": {
+				"username": {
+					"name": "Username",
+					"description": "Username to check.",
+					"default": "",
+					"type": "text"
+				}
+			}
+		}
+	},
+	"settings": {
+		"channel": {
+			"name": {
+				"name": "Username",
+				"category": "General",
+				"description": "RotMG username to track.",
+				"default": "",
+				"type": "text"
+			},
+			"fameChanges": {
+				"name": "Fame Changes",
+				"category": "Changes",
+				"description": "Show Fame and Fame rank changes.",
+				"default": false,
+				"type": "boolean"
+			},
+			"fameLimit": {
+				"name": "Fame Lower Limit",
+				"category": "Changes",
+				"description": "Don't show fame changes below this much fame.",
+				"default": 0,
+				"type": "number"
+			}
+		}
+	}
+}
