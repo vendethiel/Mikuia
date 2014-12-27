@@ -101,6 +101,9 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 							Mikuia.Chat.say to, 'This is what I know:' + JSON.stringify(moderators)
 				when 'remove'
 					removeCommand from.username, to, tokens.slice 1
+				when 'say'
+					if from.username == Mikuia.settings.bot.admin
+						Mikuia.Chat.say to, tokens.slice(2).join(' ')
 				else
 					# do nothing
 
