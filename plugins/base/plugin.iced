@@ -88,10 +88,54 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 			trigger = tokens[1]
 
 			Channel = new Mikuia.Models.Channel to
+			isAdmin = (from.username == Mikuia.settings.bot.admin)
 			isMod = checkMod to, from.username
+
+			if isAdmin
+				isMod = true
+				
 			switch trigger
 				when 'dummy'
 					addDummy from.username, to, tokens.slice 1
+				when 'emit'
+					if isAdmin
+						type = tokens[2]
+						switch type
+							when 'handler'
+								handler = tokens[3]
+								if tokens.length > 4
+									dataRaw = tokens[4]
+
+								data =
+									user: from.username
+									to: to
+									message: ''
+									tokens: []
+									settings: {}
+
+								if dataRaw?
+
+									if dataRaw.indexOf('{') == 0
+										try
+											jsonData = JSON.parse dataRaw
+										catch error
+											if error
+												Mikuia.Log.error error
+
+										if jsonData?
+											for key, value of jsonData
+												data[key] = value
+									else
+										for value in dataRaw.split(';')
+											args = value.split '='
+											data[args[0]] = args[1]
+
+								console.log data
+								Mikuia.Events.emit handler, data
+
+							else
+								# nope for now ;P
+
 				when 'levels'
 					Mikuia.Chat.say to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName()
 				when 'mods'
@@ -102,7 +146,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 				when 'remove'
 					removeCommand from.username, to, tokens.slice 1
 				when 'say'
-					if from.username == Mikuia.settings.bot.admin
+					if isAdmin
 						Mikuia.Chat.say to, tokens.slice(2).join(' ')
 				else
 					# do nothing
