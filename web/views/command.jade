@@ -36,7 +36,7 @@ block content
 										.checkbox-list
 											label.checkbox-inline
 												if userSettings && userSettings._onlyMods
-													if userSettings._onlyMods == 'true'
+													if userSettings._onlyMods
 														input(type='checkbox', name='_onlyMods', checked)
 													else
 														input(type='checkbox', name='_onlyMods')
@@ -49,7 +49,7 @@ block content
 										.checkbox-list
 											label.checkbox-inline
 												if userSettings && userSettings._onlySubs
-													if userSettings._onlySubs == 'true'
+													if userSettings._onlySubs
 														input(type='checkbox', name='_onlySubs', checked)
 													else
 														input(type='checkbox', name='_onlySubs')

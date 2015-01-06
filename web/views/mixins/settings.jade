@@ -20,7 +20,7 @@ mixin setting(setting, settingName, userSettings)
 						.checkbox-list
 							label.checkbox-inline
 								if userSettings && userSettings[settingName]
-									if userSettings[settingName] == 'true'
+									if userSettings[settingName] == 'true' || userSettings[settingName] == true
 										input(type='checkbox', name=settingName, checked)
 									else
 										input(type='checkbox', name=settingName)
