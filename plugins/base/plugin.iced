@@ -46,6 +46,9 @@ Mikuia.Events.on 'base.levels', (data) =>
 			Channel.getExperience data.to.replace('#', ''), defer err2, experience
 			Mikuia.Database.zrevrank 'levels:' + data.to.replace('#', '') + ':experience', data.user.username, defer err3, rank
 
+		if !experience
+			experience = 0
+
 		level = Mikuia.Tools.getLevel experience
 		Mikuia.Chat.say data.to, displayName + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
 
