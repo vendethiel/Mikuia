@@ -9,6 +9,12 @@ class exports.Model
 		await Mikuia.Database.exists @model + ':' + @name + key, defer err, data
 		callback err, data
 
+	_get: (key, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.get @model + ':' + @name + key, defer err, data
+		callback err, data
+
 	_hdel: (key, field, callback) ->
 		if key != ''
 			key = ':' + key
@@ -49,6 +55,18 @@ class exports.Model
 		if key != ''
 			key = ':' + key
 		await Mikuia.Database.scard @model + ':' + @name + key, defer err, data
+		callback err, data
+
+	_set: (key, value, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.set @model + ':' + @name + key, value, defer err, data
+		callback err, data
+
+	_setex: (key, ttl, value, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.setex @model + ':' + @name + key, ttl, value, defer err, data
 		callback err, data
 
 	_sismember: (key, member, callback) ->

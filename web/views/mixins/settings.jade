@@ -29,6 +29,9 @@ mixin setting(setting, settingName, userSettings)
 								else
 									input(type='checkbox', name=settingName)
 								.help-inline #{setting.description}
+							if setting.link
+								span.help-block
+									a(href=setting.link.url)=setting.link.name
 					when 'disabled'
 						if userSettings && userSettings[settingName]
 							input.form-control(type='text', name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)
