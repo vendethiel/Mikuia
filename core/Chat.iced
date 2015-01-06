@@ -109,7 +109,7 @@ class exports.Chat
 		continueCommand = true
 
 		if !settingsError && user.username != Channel.getName()
-			
+
 			if settings?._minLevel? && settings._minLevel > 0
 				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
 				if userLevel < settings._minLevel

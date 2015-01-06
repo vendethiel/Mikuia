@@ -104,16 +104,19 @@ class exports.Channel extends Mikuia.Model
 		if !settings?
 			settings = {}
 
-		if !commandError && Mikuia.Plugin.getHandler(handler)?.settings?
+		if !commandError
+			console.log settings
 			for settingName, setting of settings
+				console.log settings[settingName]
 				if settings[settingName] == 'true'
 					settings[settingName] = true
 				if settings[settingName] == 'false'
 					settings[settingName] = false
 
-			for settingName, setting of Mikuia.Plugin.getHandler(handler).settings
-				if defaults && !settings[settingName]?
-					settings[settingName] = setting.default				
+			if Mikuia.Plugin.getHandler(handler)?.settings?
+				for settingName, setting of Mikuia.Plugin.getHandler(handler).settings
+					if defaults && !settings[settingName]?
+						settings[settingName] = setting.default				
 
 		callback err, settings
 
