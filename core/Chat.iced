@@ -139,7 +139,11 @@ class exports.Chat
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
-		if @joined.indexOf(channel) == -1
+
+		Channel = new Mikuia.Models.Channel channel
+		await Channel.isEnabled defer err, isMember
+		
+		if @joined.indexOf(channel) == -1 && isMember
 			joinLimiter.removeTokens 1, (err, rr) =>
 				@client.join channel
 				@joined.push channel
