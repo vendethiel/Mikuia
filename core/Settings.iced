@@ -17,6 +17,9 @@ defaultSettings =
 		db: 0
 		options:
 			auth_pass: '',
+	sentry:
+		enable: false
+		dsn: 'https://username:password@app.getsentry.com/id'
 	twitch:
 		callbackURL: 'http://127.0.0.1:2912/auth/twitch/callback'
 		key: 'TWITCH_API_KEY'

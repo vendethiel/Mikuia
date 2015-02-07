@@ -48,6 +48,10 @@ passport.use new TwitchStrategy
 	process.nextTick () ->
 		return done null, profile
 
+if Mikuia.settings.sentry.enable
+	raven = require 'raven'
+	app.use raven.middleware.express Mikuia.settings.sentry.dsn
+
 app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
 app.use express.static __dirname + '/public'

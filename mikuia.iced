@@ -70,6 +70,11 @@ Mikuia.Settings.read ->
 	Mikuia.Twitch.init()
 	Mikuia.Chat.update()
 
+	if Mikuia.settings.sentry.enable
+		raven = require 'raven'
+		client = new raven.Client Mikuia.settings.sentry.dsn
+		client.patchGlobal()
+
 	# Some keys...
 
 	# Stock Leaderboards
