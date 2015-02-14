@@ -27,7 +27,7 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 
 			lastMessage[user.username] = (new Date()).getTime() / 1000
 
-Mikuia.Events.on 'twitch.updated', =>
+updateLevels = () ->
 	await Mikuia.Database.get 'mikuia:lastUpdate', defer err, time
 	seconds = (((new Date()).getTime() / 1000) - parseInt(time))
 	
@@ -77,3 +77,8 @@ Mikuia.Events.on 'twitch.updated', =>
 							chatActivity[viewer][channel] = 0
 						await Channel.addExperience channel, pointsToAdd, chatActivity[viewer][channel], defer whatever
 						chatActivity[viewer][channel] -= multiplier
+
+setInterval () =>
+	updateLevels()
+, 60000
+updateLevels()
