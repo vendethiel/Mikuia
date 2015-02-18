@@ -14,7 +14,7 @@ module.exports =
 
 			categories[pluginName] = {}
 			manifest = Mikuia.Plugin.getManifest(pluginName)
-			if manifest.settings?.channel?
+			if manifest?.settings?.channel?
 				for settingName, setting of manifest.settings.channel
 					if setting.category?
 						if !categories[pluginName][setting.category]?
