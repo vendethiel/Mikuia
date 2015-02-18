@@ -61,24 +61,25 @@ block content
 													a.btn.green(onclick="pluginToggle('" + pluginName + "', 'enable')") Enable
 	.row
 		each pluginName in enabledPlugins
-			- var plugin = plugins[pluginName]
-			.col-sm-6
-				.portlet.light
-					.portlet-title
-						.caption
-							i.fa.fa-cogs
-							span.caption-subject.bold.uppercase.=plugin.manifest.name
-							span.caption-helper  plugin settings
-					if plugin.manifest.settings && plugin.manifest.settings.channel
-						.portlet-body.form
-							form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
-								.form-body
-									+settings(plugin.manifest.settings.channel, settings[pluginName], categories[pluginName])
-								.form-actions
-									button.btn.blue(type='submit') Save
-					else
-						.portlet-body
-							.text-muted This plugin has no configurable settings.
+			if plugins[pluginName]
+				- var plugin = plugins[pluginName]
+				.col-sm-6
+					.portlet.light
+						.portlet-title
+							.caption
+								i.fa.fa-cogs
+								span.caption-subject.bold.uppercase=plugin.manifest.name
+								span.caption-helper  plugin settings
+						if plugin.manifest.settings && plugin.manifest.settings.channel
+							.portlet-body.form
+								form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
+									.form-body
+										+settings(plugin.manifest.settings.channel, settings[pluginName], categories[pluginName])
+									.form-actions
+										button.btn.blue(type='submit') Save
+						else
+							.portlet-body
+								.text-muted This plugin has no configurable settings.
 
 block footerScript
 	script(type='text/javascript').
