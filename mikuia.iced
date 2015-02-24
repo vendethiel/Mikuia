@@ -10,12 +10,6 @@ iced = require('iced-coffee-script').iced
 path = require 'path'
 repl = require 'repl'
 
-fs.exists 'newrelic.js', (exists) =>
-	if exists
-		require 'newrelic'
-
-iced.catchExceptions()
-
 # So yeah, let's see what happens if we go with this.
 {EventEmitter} = require 'events'
 
@@ -73,9 +67,10 @@ Mikuia.Settings.read ->
 	if Mikuia.settings.sentry.enable
 		raven = require 'raven'
 		client = new raven.Client Mikuia.settings.sentry.dsn
-		client.patchGlobal()
-
-	# Some keys...
+		client.patchGlobal () ->
+			Mikuia.Log.fatal 'Error reported to Sentry. Crashing!'
+	else
+		iced.catchExceptions()
 
 	# Stock Leaderboards
 	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'

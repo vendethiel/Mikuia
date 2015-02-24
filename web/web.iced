@@ -11,8 +11,6 @@ request = require 'request'
 rstring = require 'random-string'
 session = require 'express-session'
 
-iced.catchExceptions()
-
 RedisStore = require('connect-redis')(session)
 TwitchStrategy = require('passport-twitchtv').Strategy
 
@@ -51,6 +49,8 @@ passport.use new TwitchStrategy
 if Mikuia.settings.sentry.enable
 	raven = require 'raven'
 	app.use raven.middleware.express Mikuia.settings.sentry.dsn
+else
+	iced.catchExceptions()
 
 app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
