@@ -340,149 +340,150 @@ makeTillerinoRequest = (beatmap_id, mods, callback) =>
 			callback true, null
 
 sendRequest = (Channel, user, username, map, message) =>
-	continueRequest = true
+	if map?
+		continueRequest = true
 
-	await Channel.getSetting 'osu', 'requestMapLimit', defer err, requestMapLimit
-	if !err && requestMapLimit
-		if limits[Channel.getName()]?.maps?[map.beatmapset_id]?
-			if (new Date()).getTime() < limits[Channel.getName()].maps[map.beatmapset_id] + (requestMapLimit * 1000)
-				continueRequest = false
+		await Channel.getSetting 'osu', 'requestMapLimit', defer err, requestMapLimit
+		if !err && requestMapLimit
+			if limits[Channel.getName()]?.maps?[map.beatmapset_id]?
+				if (new Date()).getTime() < limits[Channel.getName()].maps[map.beatmapset_id] + (requestMapLimit * 1000)
+					continueRequest = false
 
-	if continueRequest
-		await
-			Channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
-			Channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
-			Channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
+		if continueRequest
+			await
+				Channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat
+				Channel.getSetting 'osu', 'osuRequestFormat', defer err2, osuRequestFormat
+				Channel.getSetting 'osu', 'requestChatInfo', defer err3, requestChatInfo
 
-		modValue = 0
-		modString = ''
+			modValue = 0
+			modString = ''
 
-		if message.indexOf('+DT') > -1
-			modValue += 64
-			modString += '+DoubleTime'
-		if message.indexOf('+NC') > -1
-			modValue += 512
-			modString += '+Nightcore'
-		if message.indexOf('+HR') > -1
-			modValue += 16
-			modString += '+HardRock'
-		if message.indexOf('+HD') > -1
-			modValue += 8
-			modString += '+Hidden'
-		if message.indexOf('+EZ') > -1
-			modValue += 2
-			modString += '+Easy'
-		if message.indexOf('+HT') > -1
-			modValue += 256
-			modString += '+HalfTime'
-		if message.indexOf('+SO') > -1
-			modValue += 4096
-			modString += '+SpunOut'
-		if message.indexOf('+NF') > -1
-			modValue += 1
-			modString += '+NoFail'
+			if message.indexOf('+DT') > -1
+				modValue += 64
+				modString += '+DoubleTime'
+			if message.indexOf('+NC') > -1
+				modValue += 512
+				modString += '+Nightcore'
+			if message.indexOf('+HR') > -1
+				modValue += 16
+				modString += '+HardRock'
+			if message.indexOf('+HD') > -1
+				modValue += 8
+				modString += '+Hidden'
+			if message.indexOf('+EZ') > -1
+				modValue += 2
+				modString += '+Easy'
+			if message.indexOf('+HT') > -1
+				modValue += 256
+				modString += '+HalfTime'
+			if message.indexOf('+SO') > -1
+				modValue += 4096
+				modString += '+SpunOut'
+			if message.indexOf('+NF') > -1
+				modValue += 1
+				modString += '+NoFail'
 
-		if map.approved > 0
-			await makeTillerinoRequest map.beatmap_id, modValue, defer err4, tillerinoData
+			if map.approved > 0
+				await makeTillerinoRequest map.beatmap_id, modValue, defer err4, tillerinoData
 
-		accuracies = {}
-		maxRange = 0
-		maxRangeString = ''
-		minRange = 0
-		minRangeString = ''
-		wholeString = ''
+			accuracies = {}
+			maxRange = 0
+			maxRangeString = ''
+			minRange = 0
+			minRangeString = ''
+			wholeString = ''
 
-		if userBest[username]?[map.mode]?
-			best = userBest[username][map.mode]
+			if userBest[username]?[map.mode]?
+				best = userBest[username][map.mode]
+				
+				if best[0]?.pp? && best[24]?.pp?
+					maxRange = best[0].pp
+					minRange = best[24].pp
 			
-			if best[0]?.pp? && best[24]?.pp?
-				maxRange = best[0].pp
-				minRange = best[24].pp
-		
-		if tillerinoData?.ppForAcc?.entry?
-			maxDiff = 0
-			minDiff = 0
-			for entry in tillerinoData.ppForAcc.entry
-				if !maxDiff
-					maxDiff = maxRange - entry.value
-					maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-					minDiff = minRange - entry.value
-					minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-
-				else
-					if maxDiff > Math.abs(maxRange - entry.value)
-						maxDiff = Math.abs(maxRange - entry.value)
+			if tillerinoData?.ppForAcc?.entry?
+				maxDiff = 0
+				minDiff = 0
+				for entry in tillerinoData.ppForAcc.entry
+					if !maxDiff
+						maxDiff = maxRange - entry.value
 						maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
-
-					if minDiff > Math.abs(minRange - entry.value)
-						minDiff = Math.abs(minRange - entry.value)
+						minDiff = minRange - entry.value
 						minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
 
-			if minRangeString == maxRangeString
-				wholeString = minRangeString
+					else
+						if maxDiff > Math.abs(maxRange - entry.value)
+							maxDiff = Math.abs(maxRange - entry.value)
+							maxRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+
+						if minDiff > Math.abs(minRange - entry.value)
+							minDiff = Math.abs(minRange - entry.value)
+							minRangeString = (Math.round(entry.value * 100) / 100) + 'pp for ' + (entry.key * 100) + '%'
+
+				if minRangeString == maxRangeString
+					wholeString = minRangeString
+				else
+					wholeString = minRangeString + ' | ' + maxRangeString
 			else
-				wholeString = minRangeString + ' | ' + maxRangeString
-		else
-			wholeString = 'no pp data'
+				wholeString = 'no pp data'
 
-		modeText = 'osu!'
-		approvedText = 'Ranked'
-		switch map.mode
-			when '1' then modeText = 'Taiko'
-			when '2' then modeText = 'Catch the Beat'
-			when '3' then modeText = 'osu!mania'
+			modeText = 'osu!'
+			approvedText = 'Ranked'
+			switch map.mode
+				when '1' then modeText = 'Taiko'
+				when '2' then modeText = 'Catch the Beat'
+				when '3' then modeText = 'osu!mania'
 
-		switch map.approved
-			when '3' then approvedText = 'Qualified'
-			when '2' then approvedText = 'Approved'
-			when '0' then approvedText = 'Pending'
-			when '-1' then approvedText = 'WIP'
-			when '-2' then approvedText = 'Graveyard'
+			switch map.approved
+				when '3' then approvedText = 'Qualified'
+				when '2' then approvedText = 'Approved'
+				when '0' then approvedText = 'Pending'
+				when '-1' then approvedText = 'WIP'
+				when '-2' then approvedText = 'Graveyard'
 
-		Requester = new Mikuia.Models.Channel user.username
-		await Requester.getDisplayName defer err, requesterDisplayName
+			Requester = new Mikuia.Models.Channel user.username
+			await Requester.getDisplayName defer err, requesterDisplayName
 
-		data =
-			requester: requesterDisplayName
-			beatmapset_id: map.beatmapset_id
-			beatmap_id: map.beatmap_id
-			approved: map.approved
-			approved_date: map.approved_date
-			approvedText: approvedText
-			last_update: map.last_update
-			total_length: map.total_length
-			hit_length: map.hit_length
-			version: map.version
-			artist: map.artist
-			title: map.title
-			creator: map.creator
-			bpm: map.bpm
-			source: map.source
-			difficultyrating: map.difficultyrating
-			diff_size: map.diff_size
-			diff_overall: map.diff_overall
-			diff_approach: map.diff_approach
-			diff_drain: map.diff_drain
-			mode: map.mode
-			modeText: modeText
-			modString: modString
-			ppString: wholeString
+			data =
+				requester: requesterDisplayName
+				beatmapset_id: map.beatmapset_id
+				beatmap_id: map.beatmap_id
+				approved: map.approved
+				approved_date: map.approved_date
+				approvedText: approvedText
+				last_update: map.last_update
+				total_length: map.total_length
+				hit_length: map.hit_length
+				version: map.version
+				artist: map.artist
+				title: map.title
+				creator: map.creator
+				bpm: map.bpm
+				source: map.source
+				difficultyrating: map.difficultyrating
+				diff_size: map.diff_size
+				diff_overall: map.diff_overall
+				diff_approach: map.diff_approach
+				diff_drain: map.diff_drain
+				mode: map.mode
+				modeText: modeText
+				modString: modString
+				ppString: wholeString
 
-		if !limits[Channel.getName()]?
-			limits[Channel.getName()] =
-				maps: {}
-				users: {}
+			if !limits[Channel.getName()]?
+				limits[Channel.getName()] =
+					maps: {}
+					users: {}
 
-		limits[Channel.getName()].maps[map.beatmapset_id] = (new Date()).getTime()
-		limits[Channel.getName()].users[user.username] = (new Date()).getTime()
+			limits[Channel.getName()].maps[map.beatmapset_id] = (new Date()).getTime()
+			limits[Channel.getName()].users[user.username] = (new Date()).getTime()
 
-		# Chat
-		if !err && requestChatInfo
-			Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse chatRequestFormat, data
+			# Chat
+			if !err && requestChatInfo
+				Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse chatRequestFormat, data
 
-		# osu!
-		if !err2
-			banchoSay username.split(' ').join(''), Mikuia.Format.parse osuRequestFormat, data
+			# osu!
+			if !err2
+				banchoSay username.split(' ').join(''), Mikuia.Format.parse osuRequestFormat, data
 
 # API functions.
 
