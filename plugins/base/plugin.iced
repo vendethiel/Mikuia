@@ -61,23 +61,25 @@ Mikuia.Events.on 'base.uptime', (data) =>
 
 	if isLive
 		await Mikuia.Streams.get Channel.getName(), defer err, stream
+		if !err && stream?
+			startTime = (new Date(stream.created_at)).getTime() / 1000
+			endTime = Math.floor((new Date()).getTime() / 1000)
 
-		startTime = (new Date(stream.created_at)).getTime() / 1000
-		endTime = Math.floor((new Date()).getTime() / 1000)
+			totalTime = endTime - startTime
 
-		totalTime = endTime - startTime
+			seconds = totalTime % 60
+			minutes = ((totalTime - seconds) / 60) % 60
+			hours = ((totalTime - seconds) - (60 * minutes)) / 3600
 
-		seconds = totalTime % 60
-		minutes = ((totalTime - seconds) / 60) % 60
-		hours = ((totalTime - seconds) - (60 * minutes)) / 3600
+			if minutes < 10
+				minutes = '0' + minutes
 
-		if minutes < 10
-			minutes = '0' + minutes
+			if seconds < 10
+				seconds = '0' + seconds
 
-		if seconds < 10
-			seconds = '0' + seconds
-
-		Mikuia.Chat.say data.to, 'Uptime: ' + hours + 'h ' + minutes + 'm ' + seconds + 's'
+			Mikuia.Chat.say data.to, 'Uptime: ' + hours + 'h ' + minutes + 'm ' + seconds + 's'
+		else
+			Mikuia.Chat.say data.to, 'Something went wrong, try again!'
 	else
 		Mikuia.Chat.say data.to, 'The stream is not live.'		
 
