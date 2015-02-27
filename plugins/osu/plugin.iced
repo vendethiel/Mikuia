@@ -582,7 +582,7 @@ Mikuia.Events.on 'osu.stats', (data) =>
 
 	if username != ''
 		await getUser username, mode, defer err, user
-		if !err && user[0]?.username?
+		if !err && user?[0]?.username?
 			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
 				username: user[0].username
 				id: user[0].user_id
