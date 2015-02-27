@@ -61,9 +61,10 @@ Mikuia.Events.on 'wow.character', (data) =>
 			if !err && jsonData?
 				formatData = {}
 
-				for bracketName, bracket of jsonData.pvp.brackets
-					for name, value of bracket
-						formatData['pvp.' + bracketNames[bracketName] + '.' + name] = value
+				if jsonData.pvp?.brackets?
+					for bracketName, bracket of jsonData.pvp.brackets
+						for name, value of bracket
+							formatData['pvp.' + bracketNames[bracketName] + '.' + name] = value
 
 				Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse data.settings.format, formatData
 
