@@ -1,0 +1,59 @@
+{
+	"name": "Coins",
+	"description": "Mikuia Coins",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"settings": {
+		"channel": {
+			"name": {
+				"name": "Coin Name",
+				"category": "General",
+				"description": "A name of your coin. (e.g. Dollar)",
+				"default": "Coin",
+				"type": "text"
+			},
+			"namePlural": {
+				"name": "Coin Name (Plural)",
+				"category": "General",
+				"description": "A plural name of your coins. (e.g. Dollars)",
+				"default": "Coins",
+				"type": "text"
+			},
+			"dropTime": {
+				"name": "Drop Time",
+				"category": "Drops",
+				"description": "Amount of minutes for every coin drop.",
+				"default": 5,
+				"type": "number"
+			},
+			"dropValue": {
+				"name": "Drop Value",
+				"category": "Drops",
+				"description": "Value of a single coin drop.",
+				"default": 10,
+				"type": "number"
+			},
+			"dropChance": {
+				"name": "Drop Chance",
+				"category": "Drops",
+				"description": "A chance to obtain a coin drop. (in %)",
+				"default": 100,
+				"type": "number"
+			},
+			"rewardIdlers": {
+				"name": "Reward Idlers",
+				"category": "Idlers/Lurkers",
+				"description": "Allow idlers to gain coins.",
+				"default": false,
+				"type": "boolean"
+			},
+			"idleTime": {
+				"name": "Idle Time",
+				"category": "Idlers/Lurkers",
+				"description": "Minutes of inactivity after which a user is considered idle/lurking.",
+				"default": 10,
+				"type": "number"
+			}			
+		}
+	}
+}
