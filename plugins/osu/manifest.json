@@ -2,6 +2,7 @@
 	"name": "osu!",
 	"description": "Various fun stuff for osu!.",
 	"baseFile": "plugin.iced",
+	"webFile": "web.iced",
 	"hidden": false,
 	"handlers": {
 		"osu.np": {

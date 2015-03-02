@@ -7,7 +7,6 @@ RateLimiter = require('limiter').RateLimiter
 
 apiLimiter = new RateLimiter 180, 60000
 banchoLimiter = new RateLimiter 1, 'second'
-codes = {}
 limits = {}
 userBest = {}
 userData = {}
@@ -517,11 +516,11 @@ Mikuia.Events.on 'twitch.connected', =>
 		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
 		if message.message == @Plugin.getSetting 'verifyCommand'
 			code = Math.floor(Math.random() * 900000) + 100000
-			codes[code] = message.from
+
+			#codes[code] = message.from
+			await Mikuia.Database.setex 'plugin:osu:auth:code:' + code, 60, message.from, defer error, whatever
+
 			banchoSay message.from, 'Your code is ' + code + '. You have only a minute to save the wo... I mean to put it on page...'
-			setTimeout () ->
-				delete codes[code]
-			, 60000
 		else
 			if message.message.indexOf('!') == 0
 				tokens = message.message.split ' '
@@ -600,26 +599,6 @@ Mikuia.Events.on 'osu.stats', (data) =>
 				rank_s: user[0].count_rank_s
 				rank_a: user[0].count_rank_a
 				country: user[0].country
-
-Mikuia.Web.get '/dashboard/plugins/osu/auth', (req, res) =>
-	res.render '../../plugins/osu/views/auth',
-		verifyCommand: @Plugin.getSetting 'verifyCommand'
-
-Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
-	if req.body.authCode? && codes[req.body.authCode]?
-		Channel = new Mikuia.Models.Channel req.user.username
-
-		await Channel.setSetting 'osu', 'name', codes[req.body.authCode], defer err, data
-		@Plugin.Log.info 'Authenticated ' + cli.yellowBright(codes[req.body.authCode]) + '.'
-		delete codes[req.body.authCode]
-
-	res.redirect '/dashboard/settings'
-
-# np! continuing the old path so people don't have to reconfigure osu!np
-Mikuia.Web.post '/plugins/osu/post/:username', (req, res) ->
-	#console.log req.body
-
-	res.send 200
 
 # Updating ranks!
 

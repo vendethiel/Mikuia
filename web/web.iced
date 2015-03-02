@@ -59,6 +59,7 @@ app.use cookieParser 'oijt09j4g09qjg90q3jk90q3'
 app.use bodyParser.urlencoded
 	extended: true
 app.use bodyParser.json()
+app.use morgan 'dev'
 app.use session
 	resave: false
 	saveUninitialized: true

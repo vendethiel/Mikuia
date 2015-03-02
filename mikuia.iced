@@ -47,8 +47,16 @@ Mikuia.Settings.read ->
 	# CoffeeScript makes this line look really weird :D
 	Mikuia.Database.connect Mikuia.settings.redis.host, Mikuia.settings.redis.port, Mikuia.settings.redis.options
 
-	# WEBSITE WEEEEEEEEE
-	Mikuia.Web = require './web/web.iced'
+	isBot = false
+	isWeb = false
+
+	switch process.argv[2]
+		when 'bot'
+			isBot = true
+		when 'web'
+			isWeb = true
+		# else
+		# 	flipOut()
 
 	# Let's load plugins.
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
@@ -58,24 +66,31 @@ Mikuia.Settings.read ->
 			Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Found ') + cli.greenBright(fileList.length) + cli.whiteBright(' plugin directories.')
 			
 		for file in fileList
-			Mikuia.Plugin.load file
+			if isBot
+				Mikuia.Plugin.load file, 'baseFile'
+			else if isWeb
+				Mikuia.Plugin.load file, 'webFile'
 		
-	Mikuia.Chat.connect()
-	Mikuia.Twitch.init()
-	Mikuia.Chat.update()
+	if isBot
+		Mikuia.Chat.connect()
+		Mikuia.Twitch.init()
+		Mikuia.Chat.update()
 
-	if Mikuia.settings.sentry.enable
-		raven = require 'raven'
-		client = new raven.Client Mikuia.settings.sentry.dsn
-		client.patchGlobal () ->
-			Mikuia.Log.fatal 'Error reported to Sentry. Crashing!'
-	else
-		iced.catchExceptions()
+		if Mikuia.settings.sentry.enable
+			raven = require 'raven'
+			client = new raven.Client Mikuia.settings.sentry.dsn
+			client.patchGlobal () ->
+				Mikuia.Log.fatal 'Error reported to Sentry. Crashing!'
+		else
+			iced.catchExceptions()
 
-	# Stock Leaderboards
-	viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
-	viewerLeaderboard.setDisplayName 'Viewers'
-	viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
+	if isWeb
+		Mikuia.Web = require './web/web.iced'
+
+		# Stock Leaderboards
+		viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
+		viewerLeaderboard.setDisplayName 'Viewers'
+		viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
 
 r = repl.start 'Mikuia> '
 r.context.Mikuia = Mikuia
