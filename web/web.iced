@@ -189,6 +189,7 @@ updateGithub = (callback) =>
 						commit.commit.message = commit.commit.message.replace '[fix]', '<span class="label label-success">fix</span>'
 
 						commit.commit.message = commit.commit.message.replace '[bot]', '<span class="label label-default">bot</span>'
+						commit.commit.message = commit.commit.message.replace '[coins]', '<span class="label label-warning">coins</span>'
 						commit.commit.message = commit.commit.message.replace '[fun]', '<span class="label label-primary">fun</span>'
 						commit.commit.message = commit.commit.message.replace '[mod]', '<span class="label label-danger">mod</span>'
 						commit.commit.message = commit.commit.message.replace '[osu]', '<span class="label label-warning">osu</span>'
