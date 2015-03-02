@@ -231,7 +231,7 @@ class exports.Channel extends Mikuia.Model
 				)
 		else
 			callback true
-
+			
 	# Levels
 
 	addExperience: (channel, experience, activity, callback) =>
