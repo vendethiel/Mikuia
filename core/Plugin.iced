@@ -39,14 +39,16 @@ class exports.Plugin
 					@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse manifest of plugin: ') + cli.yellowBright(name)
 
 				if manifest?
+
+					@plugins[name] =
+						manifest: manifest
+
 					if manifest[fileType]?
 						@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loading plugin: ') + cli.yellowBright(name + '/' + manifest[fileType])
 
 						filePath = path.resolve('plugins/' + name + '/' + manifest[fileType])
-						@plugins[name] =
-							manifest: manifest
-							module: require filePath
-
+						
+						@plugins[name].module = require filePath
 						@plugins[name].module.Plugin =
 							getSetting: (setting) =>
 								return @Mikuia.Settings.pluginGet name, setting
@@ -60,17 +62,17 @@ class exports.Plugin
 								error: (message) =>
 									@Mikuia.Log.error '[' + cli.magentaBright(name) + '] ' + message
 
-						if manifest.settings?.server?
-							if not @Mikuia.settings.plugins[name]?
-								@Mikuia.settings.plugins[name] = {}
-							for key, value of manifest.settings.server	
-								if not @Mikuia.settings.plugins[name][key]?
-									@Mikuia.Settings.pluginSet name, key, value
+					if manifest.settings?.server?
+						if not @Mikuia.settings.plugins[name]?
+							@Mikuia.settings.plugins[name] = {}
+						for key, value of manifest.settings.server
+							if not @Mikuia.settings.plugins[name][key]?
+								@Mikuia.Settings.pluginSet name, key, value
 
-						if manifest.handlers?
-							for handlerName, handler of manifest.handlers
-								@handlers[handlerName] = handler
-								@handlers[handlerName].plugin = name
+					if manifest.handlers?
+						for handlerName, handler of manifest.handlers
+							@handlers[handlerName] = handler
+							@handlers[handlerName].plugin = name
 					else
 						@Mikuia.Log.warning cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Plugin ') + cli.yellowBright(name) + cli.whiteBright(' doesn\'t specify a base file.')
 					

@@ -25,7 +25,7 @@ html
 						li(class=(path.indexOf('/levels') == 0 ? 'active' : undefined))
 							a(href='/levels') Levels
 						li
-							a(href='http://forums.mikuia.tv') Forums
+							a(href='http://forums.mikuia.tv', rel='tooltip', title='You are now visiting the forums.<br />Remember to come back here later!', data-placement='bottom') Forums
 						li(class=(path == '/supporter' ? 'active' : undefined))
 							a(href='/supporter') Supporter
 						li(class=(path == '/stats' ? 'active' : undefined))
