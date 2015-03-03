@@ -1,6 +1,6 @@
 {
 	"name": "Coins",
-	"description": "Mikuia Coins",
+	"description": "[Beta] Mikuia Coins",
 	"baseFile": "plugin.iced",
 	"webFile": "web.iced",
 	"hidden": false,

@@ -273,7 +273,7 @@ class exports.Chat
 
 			@Mikuia.Events.emit 'twitch.updated'
 
-			updateTimeout = streamList.length * 2000
+			updateTimeout = streamList.length * 1000
 			if updateTimeout < 15000
 				updateTimeout = 15000
 
