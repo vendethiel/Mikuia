@@ -27,6 +27,7 @@ updateCoins = () =>
 			if isEnabled
 
 				await
+					Channel.getSetting 'coins', 'dropChance', defer error, dropChance
 					Channel.getSetting 'coins', 'dropTime', defer error, dropTime
 					Channel.getSetting 'coins', 'dropValue', defer error, dropValue
 					Channel.getSetting 'coins', 'idleTime', defer error, idleTime
@@ -55,8 +56,8 @@ updateCoins = () =>
 						await Viewer.isBot defer error, isBot
 						if goAhead and not isBot and viewer isnt stream
 							coinAmount = dropValue
-							console.log viewer + ' gets ' + coinAmount + ' ' + stream + ' coins!'
-							await Mikuia.Database.hincrby 'channel:' + stream + ':coins', viewer, coinAmount, defer whatever
+							if Math.round(Math.random() * 100) < dropChance
+								await Mikuia.Database.hincrby 'channel:' + stream + ':coins', viewer, coinAmount, defer whatever
 
 					dropTimer[stream] = 0
 
@@ -67,58 +68,71 @@ updateCoins = () =>
 
 setInterval	updateCoins, 60000
 
-# updateLevels = () ->
-# 	await Mikuia.Database.get 'mikuia:lastUpdate', defer err, time
-# 	seconds = (((new Date()).getTime() / 1000) - parseInt(time))
-	
-# 	multiplier = Math.round(seconds / 60)
-# 	Mikuia.Log.info cli.yellowBright('Levels') + ' / ' + cli.whiteBright('Updating levels with a ') + cli.yellowBright(multiplier + 'x') + cli.whiteBright(' multiplier... (') + cli.yellowBright(Math.floor(seconds) + 's') + cli.whiteBright(' since last update)')
-# 	if !err
-# 		await Mikuia.Database.set 'mikuia:lastUpdate', parseInt((new Date()).getTime() / 1000), defer err2, response
-		
-# 		viewers = {}
-# 		await Mikuia.Streams.getAll defer err, streams
-# 		if !err && streams?
-# 			for stream in streams
-# 				chatters = Mikuia.Chat.getChatters stream
+showBalance = (data) =>
+	await Mikuia.Database.hget 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
+	if !error
+		Channel = new Mikuia.Models.Channel data.to
+		Viewer = new Mikuia.Models.Channel data.user.username
 
-# 				for categoryName, category of chatters
-# 					for chatter in category
-# 						if !viewers[chatter]?
-# 							viewers[chatter] = []
-# 						viewers[chatter].push stream
+		if !coinBalance?
+			coinBalance = 0
 
-# 			for viewer, channels of viewers
-# 				Channel = new Mikuia.Models.Channel viewer
-# 				pointsToAdd = 0
+		await
+			Viewer.getDisplayName defer err, displayName
+			Channel.getSetting 'coins', 'name', defer error, name
+			Channel.getSetting 'coins', 'namePlural', defer error, namePlural
 
-# 				activeChannels = 0
-# 				if chatActivity[viewer]?
-# 					for activityChannel, activityValue of chatActivity[viewer]
-# 						if activityValue > 0 && activityChannel in streams
-# 							activeChannels++
+		if parseInt(coinBalance) == 1
+			Mikuia.Chat.say data.to, displayName + ': ' + coinBalance + ' ' + name + '.'
+		else
+			Mikuia.Chat.say data.to, displayName + ': ' + coinBalance + ' ' + namePlural + '.'
 
-# 				if activeChannels == 1
-# 					pointsToAdd = Math.round(Math.random() * 1) + 3
-# 				else if activeChannels == 2
-# 					pointsToAdd = 2
-# 				else if activeChannels == 3
-# 					pointsToAdd = 1
+Mikuia.Events.on 'coins.balance', (data) =>
+	showBalance data
 
-# 				pointsToAdd *= multiplier
+Mikuia.Events.on 'coins.command', (data) =>
+	if data.tokens.length > 1
+		Channel = new Mikuia.Models.Channel data.to
+		trigger = data.tokens[1]
 
-# 				if pointsToAdd > 20
-# 					pointsToAdd = 20
+		switch trigger
+			when 'add', 'give', 'remove', 'set', 'take'
+				if data.tokens.length == 4 && data.user.username == data.to.replace('#', '')
+					username = data.tokens[2]
+					coinAmount = data.tokens[3]
+					
+					Channel = new Mikuia.Models.Channel data.to
+					Viewer = new Mikuia.Models.Channel username
 
-# 				for channel in channels
-# 					if pointsToAdd && viewer != channel
-# 						if !chatActivity[viewer]?
-# 							chatActivity[viewer] = {}
-# 							chatActivity[viewer][channel] = 0
-# 						await Channel.addExperience channel, pointsToAdd, chatActivity[viewer][channel], defer whatever
-# 						chatActivity[viewer][channel] -= multiplier
+					await
+						Channel.getSetting 'coins', 'name', defer error, name
+						Channel.getSetting 'coins', 'namePlural', defer error, namePlural
+						Viewer.getDisplayName defer error, displayName
 
-# setInterval () =>
-# 	updateLevels()
-# , 60000
-# updateLevels()
+					if trigger is 'add' or trigger is 'give'
+						await Mikuia.Database.hincrby 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount, defer whatever
+
+						if parseInt(coinAmount) == 1
+							Mikuia.Chat.say data.to, 'Gave 1 ' + name + ' to ' + displayName + '.'
+						else
+							Mikuia.Chat.say data.to, 'Gave ' + coinAmount + ' ' + namePlural + ' to ' + displayName + '.'
+					else if trigger is 'remove' or trigger is 'take'
+						await Mikuia.Database.hincrby 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount * -1, defer whatever
+
+						if parseInt(coinAmount) == 1
+							Mikuia.Chat.say data.to, 'Took 1 ' + name + ' from ' + displayName + '.'
+						else
+							Mikuia.Chat.say data.to, 'Took ' + coinAmount + ' ' + namePlural + ' from ' + displayName + '.'
+					else if trigger is 'set'
+						await Mikuia.Database.hset 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount, defer whatever
+
+						if parseInt(coinAmount) == 1
+							Mikuia.Chat.say data.to, displayName + ' now has 1 ' + name + '.'
+						else
+							Mikuia.Chat.say data.to, displayName + ' now has ' + coinAmount + ' ' + namePlural + '.'
+
+			when 'help'
+				Mikuia.Chat.say data.to, 'There\'s no help for you! :D'
+
+	else
+		showBalance data

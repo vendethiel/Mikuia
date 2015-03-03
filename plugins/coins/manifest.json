@@ -3,6 +3,14 @@
 	"description": "Mikuia Coins",
 	"baseFile": "plugin.iced",
 	"hidden": false,
+	"handlers": {
+		"coins.balance": {
+			"description": "Shows user's coin balance."
+		},
+		"coins.command": {
+			"description": "Multi-purpose coin command."
+		}
+	},
 	"settings": {
 		"channel": {
 			"name": {
