@@ -190,6 +190,8 @@ class exports.Chat
 
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
+		if message.indexOf('.') == 0 or message.indexOf('/') == 0
+			message = '!' + message.replace('.', '').replace('/', '')
 		lines = message.split '\\n'
 		for line in lines
 			if !Mikuia.settings.bot.disableChat

@@ -152,7 +152,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 					removeCommand from.username, to, tokens.slice 1
 				when 'say'
 					if isAdmin
-						Mikuia.Chat.say to, tokens.slice(2).join(' ')
+						Mikuia.Chat.sayRaw to, tokens.slice(2).join(' ')
 				else
 					# do nothing
 
