@@ -23,8 +23,11 @@ updateCoins = () =>
 
 			viewers = []
 
-			await Channel.isPluginEnabled 'coins', defer error, isEnabled
-			if isEnabled
+			await
+				Channel.isPluginEnabled 'coins', defer error, isEnabled
+				Channel.isSupporter defer error, isSupporter
+
+			if isEnabled and isSupporter
 
 				await
 					Channel.getSetting 'coins', 'dropChance', defer error, dropChance
@@ -69,8 +72,13 @@ updateCoins = () =>
 setInterval	updateCoins, 60000
 
 showBalance = (data) =>
-	await Mikuia.Database.zscore 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
-	if !error
+	Channel = new Mikuia.Models.Channel data.to
+
+	await
+		Channel.isSupporter defer error, isSupporter
+		Mikuia.Database.zscore 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
+		
+	if !error and isSupporter
 		Channel = new Mikuia.Models.Channel data.to
 		Viewer = new Mikuia.Models.Channel data.user.username
 
@@ -91,8 +99,10 @@ Mikuia.Events.on 'coins.balance', (data) =>
 	showBalance data
 
 Mikuia.Events.on 'coins.command', (data) =>
-	if data.tokens.length > 1
-		Channel = new Mikuia.Models.Channel data.to
+	Channel = new Mikuia.Models.Channel data.to
+
+	await Channel.isSupporter defer error, isSupporter
+	if isSupporter and data.tokens.length > 1
 		trigger = data.tokens[1]
 
 		switch trigger
