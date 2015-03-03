@@ -1,0 +1,127 @@
+extends ../../../web/views/layout
+
+block content
+	.page-head
+		.page-title
+			h1
+				| Coins
+				small  they are shiny
+	ul.page-breadcrumb.breadcrumb
+		li
+			a(href='/dashboard') Dashboard
+			i.fa.fa-circle
+		li
+			a Plugins
+			i.fa.fa-circle
+		li
+			a Coins
+
+	.row
+		.col-md-9
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-yellow-gold
+						span.caption-subject.bold.uppercase.font-yellow-gold Coins
+						span.caption-helper  yeah coins
+				.portlet-body
+					table.table.table-bordered
+						thead
+							tr
+								td User
+								td Balance
+								td Actions
+						tbody
+							each md in coins
+								if md.length > 0
+									- var channel = md[0]
+									- var coinAmount = md[1]
+									tr
+										td
+											.media
+												a.pull-left(href='/user/' + channel)
+													img.img-circle.media-object(src=logos[channel], width=24, height=24)
+												.media-body
+													h4.media-heading
+														a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
+
+										td
+											h3=coinAmount
+										td
+											a.btn.input-sm.green(onclick='give(\'' + channel + '\')') Give
+											a.btn.input-sm.blue(onclick='set(\'' + channel + '\')') Set
+											a.btn.input-sm.red(onclick='take(\'' + channel + '\')') Take
+		.col-md-3
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-yellow-gold
+						span.caption-subject.bold.uppercase.font-yellow-gold Manual Edit
+						span.caption-helper  oh boy
+				.portlet-body
+					form.form-horizontal
+						.form-body
+							.form-group
+								label.col-md-3.control-label Username
+								.col-md-9
+									.input-group
+										.input-group-addon
+											i.fa.fa-user
+										input.form-control#manualUsername(type='text')
+
+						.form-actions
+							.row
+								.col-md-offset-3.col-md-9
+									a.btn.green(onclick='give($("#manualUsername").val())') Give
+									|  
+									a.btn.blue(onclick='set($("#manualUsername").val())') Set
+									|  
+									a.btn.red(onclick='take($("#manualUsername").val())') Take
+
+block footerScript
+	script(type='text/javascript').
+
+		function give(username) {
+			var coinAmount = prompt('How many coins do you want to give to ' + username + '?')
+
+			if(coinAmount) {
+				$.post('/dashboard/plugins/coins/edit', {
+					method: 'give',
+					amount: coinAmount,
+					username: username
+				}).done(function() {
+					location.reload()
+				})
+			}
+
+		}
+
+		function set(username) {
+			var coinAmount = prompt('How many coins should ' + username + ' have?')
+
+			if(coinAmount) {
+				$.post('/dashboard/plugins/coins/edit', {
+					method: 'set',
+					amount: coinAmount,
+					username: username
+				}).done(function() {
+					location.reload()
+				})
+			}
+
+		}
+
+		function take(username) {
+			var coinAmount = prompt('How many coins do you want to take from ' + username + '?')
+
+			if(coinAmount) {
+				$.post('/dashboard/plugins/coins/edit', {
+					method: 'take',
+					amount: coinAmount,
+					username: username
+				}).done(function() {
+					location.reload()
+				})
+			}
+
+		}

@@ -57,7 +57,7 @@ updateCoins = () =>
 						if goAhead and not isBot and viewer isnt stream
 							coinAmount = dropValue
 							if Math.round(Math.random() * 100) < dropChance
-								await Mikuia.Database.hincrby 'channel:' + stream + ':coins', viewer, coinAmount, defer whatever
+								await Mikuia.Database.zincrby 'channel:' + stream + ':coins', coinAmount, viewer, defer whatever
 
 					dropTimer[stream] = 0
 
@@ -69,7 +69,7 @@ updateCoins = () =>
 setInterval	updateCoins, 60000
 
 showBalance = (data) =>
-	await Mikuia.Database.hget 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
+	await Mikuia.Database.zscore 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
 	if !error
 		Channel = new Mikuia.Models.Channel data.to
 		Viewer = new Mikuia.Models.Channel data.user.username
@@ -110,21 +110,21 @@ Mikuia.Events.on 'coins.command', (data) =>
 						Viewer.getDisplayName defer error, displayName
 
 					if trigger is 'add' or trigger is 'give'
-						await Mikuia.Database.hincrby 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount, defer whatever
+						await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
 							Mikuia.Chat.say data.to, 'Gave 1 ' + name + ' to ' + displayName + '.'
 						else
 							Mikuia.Chat.say data.to, 'Gave ' + coinAmount + ' ' + namePlural + ' to ' + displayName + '.'
 					else if trigger is 'remove' or trigger is 'take'
-						await Mikuia.Database.hincrby 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount * -1, defer whatever
+						await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount * -1, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
 							Mikuia.Chat.say data.to, 'Took 1 ' + name + ' from ' + displayName + '.'
 						else
 							Mikuia.Chat.say data.to, 'Took ' + coinAmount + ' ' + namePlural + ' from ' + displayName + '.'
 					else if trigger is 'set'
-						await Mikuia.Database.hset 'channel:' + Channel.getName() + ':coins', Viewer.getName(), coinAmount, defer whatever
+						await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':coins', coinAmount, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
 							Mikuia.Chat.say data.to, displayName + ' now has 1 ' + name + '.'

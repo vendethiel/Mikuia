@@ -114,6 +114,11 @@ class exports.Database
 		@client.zcount key, min, max, (err, data) ->
 			callback err, data
 
+	zincrby: (key, member, increment, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.zincrby key, member, increment, (err, data) ->
+			callback err, data
+
 	zrank: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.zrank key, member, (err, data) ->

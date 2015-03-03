@@ -93,6 +93,12 @@ class exports.Model
 		await Mikuia.Database.zadd @model + ':' + @name + key, score, member, defer err, data
 		callback err, data
 
+	_zincrby: (key, increment, member, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.zincrby @model + ':' + @name + key, increment, member, defer err, data
+		callback err, data
+
 	_zscore: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
