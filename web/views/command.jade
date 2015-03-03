@@ -31,6 +31,19 @@ block content
 								h3 Command properties
 								br
 								.form-group
+									label.col-sm-3.control-label Only Broadcaster
+									.col-sm-8
+										.checkbox-list
+											label.checkbox-inline
+												if userSettings && userSettings._onlyBroadcaster
+													if userSettings._onlyBroadcaster
+														input(type='checkbox', name='_onlyBroadcaster', checked)
+													else
+														input(type='checkbox', name='_onlyBroadcaster')
+												else
+													input(type='checkbox', name='_onlyBroadcaster')
+												.help-inline Only allow broadcaster to use the command.
+								.form-group
 									label.col-sm-3.control-label Only Mods
 									.col-sm-8
 										.checkbox-list

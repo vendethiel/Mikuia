@@ -115,12 +115,16 @@ class exports.Chat
 				if userLevel < settings._minLevel
 					continueCommand = false
 
-			if settings?._onlyMods? && settings._onlyMods
+			if settings?._onlyMods? and settings._onlyMods
 				if not Chatter.isModOf Channel.getName()
 					continueCommand = false
 
-			if settings?._onlySubs? && settings._onlySubs
+			if settings?._onlySubs? and settings._onlySubs
 				if user.special.indexOf('subscriber') == -1
+					continueCommand = false
+
+			if settings?._onlyBroadcaster? and settings._onlyBroadcaster
+				if user.username != Channel.getName()
 					continueCommand = false
 
 		if !commandError && command? && continueCommand

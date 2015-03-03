@@ -50,6 +50,8 @@ module.exports =
 				settings = Mikuia.Plugin.getHandler(data).settings
 			else
 				settings = {}
+			settings._onlyBroadcaster =
+				type: 'boolean'
 			settings._onlyMods =
 				type: 'boolean'
 			settings._onlySubs =
