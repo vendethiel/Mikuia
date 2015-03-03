@@ -58,6 +58,8 @@ module.exports =
 				type: 'boolean'
 			settings._minLevel =
 				type: 'number'
+			settings._coinCost =
+				type: 'number'
 			for settingName, setting of settings
 				if setting.type == 'boolean'
 					if req.body[settingName]? && req.body[settingName] == 'on'

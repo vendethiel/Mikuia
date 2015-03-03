@@ -110,21 +110,23 @@ class exports.Chat
 
 		if !settingsError && user.username != Channel.getName()
 
-			if settings?._minLevel? && settings._minLevel > 0
+			if settings?._minLevel and settings._minLevel > 0
 				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
 				if userLevel < settings._minLevel
 					continueCommand = false
 
-			if settings?._onlyMods? and settings._onlyMods
-				if not Chatter.isModOf Channel.getName()
-					continueCommand = false
+			if settings?._onlyMods and not Chatter.isModOf Channel.getName()
+				continueCommand = false
 
-			if settings?._onlySubs? and settings._onlySubs
-				if user.special.indexOf('subscriber') == -1
-					continueCommand = false
+			if settings?._onlySubs and user.special.indexOf('subscriber') == -1
+				continueCommand = false
 
-			if settings?._onlyBroadcaster? and settings._onlyBroadcaster
-				if user.username != Channel.getName()
+			if settings?._onlyBroadcaster and user.username isnt Channel.getName()
+				continueCommand = false
+
+			if settings?._coinCost and settings._coinCost > 0
+				await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
+				if !balance? or parseInt(balance) < settings._coinCost
 					continueCommand = false
 
 		if !commandError && command? && continueCommand
@@ -132,6 +134,9 @@ class exports.Chat
 			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
 
 			if !whateverError && enabled
+				if settings?._coinCost and settings._coinCost > 0
+					await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', settings._coinCost * -1, user.username, defer error, whatever
+
 				@Mikuia.Events.emit command,
 					user: user
 					to: to

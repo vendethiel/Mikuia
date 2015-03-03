@@ -30,6 +30,8 @@ block content
 							.well
 								h3 Command properties
 								br
+								h5 User Filters
+								br
 								.form-group
 									label.col-sm-3.control-label Only Broadcaster
 									.col-sm-8
@@ -69,6 +71,8 @@ block content
 												else
 													input(type='checkbox', name='_onlySubs')
 												.help-inline Only allow subscribers to use the command.
+								h5 Mikuia Levels
+								br
 								.form-group
 									label.col-sm-3.control-label Minimal Level
 									.col-sm-8
@@ -77,6 +81,16 @@ block content
 										else
 											input.form-control(type='number', name='_minLevel', placeholder='0')
 										span.help-block Minimal Level required to use the command.
+								h5 Mikuia Coins
+								br
+								.form-group
+									label.col-sm-3.control-label Coin Cost
+									.col-sm-8
+										if userSettings && userSettings._coinCost
+											input.form-control(type='number', name='_coinCost', placeholder='0', value=userSettings._coinCost)
+										else
+											input.form-control(type='number', name='_coinCost', placeholder='0')
+										span.help-block Amount of coins deducted for using the command.
 							if settings
 								h3 Command-specific settings
 								br
