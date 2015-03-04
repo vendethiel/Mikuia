@@ -37,13 +37,15 @@ Mikuia.Web.get '/dashboard/plugins/coins', checkAuth, (req, res) ->
 
 Mikuia.Web.post '/dashboard/plugins/coins/edit', checkAuth, (req, res) ->
 	if req.body.method? and req.body.amount? and req.body.username?
+
+		Viewer = new Mikuia.Models.Channel req.body.username
 		
 		switch req.body.method
 			when 'give'
-				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', req.body.amount, req.body.username, defer error, whatever
+				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', req.body.amount, Viewer.getName(), defer error, whatever
 			when 'set'
-				await Mikuia.Database.zadd 'channel:' + req.user.username + ':coins', req.body.amount, req.body.username, defer error, whatever
+				await Mikuia.Database.zadd 'channel:' + req.user.username + ':coins', req.body.amount, Viewer.getName(), defer error, whatever
 			when 'take'
-				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', parseInt(req.body.amount) * -1, req.body.username, defer error, whatever
+				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', parseInt(req.body.amount) * -1, Viewer.getName(), defer error, whatever
 
 	res.send 200
