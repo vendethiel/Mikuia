@@ -30,6 +30,7 @@ updateCoins = () =>
 			if isEnabled and isSupporter
 
 				await
+					Channel.getSetting 'coins', 'dropAnnounce', defer error, dropAnnounce
 					Channel.getSetting 'coins', 'dropChance', defer error, dropChance
 					Channel.getSetting 'coins', 'dropTime', defer error, dropTime
 					Channel.getSetting 'coins', 'dropValue', defer error, dropValue
@@ -45,6 +46,7 @@ updateCoins = () =>
 						for chatter in category
 							viewers.push chatter
 
+					luckers = []
 					for viewer in viewers
 						Viewer = new Mikuia.Models.Channel viewer
 						goAhead = true
@@ -60,7 +62,13 @@ updateCoins = () =>
 						if goAhead and not isBot and viewer isnt stream
 							coinAmount = dropValue
 							if Math.round(Math.random() * 100) < dropChance
-								await Mikuia.Database.zincrby 'channel:' + stream + ':coins', coinAmount, viewer, defer whatever
+								await
+									Mikuia.Database.zincrby 'channel:' + stream + ':coins', coinAmount, viewer, defer whatever
+									Viewer.getDisplayName defer error, displayName
+								luckers.push displayName
+
+					if luckers.length > 0 and dropAnnounce
+						Mikuia.Chat.sayRaw stream, '.me > Dropping coins for: ' + luckers.join(', ') + '!'
 
 					dropTimer[stream] = 0
 

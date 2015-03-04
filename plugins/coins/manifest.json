@@ -49,6 +49,13 @@
 				"default": 100,
 				"type": "number"
 			},
+			"dropAnnounce": {
+				"name": "Drop Announce",
+				"category": "Drops",
+				"description": "Announce drops and list of people that get them (SPAMMY!!1).",
+				"default": false,
+				"type": "boolean"
+			},
 			"rewardIdlers": {
 				"name": "Reward Idlers",
 				"category": "Idlers/Lurkers",
