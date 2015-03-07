@@ -1,0 +1,96 @@
+{
+	"name": "Mod Tools",
+	"description": "[ALPHA] Chat moderating tools.",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"settings": {
+		"channel": {
+			"enableMessages": {
+				"name": "Enable Messages",
+				"category": "General",
+				"description": "Send a message with the explanation of a timeout/ban.",
+				"default": true,
+				"type": "boolean"
+			},
+			"timeoutDuration": {
+				"name": "Timeout Duration",
+				"category": "Timeouts",
+				"description": "Base duration of an infraction timeout (in seconds)",
+				"default": 30,
+				"type": "number"
+			},
+			"timeoutMultiplier": {
+				"name": "Timeout Multiplier",
+				"category": "Timeouts",
+				"description": "Multiplier for each next warning (base * multiplier ^ warnings)",
+				"default": 2,
+				"type": "number"
+			},
+			"timeoutWarnings": {
+				"name": "Max Warnings",
+				"category": "Timeouts",
+				"description": "Maximum amount of warnings before banning (0 - instant ban)",
+				"default": 3,
+				"type": "number"
+			},
+			"timeoutCooldown": {
+				"name": "Timeout Cooldown",
+				"category": "Timeouts",
+				"description": "Amount of time after which warnings are forgotten (in seconds)",
+				"default": 14400,
+				"type": "number"
+			},
+			"banDuration": {
+				"name": "Ban Duration",
+				"category": "Banning",
+				"description": "Duration of a ban (in seconds, 0 - permanent)",
+				"default": 3600,
+				"type": "number"
+			},
+			"bannedWords": {
+				"name": "Banned Words",
+				"category": "Infractions",
+				"description": "Enable Banned Words.",
+				"default": false,
+				"type": "boolean",
+				"link": {
+					"url": "/dashboard/plugins/mod",
+					"name": "Manage your banned words."
+				}
+			},
+			"bannedWordMessage": {
+				"name": "Banned Word Message",
+				"description": "Format of a banned word notification.",
+				"default": "<%username%> > You can't use that word here! (<%type%>, <%duration%>s)",
+				"type": "format",
+				"variables": {
+					"username": "Username",
+					"type": "'warning' or 'ban'",
+					"duration": "Punishment duration (in seconds)"
+				}
+			},
+			"bannedLinks": {
+				"name": "Link Banning",
+				"category": "Infractions",
+				"description": "Enable Link Banning.",
+				"default": false,
+				"type": "boolean",
+				"link": {
+					"url": "/dashboard/plugins/mod",
+					"name": "Manage your link whitelist."
+				}
+			},
+			"bannedLinkMessage": {
+				"name": "Banned Link Message",
+				"description": "Format of a banned link notification.",
+				"default": "<%username%> > You can't link that website here! (<%type%>, <%duration%>s)",
+				"type": "format",
+				"variables": {
+					"username": "Username",
+					"type": "'warning' or 'ban'",
+					"duration": "Punishment duration (in seconds)"
+				}
+			}
+		}
+	}
+}

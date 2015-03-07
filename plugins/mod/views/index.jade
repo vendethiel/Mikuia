@@ -1,0 +1,131 @@
+extends ../../../web/views/layout
+
+block content
+	.page-head
+		.page-title
+			h1
+				| Mod Tools
+				small  because people are cray
+	ul.page-breadcrumb.breadcrumb
+		li
+			a(href='/dashboard') Dashboard
+			i.fa.fa-circle
+		li
+			a Plugins
+			i.fa.fa-circle
+		li
+			a Mod Tools
+			i.fa.fa-circle
+		li
+			a Banned Words
+
+	.row
+		.col-md-4
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-purple-medium
+						span.caption-subject.bold.uppercase.font-purple-medium Banned Words
+						span.caption-helper  words disallowed on the chat
+				.portlet-body
+					.well
+						h3 Examples:
+						ul
+							li
+								b swag
+							li
+								b yolo
+							li
+								b weed
+
+					table.table.table-condensed
+						thead
+							tr
+								th Word
+								th Actions
+						tbody
+							each word in words
+								tr
+									td=word
+									td
+										a.btn.input-sm.red.removeWord(href='#', title=word) Remove
+				
+					.input-group
+						.input-group-btn
+							button.btn.red#addWord(type='button') Add word
+						input.form-control#word
+		.col-md-4
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-purple-medium
+						span.caption-subject.bold.uppercase.font-purple-medium Whitelisted Domains
+						span.caption-helper  domains allowed to be linked
+				.portlet-body
+					.well
+						h3 Examples:
+						ul
+							li
+								b osu.ppy.sh/b/*
+								|  - allows everything starting with osu.ppy.sh/b/
+							li
+								b osu.ppy.sh
+								|  - allows everything on osu.ppy.sh domain
+							li
+								b *.ppy.sh
+								|  - allows the ppy.sh domain and all the subdomains
+							li
+								b *.pl
+								|  - allows every domain ending with .pl (very dangerous!)
+
+					table.table.table-condensed
+						thead
+							tr
+								th Domain
+								th Actions
+						tbody
+							each domain in domains
+								tr
+									td=domain
+									td
+										a.btn.input-sm.red.removeDomain(href='#', title=domain) Remove
+				
+					.input-group
+						.input-group-btn
+							button.btn.red#addDomain(type='button') Add domain
+						input.form-control#domain
+
+
+block footerScript
+	script(type='text/javascript').
+		$('#addDomain').click(function() {
+			$.post('/dashboard/plugins/mod/domains/add', {
+				domain: $('#domain').val()
+			}).done(function() {
+				location.reload()
+			})
+		})
+
+		$('#addWord').click(function() {
+			$.post('/dashboard/plugins/mod/words/add', {
+				word: $('#word').val()
+			}).done(function() {
+				location.reload()
+			})
+		})
+
+		$('.removeDomain').click(function() {
+			$.post('/dashboard/plugins/mod/domains/remove', {
+				domain: $(this).attr('title')
+			}).done(function() {
+				location.reload()
+			})
+		})
+
+		$('.removeWord').click(function() {
+			$.post('/dashboard/plugins/mod/words/remove', {
+				word: $(this).attr('title')
+			}).done(function() {
+				location.reload()
+			})
+		})
