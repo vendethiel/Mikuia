@@ -34,7 +34,7 @@ class exports.Settings
 		@Mikuia = Mikuia
 
 	pluginGet: (plugin, key) ->
-		@Mikuia.settings.plugins[plugin][key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
+		@Mikuia.settings.plugins[plugin]?[key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
 
 	pluginSet: (plugin, key, value) ->
 		@Mikuia.settings.plugins[plugin][key] = value
