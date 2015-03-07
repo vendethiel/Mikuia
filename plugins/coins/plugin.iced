@@ -77,7 +77,7 @@ updateCoins = () =>
 			if chatActivity[viewerName][streamName] > 0
 				chatActivity[viewerName][streamName]-- 
 
-setInterval	updateCoins, 60000
+setInterval updateCoins, 60000
 
 showBalance = (data) =>
 	Channel = new Mikuia.Models.Channel data.to

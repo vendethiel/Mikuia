@@ -1,5 +1,5 @@
 cli = require 'cli-color'
-irc = require 'node-twitch-irc'
+irc = require 'twitch-irc'
 RateLimiter = require('limiter').RateLimiter
 
 channelLimiter = {}
@@ -21,56 +21,55 @@ class exports.Chat
 			@say stream, '.me broadcast: ' + message
 
 	connect: =>
-		setTimeout () =>
-			if !@connected
-				@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Sorry, but Twitch is being a fucking dick.')
-		, 10000
-		@client = new irc.connect
-			autoreconnect: true
-			channels: []
-			debug: @Mikuia.settings.bot.debug
-			names: true
-			nickname: @Mikuia.settings.bot.name
-			port: 6667
-			server: 'irc.twitch.tv'
-			oauth: @Mikuia.settings.bot.oauth
-			twitchclient: 3
-		, (err, event) =>
-			if !err
-				event.on 'chat', (user, channel, message) =>
-					@handleMessage user, channel, message
+		@client = new irc.client
+			options:
+				debug: @Mikuia.settings.bot.debug
+				exitOnError: true
+			connection:
+				reconnect: true
+				retries: 3
+				serverType: 'chat'
+			identity:
+				username: @Mikuia.settings.bot.name
+				password: @Mikuia.settings.bot.oauth
 
-				event.on 'connected', =>
-					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to IRC.')
-					@Mikuia.Events.emit 'twitch.connected'
-					@connected = true
+		@client.connect()
 
-				event.on 'disconnected', (reason) =>
-					@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
+		@client.addListener 'chat', (channel, user, message) =>
+			@handleMessage user, channel, message
 
-				event.on 'join', (channel) =>
-					Channel = new Mikuia.Models.Channel channel
-					await
-						Channel.getDisplayName defer err, displayName
-						Channel.isSupporter defer err, isSupporter
+		@client.addListener 'connected', (address, port) =>
+			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
+			@Mikuia.Events.emit 'twitch.connected'
+			@connected = true
 
-					if isSupporter
-						channelLimiter[Channel.getName()] = new RateLimiter 3, 10000
-						rateLimitingProfile = cli.redBright 'Supporter (3 per 10s)'
-					else
-						channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
-						rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
-					
-					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
+		@client.addListener 'disconnected', (reason) =>
+			@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
 
-				event.on 'part', (channel) =>
-					Channel = new Mikuia.Models.Channel channel
-					await Channel.getDisplayName defer err, displayName
+		@client.addListener 'join', (channel, username) =>
+			if username == @Mikuia.settings.bot.name.toLowerCase()
+				Channel = new Mikuia.Models.Channel channel
+				await
+					Channel.getDisplayName defer err, displayName
+					Channel.isSupporter defer err, isSupporter
 
-					delete channelLimiter[Channel.getName()]
-					@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
-			else
-				@Mikuia.Log.error err
+				if isSupporter
+					channelLimiter[Channel.getName()] = new RateLimiter 3, 10000
+					rateLimitingProfile = cli.redBright 'Supporter (3 per 10s)'
+				else
+					channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
+					rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
+				
+				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
+
+
+		@client.addListener 'part', (channel, username) =>
+			if username == @Mikuia.settings.bot.name.toLowerCase()
+				Channel = new Mikuia.Models.Channel channel
+				await Channel.getDisplayName defer err, displayName
+
+				delete channelLimiter[Channel.getName()]
+				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 
 	getChatters: (channel) => 
 		return @chatters[channel]

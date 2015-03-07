@@ -19,7 +19,6 @@
     "limiter": "1.0.5",
     "moment": "2.8.4",
     "morgan": "1.5.0",
-    "node-twitch-irc": "1.1.0",
     "passport": "0.2.1",
     "passport-twitchtv": "0.1.4",
     "paypal-ipn": "3.0.0",
@@ -27,6 +26,7 @@
     "redis": "0.12.1",
     "request": "2.50.0",
     "slate-irc": "0.7.3",
+    "twitch-irc": "1.2.0",
     "twitchy": "0.5.0",
     "underscore": "1.7.0"
   }
