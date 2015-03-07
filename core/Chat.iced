@@ -71,6 +71,10 @@ class exports.Chat
 				delete channelLimiter[Channel.getName()]
 				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 
+		@client.addListener 'reconnect', =>
+			@connected = false
+			@joined = []
+
 	getChatters: (channel) => 
 		return @chatters[channel]
 
