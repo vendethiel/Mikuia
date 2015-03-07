@@ -34,12 +34,7 @@ class exports.Settings
 		@Mikuia = Mikuia
 
 	pluginGet: (plugin, key) ->
-		if @Mikuia.settings.plugins[plugin]?[key]?
-			return @Mikuia.settings.plugins[plugin][key]
-		else if @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]?
-			return @Mikuia.Plugin.getManifest(plugin).settings.server[key]
-		else
-			return null
+    @Mikuia.settings.plugins[plugin][key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
 
 	pluginSet: (plugin, key, value) ->
 		@Mikuia.settings.plugins[plugin][key] = value
@@ -50,14 +45,15 @@ class exports.Settings
 		fs.readFile 'settings.json', (settingsErr, data) =>
 			if settingsErr
 				@Mikuia.Log.warning cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Settings file doesn\'t exist, creating one.')
+				@setDefaults()
 			else
 				# A better way to parse JSON would be nice... errors here tend to crash everything.
 				try
 					@Mikuia.settings = JSON.parse data
 					@Mikuia.Log.success cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loaded settings from settings.json.')
 				catch e
-					@Mikuia.Log.error cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e)
-			@setDefaults()
+				 	@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e + ' (if you want to generate a default file, delete it)')
+          
 			callback settingsErr
 	
 	save: ->
@@ -68,7 +64,7 @@ class exports.Settings
 		@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Setting ' + cli.greenBright(category + '.' + key) + ' to ' + cli.yellowBright(value))
 		@save()
 
-	setDefaults: () ->
+	setDefaults: ->
 		# Setting default values that don't exist in setting files.
 		for category, categoryFields of defaultSettings
 			if not @Mikuia.settings[category]?

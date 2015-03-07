@@ -50,6 +50,7 @@ Mikuia.Settings.read ->
 	isBot = false
 	isWeb = false
 
+	console.log process.argv
 	switch process.argv[2]
 		when 'bot'
 			isBot = true
