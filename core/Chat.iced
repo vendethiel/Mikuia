@@ -87,7 +87,7 @@ class exports.Chat
 
 		if user.username == Mikuia.settings.bot.admin
 			chatterUsername = cli.redBright user.username
-
+ 
 		if Chatter.isModOf Channel.getName()
 			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
@@ -195,14 +195,18 @@ class exports.Chat
 			channel = '#' + channel
 		if message.indexOf('.') == 0 or message.indexOf('/') == 0
 			message = '!' + message.replace('.', '').replace('/', '')
+		
+		@sayUnfiltered channel, message
+
+	sayUnfiltered: (channel, message) ->
 		lines = message.split '\\n'
 		for line in lines
 			if !Mikuia.settings.bot.disableChat
 				messageLimiter.removeTokens 1, (err, twitchRR) =>
 					if channelLimiter[Channel.getName()]?
-						channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
-							@client.say channel, line
-							@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
+							channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
+								@client.say channel, line
+								@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
 
 	sayRaw: (channel, message) =>
 		@client.say channel, message

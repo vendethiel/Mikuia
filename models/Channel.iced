@@ -258,7 +258,7 @@ class exports.Channel extends Mikuia.Model
 					if !err2 && newLevel % announceLimit == 0 && activity > 0
 						await @getDisplayName defer err, displayName
 						await otherChannel.getDisplayName defer err, otherName
-						Mikuia.Chat.sayRaw channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
+						Mikuia.Chat.sayUnfiltered channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
 
 		callback false
 

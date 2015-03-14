@@ -68,7 +68,7 @@ updateCoins = () =>
 								luckers.push displayName
 
 					if luckers.length > 0 and dropAnnounce
-						Mikuia.Chat.sayRaw stream, '.me > Dropping coins for: ' + luckers.join(', ') + '!'
+						Mikuia.Chat.sayUnfiltered stream, '.me > Dropping coins for: ' + luckers.join(', ') + '!'
 
 					dropTimer[stream] = 0
 
