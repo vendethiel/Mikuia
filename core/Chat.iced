@@ -188,9 +188,6 @@ class exports.Chat
 				@joined.splice @joined.indexOf(channel), 1
 
 	say: (channel, message) =>
-		Channel = new Mikuia.Models.Channel channel
-		await Channel.getDisplayName defer err, displayName
-
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
 		if message.indexOf('.') == 0 or message.indexOf('/') == 0
@@ -199,6 +196,9 @@ class exports.Chat
 		@sayUnfiltered channel, message
 
 	sayUnfiltered: (channel, message) ->
+		Channel = new Mikuia.Models.Channel channel
+		await Channel.getDisplayName defer err, displayName
+		
 		lines = message.split '\\n'
 		for line in lines
 			if !Mikuia.settings.bot.disableChat
