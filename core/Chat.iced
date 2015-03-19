@@ -9,7 +9,7 @@ messageLimiter = new RateLimiter 10, 30000
 class exports.Chat
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
-		
+
 		@chatters = {}
 		@connected = false
 		@joined = []
@@ -59,7 +59,7 @@ class exports.Chat
 				else
 					channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
 					rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
-				
+
 				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
 
 
@@ -75,10 +75,10 @@ class exports.Chat
 			@connected = false
 			@joined = []
 
-	getChatters: (channel) => 
+	getChatters: (channel) =>
 		return @chatters[channel]
 
-	handleMessage: (user, to, message) ->
+	handleMessage: (user, to, message) =>
 		Channel = new @Mikuia.Models.Channel to
 		Chatter = new @Mikuia.Models.Channel user.username
 		await Channel.getDisplayName defer err, displayName
@@ -99,7 +99,7 @@ class exports.Chat
 		else
 			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
-		
+
 		Channel.trackIncrement 'messages', 1
 
 		tokens = message.split ' '
@@ -109,30 +109,12 @@ class exports.Chat
 			Channel.getCommand trigger, defer commandError, command
 			Channel.getCommandSettings trigger, true, defer settingsError, settings
 
-		continueCommand = true
+		return if settingsError
 
-		if !settingsError && user.username != Channel.getName()
+		if user.username != Channel.getName() && !@isCommandAllowed(settings, Chatter, Channel)
+			return
 
-			if settings?._minLevel and settings._minLevel > 0
-				await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
-				if userLevel < settings._minLevel
-					continueCommand = false
-
-			if settings?._onlyMods and not Chatter.isModOf Channel.getName()
-				continueCommand = false
-
-			if settings?._onlySubs and user.special.indexOf('subscriber') == -1
-				continueCommand = false
-
-			if settings?._onlyBroadcaster and user.username isnt Channel.getName()
-				continueCommand = false
-
-			if settings?._coinCost and settings._coinCost > 0
-				await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
-				if !balance? or parseInt(balance) < settings._coinCost
-					continueCommand = false
-
-		if !commandError && command? && continueCommand
+		if !commandError && command?
 			handler = @Mikuia.Plugin.getHandler command
 			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
 
@@ -148,22 +130,42 @@ class exports.Chat
 					settings: settings
 				Channel.trackIncrement 'commands', 1
 
+  isCommandAllowed: (settings, Chatter, Channel) ->
+		if settings?._minLevel and settings._minLevel > 0
+			await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
+			if userLevel < settings._minLevel
+				return false
+
+		if settings?._onlyMods and not Chatter.isModOf Channel.getName()
+			return false
+
+		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
+			return false
+
+		if settings?._onlyBroadcaster and user.username isnt Channel.getName()
+			return false
+
+		if settings?._coinCost and settings._coinCost > 0
+			await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
+			if !balance? or parseInt(balance) < settings._coinCost
+				return false
+
+		return true
+
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
 			channel = '#' + channel
 
 		Channel = new Mikuia.Models.Channel channel
 		await Channel.isEnabled defer err, isMember
-		
+
 		if @joined.indexOf(channel) == -1 && isMember
 			joinLimiter.removeTokens 1, (err, rr) =>
 				@client.join channel
 				@joined.push channel
-				if callback
-					callback false
+				callback? false
 		else
-			if callback
-				callback true
+			callback? true
 
 	joinMultiple: (channels, callback) =>
 		for channel, i in channels
@@ -182,7 +184,7 @@ class exports.Chat
 			return null
 
 	part: (channel, callback) =>
-		joinLimiter.removeTokens 1, (err, rr) =>	
+		joinLimiter.removeTokens 1, (err, rr) =>
 			@client.part channel
 			if @joined.indexOf(channel) > -1
 				@joined.splice @joined.indexOf(channel), 1
@@ -246,7 +248,7 @@ class exports.Chat
 
 						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
-						
+
 			# Yay, save dat stuff.
 			if !twitchFailure
 				await @Mikuia.Database.del 'mikuia:streams', defer err, response
@@ -254,7 +256,7 @@ class exports.Chat
 			await
 				for stream in streamList
 					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
-					
+
 					things = [
 						'display_name'
 						'followers'
@@ -297,5 +299,5 @@ class exports.Chat
 				@moderators[channel] = chatters.chatters.moderators
 			Channel = new Mikuia.Models.Channel channel
 			Channel.trackValue 'chatters', chatters.chatter_count
-			
+
 		callback err
