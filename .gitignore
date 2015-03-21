@@ -3,3 +3,4 @@ web/public/img/avatars/
 npm-debug.log
 settings.json
 sftp-config.json
+/logs/
