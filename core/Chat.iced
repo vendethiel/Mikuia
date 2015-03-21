@@ -201,7 +201,7 @@ class exports.Chat
 		
 		lines = message.split '\\n'
 		for line in lines
-			if !Mikuia.settings.bot.disableChat
+			if !Mikuia.settings.bot.disableChat && line.trim() != ''
 				messageLimiter.removeTokens 1, (err, twitchRR) =>
 					if channelLimiter[Channel.getName()]?
 							channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
