@@ -108,10 +108,11 @@ class exports.Chat
 		await
 			Channel.getCommand trigger, defer commandError, command
 			Channel.getCommandSettings trigger, true, defer settingsError, settings
+			@isCommandAllowed settings, Chatter, Channel, defer allowed
 
 		return if settingsError
 
-		if user.username != Channel.getName() && !@isCommandAllowed(settings, Chatter, Channel)
+		if user.username != Channel.getName() && !allowed
 			return
 
 		if !commandError && command?
@@ -122,35 +123,30 @@ class exports.Chat
 				if settings?._coinCost and settings._coinCost > 0
 					await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', settings._coinCost * -1, user.username, defer error, whatever
 
-				@Mikuia.Events.emit command,
-					user: user
-					to: to
-					message: message
-					tokens: tokens
-					settings: settings
+				@Mikuia.Events.emit command, {user, to, message, tokens, settings}
 				Channel.trackIncrement 'commands', 1
 
-  isCommandAllowed: (settings, Chatter, Channel) ->
+	isCommandAllowed: (settings, Chatter, Channel, cb) ->
 		if settings?._minLevel and settings._minLevel > 0
 			await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
 			if userLevel < settings._minLevel
-				return false
+				cb false
 
 		if settings?._onlyMods and not Chatter.isModOf Channel.getName()
-			return false
+			cb false
 
 		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
-			return false
+			cb false
 
 		if settings?._onlyBroadcaster and user.username isnt Channel.getName()
-			return false
+			cb false
 
 		if settings?._coinCost and settings._coinCost > 0
 			await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < settings._coinCost
-				return false
+				cb false
 
-		return true
+		cb true
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
