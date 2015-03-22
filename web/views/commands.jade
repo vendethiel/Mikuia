@@ -45,12 +45,13 @@ block content
 				.portlet-body.form
 					form.form-horizontal(action='/dashboard/commands/add', method='post', role='form')
 						.form-body
-							.form-group
+							.form-group.form-md-line-input
 								label.col-sm-3.control-label Command
 								.col-sm-9
 									input.form-control(type='text', name='command', placeholder='!command')
 									span.help-block This is the thing people will write in the chat.
-							.form-group
+									.form-control-focus
+							.form-group.form-md-line-input
 								label.col-sm-3.control-label Handler
 								.col-sm-9
 									select.form-control(name='handler')
@@ -61,6 +62,7 @@ block content
 												else
 													option(value=handlerName) #{handlerName} - #{handler.description}
 									span.help-block This specifies what you expect the command to do.
+									.form-control-focus
 						.form-actions
 							button.btn.blue(type='submit') Add
 

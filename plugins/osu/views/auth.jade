@@ -49,10 +49,11 @@ block content
 				.portlet-body.form
 					form.form-horizontal(action='/dashboard/plugins/osu/auth', method='post')
 						.form-body
-							.form-group
+							.form-group.form-md-line-input
 								label.col-sm-3.control-label Auth Code
 								.col-sm-8
 									input.form-control(type='text', name='authCode')
+									.form-control-focus
 									span.help-block The code expires in one minute, gotta go fast!
 						.form-actions
 							button.btn.blue(type='submit') Save

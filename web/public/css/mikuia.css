@@ -91,6 +91,10 @@ body.mikuia {
 	font-weight: bold;
 }
 
+.help-block {
+	opacity: 1 !important;
+}
+
 .infobox {
 	background-color: #111;
 	background-image: -webkit-linear-gradient(top, #111, rgba(128, 128, 0, 0.7));
@@ -157,7 +161,7 @@ body.mikuia {
 }
 
 a.navbar-brand {
-	color: white;
+	color: #5C9ACF;
 	padding-top: 13px;
 }
 

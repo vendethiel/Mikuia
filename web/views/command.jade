@@ -32,48 +32,60 @@ block content
 								br
 								h5 User Filters
 								br
-								.form-group
+								.form-group.form-md-line-input
 									label.col-sm-3.control-label Only Broadcaster
 									.col-sm-8
-										.checkbox-list
-											label.checkbox-inline
+										.md-checkbox-inline
+											.md-checkbox
 												if userSettings && userSettings._onlyBroadcaster
 													if userSettings._onlyBroadcaster
-														input(type='checkbox', name='_onlyBroadcaster', checked)
+														input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster', checked)
 													else
-														input(type='checkbox', name='_onlyBroadcaster')
+														input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster')
 												else
-													input(type='checkbox', name='_onlyBroadcaster')
-												.help-inline Only allow broadcaster to use the command.
-								.form-group
+													input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster')
+												label(for='_onlyBroadcaster')
+													span
+													span.check
+													span.box
+													| Only allow broadcaster to use the command.
+								.form-group.form-md-line-input
 									label.col-sm-3.control-label Only Mods
 									.col-sm-8
-										.checkbox-list
-											label.checkbox-inline
+										.md-checkbox-inline
+											.md-checkbox
 												if userSettings && userSettings._onlyMods
 													if userSettings._onlyMods
-														input(type='checkbox', name='_onlyMods', checked)
+														input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods', checked)
 													else
-														input(type='checkbox', name='_onlyMods')
+														input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods')
 												else
-													input(type='checkbox', name='_onlyMods')
-												.help-inline Only allow moderators to use the command.
-								.form-group
+													input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods')
+												label(for='_onlyMods')
+													span
+													span.check
+													span.box
+													| Only allow moderators to use the command.
+								.form-group.form-md-line-input
 									label.col-sm-3.control-label Only Subs
 									.col-sm-8
-										.checkbox-list
-											label.checkbox-inline
+										.md-checkbox-inline
+											.md-checkbox
 												if userSettings && userSettings._onlySubs
 													if userSettings._onlySubs
-														input(type='checkbox', name='_onlySubs', checked)
+														input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs', checked)
 													else
-														input(type='checkbox', name='_onlySubs')
+														input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs')
 												else
-													input(type='checkbox', name='_onlySubs')
-												.help-inline Only allow subscribers to use the command.
+													input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs')
+												label(for='_onlySubs')
+													span
+													span.check
+													span.box
+													| Only allow subscribers to use the command.
 								h5 Mikuia Levels
 								br
-								.form-group
+								.form-group.form-md-line-input
 									label.col-sm-3.control-label Minimal Level
 									.col-sm-8
 										if userSettings && userSettings._minLevel
@@ -81,9 +93,10 @@ block content
 										else
 											input.form-control(type='number', name='_minLevel', placeholder='0')
 										span.help-block Minimal Level required to use the command.
+										.form-control-focus
 								h5 Mikuia Coins
 								br
-								.form-group
+								.form-group.form-md-line-input
 									label.col-sm-3.control-label Coin Cost
 									.col-sm-8
 										if userSettings && userSettings._coinCost
@@ -91,6 +104,8 @@ block content
 										else
 											input.form-control(type='number', name='_coinCost', placeholder='0')
 										span.help-block Amount of coins deducted for using the command.
+										.form-control-focus
+								br
 							if settings
 								h3 Command-specific settings
 								br

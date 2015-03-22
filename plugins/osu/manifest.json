@@ -82,7 +82,7 @@
 				"type": "disabled",
 				"link": {
 					"url": "/dashboard/plugins/osu/auth",
-					"name": "Authenticate your account."
+					"name": "Click here to authenticate your account."
 				}
 			},
 			"requests": {

@@ -26,10 +26,10 @@ block content
 						span.caption-subject.bold.uppercase.font-yellow-gold Coins
 						span.caption-helper  yeah coins
 				.portlet-body
-					table.table.table-bordered
+					table.table.table-bordered.table-striped.table-hover
 						thead
 							tr
-								td User
+								td(width='30%') User
 								td Balance
 								td Actions
 						tbody
@@ -63,14 +63,15 @@ block content
 				.portlet-body
 					form.form-horizontal
 						.form-body
-							.form-group
+							.form-group.form-md-line-input
 								label.col-md-3.control-label Username
 								.col-md-9
 									.input-group
 										.input-group-addon
 											i.fa.fa-user
 										input.form-control#manualUsername(type='text')
-
+										.form-control-focus
+						br
 						.form-actions
 							.row
 								.col-md-offset-3.col-md-9
@@ -79,6 +80,7 @@ block content
 									a.btn.blue(onclick='set($("#manualUsername").val())') Set
 									|  
 									a.btn.red(onclick='take($("#manualUsername").val())') Take
+
 
 block footerScript
 	script(type='text/javascript').

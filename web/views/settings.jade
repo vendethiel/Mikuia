@@ -13,8 +13,7 @@ block content
 		li
 			a(href='/dashboard/settings') Settings			
 	.row
-
-		.col-md-4
+		.col-md-5
 			if !enabled
 				- var className = 'font-red-sunglo'
 			else
@@ -32,8 +31,7 @@ block content
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(onclick="toggle('enable')") Enable
-			
-		.col-sm-8
+						
 			if enabled
 				.portlet.light
 					.portlet-title
@@ -56,15 +54,16 @@ block content
 											td=plugin.manifest.description
 											td
 												if enabledPlugins.indexOf(pluginName) > -1
-													a.btn.red(onclick="pluginToggle('" + pluginName + "', 'disable')") Disable
+													a.btn.btn-xs.default(onclick="pluginToggle('" + pluginName + "', 'disable')", rel='tooltip', title='Click to disable ' + plugin.manifest.name + '.') Disable
+													a.btn.btn-xs.default(href='#' + pluginName, rel='tooltip', title='View settings for ' + plugin.manifest.name)
+														i.glyphicon.glyphicon-cog
 												else
-													a.btn.green(onclick="pluginToggle('" + pluginName + "', 'enable')") Enable
-	.row
-		each pluginName in enabledPlugins
-			if plugins[pluginName]
-				- var plugin = plugins[pluginName]
-				.col-sm-6
-					.portlet.light
+													a.btn.btn-xs.green(onclick="pluginToggle('" + pluginName + "', 'enable')", rel='tooltip', title='Click to enable ' + plugin.manifest.name + '.') Enable
+		.col-md-7
+			each pluginName in enabledPlugins.sort()
+				if plugins[pluginName]
+					- var plugin = plugins[pluginName]
+					.portlet.light(id=pluginName)
 						.portlet-title
 							.caption
 								i.fa.fa-cogs
@@ -80,6 +79,7 @@ block content
 						else
 							.portlet-body
 								.text-muted This plugin has no configurable settings.
+
 
 block footerScript
 	script(type='text/javascript').
