@@ -149,6 +149,34 @@ Mikuia.Events.on 'coins.command', (data) =>
 						else
 							Mikuia.Chat.say data.to, displayName + ' now has ' + coinAmount + ' ' + namePlural + '.'
 
+			when 'pay'
+				if data.tokens.length == 4
+					username = data.tokens[2]
+					coinAmount = parseInt data.tokens[3]
+
+					if coinAmount > 0
+						Channel = new Mikuia.Models.Channel data.to
+						Recipient = new Mikuia.Models.Channel username
+						Sender = new Mikuia.Models.Channel data.user.username
+						
+						await
+							Channel.getSetting 'coins', 'name', defer error, name
+							Channel.getSetting 'coins', 'namePlural', defer error, namePlural
+							Sender.getDisplayName defer error, senderDisplayName
+							Recipient.getDisplayName defer error, recipientDisplayName
+							Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', Sender.getName(), defer whatever, senderCoins
+
+						if senderCoins >= coinAmount
+							Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount * -1, Sender.getName(), defer whatever
+							Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Recipient.getName(), defer whatever
+
+							if coinAmount == 1
+								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + name + ')'
+							else
+								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + namePlural + ')'
+
+
+
 			when 'help'
 				Mikuia.Chat.say data.to, 'There\'s no help for you! :D'
 
