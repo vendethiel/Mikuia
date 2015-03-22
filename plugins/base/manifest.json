@@ -53,7 +53,7 @@
 			}
 		},
 		"server": {
-			"globalCommand": "!pantsu"
+			"globalCommand": "!mikuia"
 		}
 	}
 }
