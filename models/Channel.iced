@@ -16,6 +16,12 @@ class exports.Channel extends Mikuia.Model
 	getName: () ->
 		return @name
 
+	isAdmin: ->
+		if Mikuia.settings.bot.admins.indexOf(@getName()) > -1
+			return true
+		else
+			return false
+
 	isBot: (callback) ->
 		await Mikuia.Database.sismember 'mikuia:bots', @getName(), defer err, data
 		callback err, data
@@ -159,13 +165,16 @@ class exports.Channel extends Mikuia.Model
 		await
 			@getInfo 'display_name', defer err, data
 			@isSupporter defer err2, isSupporter
-		if err || !data?
-			callback false, @getName()
+
+		if !data
+			data = @getName()
+
+		if @isAdmin()
+			callback err, '✜ ' + data
+		else if isSupporter
+			callback err, '❤ ' + data
 		else
-			if !err2 && isSupporter
-				callback err, '❤ ' + data
-			else
-				callback err, data
+			callback err, data
 
 	getEmail: (callback) ->
 		await @getInfo 'email', defer err, data

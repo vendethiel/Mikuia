@@ -85,7 +85,7 @@ class exports.Chat
 
 		chatterUsername = cli.yellowBright user.username
 
-		if user.username == Mikuia.settings.bot.admin
+		if Chatter.isAdmin()
 			chatterUsername = cli.redBright user.username
  
 		if Chatter.isModOf Channel.getName()

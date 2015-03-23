@@ -160,8 +160,8 @@ updateUserBest = (stream, callback) =>
 					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
 						#console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
 						#console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
-						if Channel.getName() == Mikuia.settings.bot.admin
-							Mikuia.Chat.say Mikuia.settings.bot.admin, '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
+						if Channel.isAdmin()
+							Mikuia.Chat.say Channel.getName(), '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
 
 			userBest[name][mode] = best
 			userBest[name].timeUpdated = (new Date()).getTime() + (8 * 60 * 60 * 1000)

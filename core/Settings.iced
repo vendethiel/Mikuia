@@ -4,7 +4,9 @@ fs = require 'fs'
 # Some default fields for settings.
 defaultSettings =
 	bot:
-		admin: 'hatsuney'
+		admins: [
+			'hatsuney'
+		]
 		debug: false
 		disableChat: false
 		name: 'YourBotNameHere'

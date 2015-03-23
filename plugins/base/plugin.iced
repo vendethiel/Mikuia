@@ -93,7 +93,8 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 			trigger = tokens[1]
 
 			Channel = new Mikuia.Models.Channel to
-			isAdmin = (from.username == Mikuia.settings.bot.admin)
+			User = new Mikuia.Models.Channel from.username
+			isAdmin = User.isAdmin()
 			isMod = checkMod to, from.username
 
 			if isAdmin
