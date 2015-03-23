@@ -26,6 +26,7 @@ fs.mkdirs 'logs/mikuia'
 
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
+	continue if fileName.charAt(0) == '.' # skip editor files
 	filePath = path.resolve './', 'core', fileName
 	coreFile = require filePath
 	shortName = fileName.replace '.iced', ''
@@ -35,6 +36,7 @@ Mikuia.Model = require('./class/Model').Model
 
 # Models... at least that's how I call this weird stuff.
 for fileName in fs.readdirSync 'models'
+	continue if fileName.charAt(0) == '.' # skip editor files
 	filePath = path.resolve './', 'models', fileName
 	modelFile = require filePath
 	shortName = fileName.replace '.iced', ''
@@ -62,9 +64,9 @@ Mikuia.Settings.read ->
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		if pluginDirErr
 			Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Can\'t access plugin directory.')
-		else
-			Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Found ') + cli.greenBright(fileList.length) + cli.whiteBright(' plugin directories.')
-			
+	
+		Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Found ') + cli.greenBright(fileList.length) + cli.whiteBright(' plugin directories.')
+
 		for file in fileList
 			if isBot
 				Mikuia.Plugin.load file, 'baseFile'

@@ -4,11 +4,11 @@ module.exports = (req, res) ->
 	Channel = new Mikuia.Models.Channel req.user.username
 
 	await
-		Channel.getSupporterStart defer err, supporterStart
-		Channel.getSupporterStatus defer err, supporterStatus
-		Channel.isEnabled defer err2, enabled
-		Channel.isLive defer err3, live
-		Channel.isSupporter defer err, supporter
+		Channel.getSupporterStart defer err1, supporterStart
+		Channel.getSupporterStatus defer err2, supporterStatus
+		Channel.isEnabled defer err3, enabled
+		Channel.isLive defer err4, live
+		Channel.isSupporter defer err5, supporter
 
 	tracker = {}
 	if live
@@ -21,18 +21,11 @@ module.exports = (req, res) ->
 
 	supporterLeftText = moment.unix(supporterStatus).fromNow()
 
-	# Best error handling EUNE
-	if err then console.log err
-	if err2 then console.log err2
-	if err3 then console.log err3
-	# DURRR
+	for err in [err1, err2, err3, err4, err5]
+		console.log 'dashboard error', err if err
 
-	res.render 'dashboard',
+	res.render 'dashboard', {
+		enabled, live, supporter, supporterLeftText,
+		supporterStart, supporterStatus, tracker
 		channel: Channel.getName()
-		enabled: enabled
-		live: live
-		supporter: supporter
-		supporterLeftText: supporterLeftText
-		supporterStart: supporterStart
-		supporterStatus: supporterStatus
-		tracker: tracker
+	}

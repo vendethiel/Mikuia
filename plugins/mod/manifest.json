@@ -2,6 +2,7 @@
 	"name": "Mod Tools",
 	"description": "[ALPHA] Chat moderating tools.",
 	"baseFile": "plugin.iced",
+	"webFile": "web.iced",
 	"hidden": false,
 	"settings": {
 		"channel": {

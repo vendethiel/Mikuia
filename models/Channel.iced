@@ -99,12 +99,11 @@ class exports.Channel extends Mikuia.Model
 			@_hgetall 'command:' + command, defer err, settings
 			@getCommand command, defer commandError, handler
 
-		if !settings?
-			settings = {}
+		settings = {}
 
 		if !commandError
 			for settingName, setting of settings
-				console.log settings[settingName]
+				console.log 'get command setting', settingName, settings[settingName]
 				if settings[settingName] == 'true'
 					settings[settingName] = true
 				if settings[settingName] == 'false'
@@ -113,7 +112,7 @@ class exports.Channel extends Mikuia.Model
 			if Mikuia.Plugin.getHandler(handler)?.settings?
 				for settingName, setting of Mikuia.Plugin.getHandler(handler).settings
 					if defaults && !settings[settingName]?
-						settings[settingName] = setting.default				
+						settings[settingName] = setting.default
 
 		callback err, settings
 
@@ -231,7 +230,7 @@ class exports.Channel extends Mikuia.Model
 				)
 		else
 			callback true
-			
+
 	# Levels
 
 	addExperience: (channel, experience, activity, callback) =>
@@ -331,7 +330,7 @@ class exports.Channel extends Mikuia.Model
 			callback err, true
 		else
 			callback err, false
-	
+
 	isSupporter: (callback) ->
 		await @getSupporterStatus defer err, data
 		if data > (new Date()).getTime() / 1000
@@ -352,7 +351,7 @@ class exports.Channel extends Mikuia.Model
 
 	getBadgesWithInfo: (callback) =>
 		await @getBadges defer err, data
-		
+
 		badgeInfo = {}
 		for badgeId in data
 			Badge = new Mikuia.Models.Badge badgeId

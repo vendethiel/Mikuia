@@ -77,15 +77,14 @@ app.use (req, res, next) ->
 	if req.user && req.path.indexOf('/dashboard') == 0
 		Channel = new Mikuia.Models.Channel req.user.username
 		pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
-		if pagePlugins?
-			for pagePlugin in pagePlugins
-				await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
-				if !err && enabled
-					for pagePath, page of pagePlugin.pages
-						pages.push
-							path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
-							name: page.name
-							icon: page.icon
+		for pagePlugin in pagePlugins || []
+			await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
+			if !err && enabled
+				for pagePath, {name, icon} of pagePlugin.pages
+					pages.push {
+						name, icon,
+						path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
+					}
 
 	res.locals.pages = pages
 	next()
