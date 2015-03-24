@@ -99,7 +99,7 @@ class exports.Channel extends Mikuia.Model
 		chatter = new exports.Channel user.username
 		if user.username == @getName()
 			callback true
-		ese if settings?._minLevel and settings._minLevel > 0
+		else if settings?._minLevel and settings._minLevel > 0
 			await chatter.getLevel @getName(), defer whateverError, userLevel
 			if userLevel < settings._minLevel
 				callback false
