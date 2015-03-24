@@ -16,10 +16,7 @@ class exports.Channel extends Mikuia.Model
 	getName: -> @name
 
 	isAdmin: ->
-		if Mikuia.settings.bot.admins.indexOf(@getName()) > -1
-			return true
-		else
-			return false
+		return Mikuia.settings.bot.admins.indexOf(@getName()) > -1
 
 	isBot: (callback) ->
 		await Mikuia.Database.sismember 'mikuia:bots', @getName(), defer err, data
@@ -98,7 +95,6 @@ class exports.Channel extends Mikuia.Model
 
 		callback commandError || settingsError, command, settings, allowed
 
-
 	isCommandAllowed: (settings, Chatter, callback) ->
 		if settings?._minLevel and settings._minLevel > 0
 			await Chatter.getLevel @getName(), defer whateverError, userLevel
@@ -134,7 +130,7 @@ class exports.Channel extends Mikuia.Model
 			@_hgetall 'command:' + command, defer err, settings
 			@getCommand command, defer commandError, handler
 
-		settings != {}
+		settings ?= {}
 
 		if !commandError
 			for settingName, setting of settings
