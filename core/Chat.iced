@@ -105,48 +105,23 @@ class exports.Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
-		await
-			Channel.getCommand trigger, defer commandError, command
-			Channel.getCommandSettings trigger, true, defer settingsError, settings
-			@isCommandAllowed settings, Chatter, Channel, defer allowed
+		await Channel.queryCommand trigger, defer err, command, settings, isAllowed
 
-		return if settingsError
+		return if err
 
 		if user.username != Channel.getName() && !allowed
 			return
 
-		if !commandError && command?
+		if command?
 			handler = @Mikuia.Plugin.getHandler command
 			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
 
 			if !whateverError && enabled
 				if settings?._coinCost and settings._coinCost > 0
-					await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', settings._coinCost * -1, user.username, defer error, whatever
+					await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
 				@Mikuia.Events.emit command, {user, to, message, tokens, settings}
 				Channel.trackIncrement 'commands', 1
-
-	isCommandAllowed: (settings, Chatter, Channel, cb) ->
-		if settings?._minLevel and settings._minLevel > 0
-			await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
-			if userLevel < settings._minLevel
-				cb false
-
-		if settings?._onlyMods and not Chatter.isModOf Channel.getName()
-			cb false
-
-		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
-			cb false
-
-		if settings?._onlyBroadcaster and user.username isnt Channel.getName()
-			cb false
-
-		if settings?._coinCost and settings._coinCost > 0
-			await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
-			if !balance? or parseInt(balance) < settings._coinCost
-				cb false
-
-		cb true
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1

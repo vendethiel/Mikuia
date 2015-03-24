@@ -13,8 +13,7 @@ class exports.Channel extends Mikuia.Model
 		await @_exists '', defer err, data
 		callback err, data
 
-	getName: () ->
-		return @name
+	getName: -> @name
 
 	isAdmin: ->
 		if Mikuia.settings.bot.admins.indexOf(@getName()) > -1
@@ -91,6 +90,36 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	# Commands
+	queryCommand: (trigger, callback) ->
+		await
+			@getCommand trigger, defer commandError, command
+			@getCommandSettings trigger, true, defer settingsError, settings
+			@isCommandAllowed settings, Chatter, defer allowed
+
+		callback commandError || settingsError, command, settings, allowed
+
+
+	isCommandAllowed: (settings, Chatter, callback) ->
+		if settings?._minLevel and settings._minLevel > 0
+			await Chatter.getLevel @getName(), defer whateverError, userLevel
+			if userLevel < settings._minLevel
+				callback false
+
+		if settings?._onlyMods and not Chatter.isModOf @getName()
+			callback false
+
+		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
+			callback false
+
+		if settings?._onlyBroadcaster and user.username isnt @getName()
+			callback false
+
+		if settings?._coinCost and settings._coinCost > 0
+			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
+			if !balance? or parseInt(balance) < settings._coinCost
+				callback false
+
+		callback true
 
 	addCommand: (command, handler, callback) ->
 		await @_hset 'commands', command, handler, defer err, data
@@ -218,10 +247,7 @@ class exports.Channel extends Mikuia.Model
 			return true
 		else
 			moderators = Mikuia.Chat.mods channel
-			if moderators? && @getName() in moderators
-				return true
-			else
-				return false
+			return moderators? && @getName() in moderators
 
 	# :D
 
