@@ -130,7 +130,7 @@ class exports.Channel extends Mikuia.Model
 			@_hgetall 'command:' + command, defer err, settings
 			@getCommand command, defer commandError, handler
 
-		settings ?= {}
+		settings = {} unless settings? # see iced bug #50
 
 		if !commandError
 			for settingName, setting of settings
