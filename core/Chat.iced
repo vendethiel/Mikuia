@@ -29,6 +29,7 @@ class exports.Chat
 				reconnect: true
 				retries: 3
 				serverType: 'chat'
+				preferredServer: @Mikuia.settings.bot.server
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
@@ -87,7 +88,7 @@ class exports.Chat
 
 		if Chatter.isAdmin()
 			chatterUsername = cli.redBright user.username
- 
+
 		if Chatter.isModOf Channel.getName()
 			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
@@ -105,48 +106,21 @@ class exports.Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
-		await
-			Channel.getCommand trigger, defer commandError, command
-			Channel.getCommandSettings trigger, true, defer settingsError, settings
-			@isCommandAllowed settings, Chatter, Channel, defer allowed
+		await Channel.queryCommand trigger, user, defer err, o
+		{command, settings, isAllowed} = o
 
-		return if settingsError
+		# abort if there's an error, access denied or no command
+		return if err || !isAllowed || !command?
 
-		if user.username != Channel.getName() && !allowed
-			return
+		handler = @Mikuia.Plugin.getHandler command
+		await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-		if !commandError && command?
-			handler = @Mikuia.Plugin.getHandler command
-			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
+		if !err && enabled
+			if settings?._coinCost and settings._coinCost > 0
+				await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
-			if !whateverError && enabled
-				if settings?._coinCost and settings._coinCost > 0
-					await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', settings._coinCost * -1, user.username, defer error, whatever
-
-				@Mikuia.Events.emit command, {user, to, message, tokens, settings}
-				Channel.trackIncrement 'commands', 1
-
-	isCommandAllowed: (settings, Chatter, Channel, cb) ->
-		if settings?._minLevel and settings._minLevel > 0
-			await Chatter.getLevel Channel.getName(), defer whateverError, userLevel
-			if userLevel < settings._minLevel
-				cb false
-
-		if settings?._onlyMods and not Chatter.isModOf Channel.getName()
-			cb false
-
-		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
-			cb false
-
-		if settings?._onlyBroadcaster and user.username isnt Channel.getName()
-			cb false
-
-		if settings?._coinCost and settings._coinCost > 0
-			await Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', user.username, defer error, balance
-			if !balance? or parseInt(balance) < settings._coinCost
-				cb false
-
-		cb true
+			@Mikuia.Events.emit command, {user, to, message, tokens, settings}
+			Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -190,13 +164,13 @@ class exports.Chat
 			channel = '#' + channel
 		if message.indexOf('.') == 0 or message.indexOf('/') == 0
 			message = '!' + message.replace('.', '').replace('/', '')
-		
+
 		@sayUnfiltered channel, message
 
 	sayUnfiltered: (channel, message) ->
 		Channel = new Mikuia.Models.Channel channel
 		await Channel.getDisplayName defer err, displayName
-		
+
 		lines = message.split '\\n'
 		for line in lines
 			if !Mikuia.settings.bot.disableChat && line.trim() != ''

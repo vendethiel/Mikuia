@@ -1,7 +1,7 @@
 ###
   Hello, and welcome to the land of crazy stuff! (AKA Mikuia)
   This time, I'll try to comment at least a bit of this code...
-  Let's see how it goes.  
+  Let's see how it goes.
 ###
 
 cli = require 'cli-color'
@@ -24,9 +24,12 @@ global.Mikuia = Mikuia
 
 fs.mkdirs 'logs/mikuia'
 
+isEditorFile = (fileName) ->
+	fileName.charAt(0) in ['.', '#']
+
 # Loading core files (that's my way of pretending everything is okay)
 for fileName in fs.readdirSync 'core'
-	continue if fileName.charAt(0) == '.' # skip editor files
+	continue if isEditorFile(fileName)
 	filePath = path.resolve './', 'core', fileName
 	coreFile = require filePath
 	shortName = fileName.replace '.iced', ''
@@ -36,7 +39,7 @@ Mikuia.Model = require('./class/Model').Model
 
 # Models... at least that's how I call this weird stuff.
 for fileName in fs.readdirSync 'models'
-	continue if fileName.charAt(0) == '.' # skip editor files
+	continue if isEditorFile(fileName)
 	filePath = path.resolve './', 'models', fileName
 	modelFile = require filePath
 	shortName = fileName.replace '.iced', ''
@@ -64,7 +67,7 @@ Mikuia.Settings.read ->
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		if pluginDirErr
 			Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Can\'t access plugin directory.')
-	
+
 		Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Found ') + cli.greenBright(fileList.length) + cli.whiteBright(' plugin directories.')
 
 		for file in fileList
@@ -72,7 +75,7 @@ Mikuia.Settings.read ->
 				Mikuia.Plugin.load file, 'baseFile'
 			else if isWeb
 				Mikuia.Plugin.load file, 'webFile'
-		
+
 	if isBot
 		Mikuia.Chat.connect()
 		Mikuia.Twitch.init()
