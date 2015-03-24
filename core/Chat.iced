@@ -29,6 +29,7 @@ class exports.Chat
 				reconnect: true
 				retries: 3
 				serverType: 'chat'
+				preferredServer: @Mikuia.settings.bot.server
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
@@ -87,7 +88,7 @@ class exports.Chat
 
 		if Chatter.isAdmin()
 			chatterUsername = cli.redBright user.username
- 
+
 		if Chatter.isModOf Channel.getName()
 			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
@@ -105,23 +106,21 @@ class exports.Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
-		await Channel.queryCommand trigger, defer err, command, settings, isAllowed
+		await Channel.queryCommand trigger, user, defer err, o
+		{command, settings, isAllowed} = o
 
-		return if err
+		# abort if there's an error, access denied or no command
+		return if err || !isAllowed || !command?
 
-		if user.username != Channel.getName() && !allowed
-			return
+		handler = @Mikuia.Plugin.getHandler command
+		await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-		if command?
-			handler = @Mikuia.Plugin.getHandler command
-			await Channel.isPluginEnabled handler.plugin, defer whateverError, enabled
+		if !err && enabled
+			if settings?._coinCost and settings._coinCost > 0
+				await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
-			if !whateverError && enabled
-				if settings?._coinCost and settings._coinCost > 0
-					await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
-
-				@Mikuia.Events.emit command, {user, to, message, tokens, settings}
-				Channel.trackIncrement 'commands', 1
+			@Mikuia.Events.emit command, {user, to, message, tokens, settings}
+			Channel.trackIncrement 'commands', 1
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -165,13 +164,13 @@ class exports.Chat
 			channel = '#' + channel
 		if message.indexOf('.') == 0 or message.indexOf('/') == 0
 			message = '!' + message.replace('.', '').replace('/', '')
-		
+
 		@sayUnfiltered channel, message
 
 	sayUnfiltered: (channel, message) ->
 		Channel = new Mikuia.Models.Channel channel
 		await Channel.getDisplayName defer err, displayName
-		
+
 		lines = message.split '\\n'
 		for line in lines
 			if !Mikuia.settings.bot.disableChat && line.trim() != ''

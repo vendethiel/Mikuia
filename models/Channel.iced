@@ -87,35 +87,34 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	# Commands
-	queryCommand: (trigger, callback) ->
+	queryCommand: (trigger, user, callback) ->
 		await
 			@getCommand trigger, defer commandError, command
 			@getCommandSettings trigger, true, defer settingsError, settings
-			@isCommandAllowed settings, Chatter, defer allowed
+			@isCommandAllowed settings, user, defer isAllowed
 
-		callback commandError || settingsError, command, settings, allowed
+		callback commandError || settingsError, {command, settings, isAllowed}
 
-	isCommandAllowed: (settings, Chatter, callback) ->
-		if settings?._minLevel and settings._minLevel > 0
-			await Chatter.getLevel @getName(), defer whateverError, userLevel
+	isCommandAllowed: (settings, user, callback) ->
+		chatter = new exports.Channel user.username
+		if user.username == @getName()
+			callback true
+		ese if settings?._minLevel and settings._minLevel > 0
+			await chatter.getLevel @getName(), defer whateverError, userLevel
 			if userLevel < settings._minLevel
 				callback false
-
-		if settings?._onlyMods and not Chatter.isModOf @getName()
+		else if settings?._onlyMods and not chatter.isModOf @getName()
 			callback false
-
-		if settings?._onlySubs and user.special.indexOf('subscriber') == -1
+		else if settings?._onlySubs and user.special.indexOf('subscriber') == -1
 			callback false
-
-		if settings?._onlyBroadcaster and user.username isnt @getName()
+		else if settings?._onlyBroadcaster and user.username isnt @getName()
 			callback false
-
-		if settings?._coinCost and settings._coinCost > 0
+		else if settings?._coinCost and settings._coinCost > 0
 			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < settings._coinCost
 				callback false
-
-		callback true
+		else
+			callback true
 
 	addCommand: (command, handler, callback) ->
 		await @_hset 'commands', command, handler, defer err, data
@@ -364,10 +363,7 @@ class exports.Channel extends Mikuia.Model
 
 	isSupporter: (callback) ->
 		await @getSupporterStatus defer err, data
-		if data > (new Date()).getTime() / 1000
-			callback err, true
-		else
-			callback err, false
+		callback err, (data > new Date().getTime() / 1000)
 
 	# Badges
 
