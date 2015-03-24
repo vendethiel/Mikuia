@@ -1,6 +1,11 @@
+logs/
 node_modules/
+plugins/keen
+plugins/nodebb
+plugins/paypal
+plugins/steam
 web/public/img/avatars/
 npm-debug.log
 settings.json
 sftp-config.json
-/logs/
+*.sublime-*
