@@ -13,7 +13,7 @@ block content
 		li
 			a(href='/dashboard/commands') Commands
 			i.fa.fa-circle
-		li 
+		li
 			a Settings
 
 	.row
@@ -83,7 +83,7 @@ block content
 													span.check
 													span.box
 													| Only allow subscribers to use the command.
-								h5 Mikuia Levels
+								h5 #{Mikuia.settings.bot.name} Levels
 								br
 								.form-group.form-md-line-input
 									label.col-sm-3.control-label Minimal Level
@@ -94,7 +94,7 @@ block content
 											input.form-control(type='number', name='_minLevel', placeholder='0')
 										span.help-block Minimal Level required to use the command.
 										.form-control-focus
-								h5 Mikuia Coins
+								h5 #{Mikuia.settings.bot.name} Coins
 								br
 								.form-group.form-md-line-input
 									label.col-sm-3.control-label Coin Cost

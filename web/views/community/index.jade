@@ -20,9 +20,9 @@ block content
 					.col-xs-8.blackbox
 						.pull-right
 							i.fa.fa-user(style='color: red;')
-							|  #{featured.viewers}  
+							|  #{featured.viewers}
 							i.fa.fa-eye(style='color: #aaa;')
-							|  #{featured.views}  
+							|  #{featured.views}
 							i.fa.fa-user(style='color: #aaa;')
 							|  #{featured.followers}
 						h1
@@ -49,7 +49,7 @@ block content
 			.infobox-mikuia
 				.row
 					.col-md-12
-						h1 Mikuia Coins Beta is now open!
+						h1 #{Mikuia.settings.bot.name} Coins Beta is now open!
 						p
 							| Supporters are now able to test it out and are encouraged to provide some feedback!
 	.container
@@ -61,7 +61,7 @@ block content
 
 						each commit in Mikuia.Stuff.githubCommits
 							- var date = moment(commit.commit.author.date).format('MMMM Do, YYYY')
-							
+
 							if previousDate
 								if date != previousDate
 									br
@@ -71,7 +71,7 @@ block content
 								h3.text-primary=date
 								br
 
-							- var previousDate = date						
+							- var previousDate = date
 
 							.media.nomargin
 								a.pull-left(href=commit.author.html_url)
@@ -79,7 +79,7 @@ block content
 								.media-body
 									a(href=commit.html_url)
 										h5.media-heading!=commit.commit.message
-				
+
 				each panel in panels
 					.panel.panel-default
 						.panel-heading=panel.title
@@ -88,9 +88,9 @@ block content
 				.panel.panel-default
 					.panel-heading What?
 					.panel-body
-						h2 Mikuia?
+						h2 #{Mikuia.settings.bot.name}?
 						p
-							| Mikuia is a Twitch bot that will help your chat interact with games you're playing!
+							| #{Mikuia.settings.bot.name} is a Twitch bot that will help your chat interact with games you're playing!
 							br
 							| Looking up stats, sharing accomplishments and useful information, providing level and coin systems!
 						a.btn.btn-info.btn-xs.pull-right(href='http://forums.mikuia.tv/topic/6/how-to-use-mikuia') Read the guide >>

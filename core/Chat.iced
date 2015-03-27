@@ -77,8 +77,7 @@ module.exports = class Chat
 			@connected = false
 			@joined = []
 
-	getChatters: (channel) =>
-		return @chatters[channel]
+	getChatters: (channel) => @chatters[channel]
 
 	handleMessage: (user, to, message) =>
 		Channel = new @Mikuia.Models.Channel to

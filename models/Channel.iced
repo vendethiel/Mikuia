@@ -285,8 +285,7 @@ module.exports = class Channel extends Model
 		sortable = []
 		for channel, experience of data
 			sortable.push [channel, experience]
-		sortable.sort (a,b) ->
-			return b[1] - a[1]
+		sortable.sort (a,b) -> b[1] - a[1]
 
 		callback err, sortable
 
@@ -324,10 +323,7 @@ module.exports = class Channel extends Model
 
 	isDonator: (callback) ->
 		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
-		if data? && data >= 10
-			callback err, true
-		else
-			callback err, false
+		callback err, (data? && data >= 10)
 
 	isSupporter: (callback) ->
 		await @getSupporterStatus defer err, data

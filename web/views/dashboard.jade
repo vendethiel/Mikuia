@@ -13,7 +13,7 @@ block content
 		.col-md-12
 			if !enabled
 				.alert.alert-block.alert-danger
-					h4.alert-heading Mikuia is not enabled on your channel!
+					h4.alert-heading #{Mikuia.settings.bot.name} is not enabled on your channel!
 					p
 						| If you start complaining that it's not working without even trying to enable it, I'll fucking cut you.
 					p
@@ -69,7 +69,7 @@ block content
 					.portlet-body
 						#viewerChart
 
-				.portlet.light
+				.portlet.light.hidden
 					.portlet-title
 						.caption
 							i.fa.fa-cogs
@@ -94,7 +94,7 @@ block content
 					.display
 						.number
 							h3.font-red-haze=supporterLeftText
-							small Mikuia Supporter Ending
+							small #{Mikuia.settings.bot.name} Supporter Ending
 						.icon
 							i.icon-heart
 					.progress-info

@@ -34,15 +34,21 @@ checkRankUpdates = (stream, callback) =>
 								rank = json.fame_rank - userData[json.player].fame_rank
 
 								if diff >= fameLimit
-									Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (gained ' + diff + ')'
+									fameChange = 'gained ' + diff
 								else if diff < 0
-									Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (lost ' + Math.abs(diff) + ')'
+									fameChange = 'lost ' + Math.abs(diff)
+
+								if fameChange?
+									Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (' + fameChange + ')'
 
 								if diff != 0 && Math.abs(diff) >= fameLimit
 									if rank > 0
-										Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + rank + ' down' + ')'
+										rankDiff = rank + ' down'
 									else if rank < 0
-										Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + Math.abs(rank) + ' up!)'
+										rankDiff = Math.abs(rank) + ' up!'
+
+									if rankDiff?
+										Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + rankDiff + ')'
 							userData[json.player] =
 								fame: json.fame
 								fame_rank: json.fame_rank
@@ -75,11 +81,11 @@ Mikuia.Events.on 'rotmg.rank', (data) =>
 						Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / JSON parsing error: ' + error
 
 				if json && !json.error?
+					fameString = ''
 					if json.fame > 0
-						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame, rank #' + json.fame_rank + '.'
-					else
-						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame.'
-				 
+						fameString = ', rank #' + json.fame_rank
+					Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame' + fameString + '.'
+
 			else
 				Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / Failed to get JSON.'
 

@@ -81,7 +81,7 @@ Mikuia.Events.on 'base.uptime', (data) =>
 		else
 			Mikuia.Chat.say data.to, 'Something went wrong, try again!'
 	else
-		Mikuia.Chat.say data.to, 'The stream is not live.'		
+		Mikuia.Chat.say data.to, 'The stream is not live.'
 
 Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
@@ -99,7 +99,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 
 			if isAdmin
 				isMod = true
-				
+
 			switch trigger
 				when 'dummy'
 					addDummy from.username, to, tokens.slice 1
@@ -160,9 +160,9 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 checkMod = (channel, username) ->
 	if channel == username
 		return true
-	else
-		moderators = Mikuia.Chat.mods channel
-		if moderators? && username in moderators
-			return true
-		else
-			return false
+
+	moderators = Mikuia.Chat.mods channel
+	if moderators? && username in moderators
+		return true
+
+	return false

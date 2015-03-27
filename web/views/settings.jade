@@ -11,7 +11,7 @@ block content
 			a(href='/dashboard') Dashboard
 			i.fa.fa-circle
 		li
-			a(href='/dashboard/settings') Settings			
+			a(href='/dashboard/settings') Settings
 	.row
 		.col-md-5
 			if !enabled
@@ -26,12 +26,12 @@ block content
 						span.caption-helper  help me
 				.portlet-body
 					if enabled
-						p.lead Mikuia is enabled.
+						p.lead #{Mikuia.settings.bot.name} is enabled.
 						a.btn.default(onclick="toggle('disable')") Disable
 					else
-						p.lead Mikuia is disabled.
+						p.lead #{Mikuia.settings.bot.name} is disabled.
 						a.btn.green(onclick="toggle('enable')") Enable
-						
+
 			if enabled
 				.portlet.light
 					.portlet-title

@@ -1,7 +1,7 @@
 doctype html
 html
 	head
-		title Mikuia.tv
+		title #{Mikuia.settings.bot.name}
 
 		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all', rel='stylesheet', type='text/css')
 		link(href='/assets/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
@@ -26,7 +26,7 @@ html
 
 		.logo
 			a(href='/', style='color: white;')
-				h1 Mikuia.tv
+				h1 #{Mikuia.settings.bot.name}
 		.content
 			h3.form-title Please login or something.
 			a.btn.btn-twitch.center-block(href='/auth/twitch', type='button')
