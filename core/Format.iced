@@ -1,4 +1,4 @@
-class exports.Format
+module.exports = class Format
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 

@@ -31,39 +31,30 @@ defaultSettings =
 		featureFallbackMethod: 'viewers'
 		port: 5587
 
-class exports.Settings
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+module.exports = class Settings
+	constructor: (@Mikuia, @logger) ->
 
 	pluginGet: (plugin, key) ->
 		@Mikuia.settings.plugins[plugin]?[key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
 
-	pluginSet: (plugin, key, value) ->
-		@Mikuia.settings.plugins[plugin][key] = value
-		@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + 'Setting ' + cli.greenBright('plugins/' + plugin + '/' + key) + ' to ' + cli.yellowBright(value)
-		@save()
+	read: ->
+		try
+			data = fs.readFileSync 'settings.json'
+			try
+				@Mikuia.settings = JSON.parse data
+				@logger.success cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loaded settings from settings.json.')
+			catch e # jsonError
+				@logger.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e + ' (if you want to generate a default file, delete it)')
+		catch e # readFileSync error
+			@logger.warning cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Settings file doesn\'t exist, creating one.')
+			@setDefaults()
 
-	read: (callback) ->
-		fs.readFile 'settings.json', (settingsErr, data) =>
-			if settingsErr
-				@Mikuia.Log.warning cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Settings file doesn\'t exist, creating one.')
-				@setDefaults()
-			else
-				# A better way to parse JSON would be nice... errors here tend to crash everything.
-				try
-					@Mikuia.settings = JSON.parse data
-					@Mikuia.Log.success cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loaded settings from settings.json.')
-				catch e
-				 	@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e + ' (if you want to generate a default file, delete it)')
-          
-			callback settingsErr
-	
 	save: ->
 		fs.writeFileSync 'settings.json', JSON.stringify @Mikuia.settings, null, '\t'
 
 	set: (category, key, value) ->
 		@Mikuia.settings[category][key] = value
-		@Mikuia.Log.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Setting ' + cli.greenBright(category + '.' + key) + ' to ' + cli.yellowBright(value))
+		@logger.info cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Setting ' + cli.greenBright(category + '.' + key) + ' to ' + cli.yellowBright(value))
 		@save()
 
 	setDefaults: ->

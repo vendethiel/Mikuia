@@ -1,14 +1,18 @@
+Channel = require '../../models/Channel'
+
 checkAuth = (req, res, next) ->
 	if req.isAuthenticated()
 		return next()
 	res.redirect '/login'
 
-Mikuia.Element.register 'dashboardPagePlugin',
-	plugin: 'coins'
-	pages:
-		'/':
-			name: 'Coins'
-			icon: 'icon-wallet'
+module.exports =
+	elements: [
+		name: 'dashboardPagePlugin',
+		pages:
+				'/':
+				name: 'Coins'
+				icon: 'icon-wallet'
+	]
 
 Mikuia.Web.get '/dashboard/plugins/coins', checkAuth, (req, res) ->
 	await Mikuia.Database.zrevrangebyscore 'channel:' + req.user.username + ':coins', '+inf', '-inf', 'withscores', defer whatever, coins
@@ -29,17 +33,16 @@ Mikuia.Web.get '/dashboard/plugins/coins', checkAuth, (req, res) ->
 				channel.getLogo defer err, logos[data[0]]
 
 
-	res.render '../../plugins/coins/views/index',
+	res.render '../../plugins/coins/views/index', {
+		displayNames, isStreamer, logos,
 		coins: coinRawData
-		displayNames: displayNames
-		isStreamer: isStreamer
-		logos: logos
+	}
 
 Mikuia.Web.post '/dashboard/plugins/coins/edit', checkAuth, (req, res) ->
 	if req.body.method? and req.body.amount? and req.body.username?
 
-		Viewer = new Mikuia.Models.Channel req.body.username
-		
+		Viewer = new Channel req.body.username
+
 		switch req.body.method
 			when 'give'
 				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', req.body.amount, Viewer.getName(), defer error, whatever

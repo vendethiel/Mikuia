@@ -1,7 +1,7 @@
 request = require 'request'
 twitchy = require 'twitchy'
 
-class exports.Twitch
+module.exports = class Twitch
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 

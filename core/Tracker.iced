@@ -1,4 +1,4 @@
-class exports.Tracker
+module.exports = class Tracker
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 

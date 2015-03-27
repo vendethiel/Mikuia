@@ -1,5 +1,5 @@
-class exports.Model
-	constructor: () ->
+module.exports = class Model
+	constructor: ->
 		@model = 'model'
 		@name = ''
 

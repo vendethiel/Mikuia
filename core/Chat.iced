@@ -1,38 +1,39 @@
 cli = require 'cli-color'
 irc = require 'twitch-irc'
 RateLimiter = require('limiter').RateLimiter
+Channel = require '../models/Channel'
+{chunkArray} = require './helpers'
 
 channelLimiter = {}
 joinLimiter = new RateLimiter 25, 10000
 messageLimiter = new RateLimiter 10, 30000
 
-class exports.Chat
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
-
+module.exports = class Chat
+	constructor: (@settings, @logger, @db) ->
 		@chatters = {}
 		@connected = false
 		@joined = []
 		@moderators = {}
+		@streams = new (require './Streams')(@db)
 
 	broadcast: (message) =>
-		await Mikuia.Streams.getAll defer err, streams
+		await @streams.getAll defer err, streams
 		for stream in streams
 			@say stream, '.me broadcast: ' + message
 
 	connect: =>
 		@client = new irc.client
 			options:
-				debug: @Mikuia.settings.bot.debug
+				debug: @settings.bot.debug
 				exitOnError: true
 			connection:
 				reconnect: true
 				retries: 3
 				serverType: 'chat'
-				preferredServer: @Mikuia.settings.bot.server
+				preferredServer: @settings.bot.server
 			identity:
-				username: @Mikuia.settings.bot.name
-				password: @Mikuia.settings.bot.oauth
+				username: @settings.bot.name
+				password: @settings.bot.oauth
 
 		@client.connect()
 
@@ -40,15 +41,15 @@ class exports.Chat
 			@handleMessage user, channel, message
 
 		@client.addListener 'connected', (address, port) =>
-			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
+			@logger.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 			@Mikuia.Events.emit 'twitch.connected'
 			@connected = true
 
 		@client.addListener 'disconnected', (reason) =>
-			@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
+			@logger.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
 
 		@client.addListener 'join', (channel, username) =>
-			if username == @Mikuia.settings.bot.name.toLowerCase()
+			if username == @settings.bot.name.toLowerCase()
 				Channel = new Mikuia.Models.Channel channel
 				await
 					Channel.getDisplayName defer err, displayName
@@ -61,16 +62,16 @@ class exports.Chat
 					channelLimiter[Channel.getName()] = new RateLimiter 2, 10000
 					rateLimitingProfile = cli.greenBright 'Free (2 per 10s)'
 
-				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
+				@logger.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
 
 
 		@client.addListener 'part', (channel, username) =>
-			if username == @Mikuia.settings.bot.name.toLowerCase()
+			if username == @settings.bot.name.toLowerCase()
 				Channel = new Mikuia.Models.Channel channel
 				await Channel.getDisplayName defer err, displayName
 
 				delete channelLimiter[Channel.getName()]
-				@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
+				@logger.info cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 
 		@client.addListener 'reconnect', =>
 			@connected = false
@@ -96,9 +97,9 @@ class exports.Chat
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
 		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
-			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
+			@logger.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
 		else
-			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
+			@logger.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 		@Mikuia.Events.emit 'twitch.message', user, to, message
 
 		Channel.trackIncrement 'messages', 1
@@ -178,7 +179,7 @@ class exports.Chat
 					if channelLimiter[Channel.getName()]?
 							channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
 								@client.say channel, line
-								@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
+								@logger.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@settings.bot.name) + ' (' + cli.magentaBright(Math.floor(twitchRR)) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + line
 
 	sayRaw: (channel, message) =>
 		@client.say channel, message
@@ -186,18 +187,18 @@ class exports.Chat
 	update: =>
 		twitchFailure = false
 
-		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
-		if err then @Mikuia.Log.error err else
-			chunks = @Mikuia.Tools.chunkArray channels, 100
-			joinList = @Mikuia.settings.bot.autojoin
+		await @db.smembers 'mikuia:channels', defer err, channels
+		if err then @logger.error err else
+			chunks = chunkArray channels, 100
+			joinList = @settings.bot.autojoin
 			streamData = {}
 			streamList = []
 			for chunk, i in chunks
 				if chunk.length > 0
-					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Checking channels live... (' + (i + 1) + '/' + chunks.length + ')')
+					@logger.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Checking channels live... (' + (i + 1) + '/' + chunks.length + ')')
 					await @Mikuia.Twitch.getStreams chunk, defer err, streams
 					if err
-						@Mikuia.Log.error err
+						@logger.error err
 						twitchFailure = true
 					else
 						chunkList = []
@@ -216,16 +217,16 @@ class exports.Chat
 							if isSupporter
 								Channel.trackValue 'supporterValue', Math.floor(Math.random() * 10000)
 
-						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
+						@logger.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 
 			# Yay, save dat stuff.
 			if !twitchFailure
-				await @Mikuia.Database.del 'mikuia:streams', defer err, response
+				await @db.del 'mikuia:streams', defer err, response
 
 			await
 				for stream in streamList
-					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
+					@db.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
 
 					things = [
 						'display_name'
@@ -239,15 +240,15 @@ class exports.Chat
 					]
 
 					for thing in things
-						@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, thing, stream.channel[thing], defer err, whatever
+						@db.hset 'mikuia:stream:' + stream.channel.name, thing, stream.channel[thing], defer err, whatever
 
-					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'created_at', stream.created_at, defer err, whatever
-					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
-					@Mikuia.Database.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
-					@Mikuia.Database.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
+					@db.hset 'mikuia:stream:' + stream.channel.name, 'created_at', stream.created_at, defer err, whatever
+					@db.hset 'mikuia:stream:' + stream.channel.name, 'preview', stream.preview.medium, defer err, whatever
+					@db.hset 'mikuia:stream:' + stream.channel.name, 'viewers', stream.viewers, defer err, whatever
+					@db.expire 'mikuia:stream:' + stream.channel.name, 600, defer err, whatever
 
 					if stream.channel.profile_banner? && stream.channel.profile_banner != 'null'
-						Channel = new Mikuia.Models.Channel stream.channel.name
+						Channel = new Channel stream.channel.name
 						Channel.setProfileBanner stream.channel.profile_banner, defer err, whatever
 
 			@Mikuia.Events.emit 'twitch.updated'

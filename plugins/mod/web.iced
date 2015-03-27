@@ -1,11 +1,13 @@
 request = require 'request'
 
-Mikuia.Element.register 'dashboardPagePlugin',
-	plugin: 'mod'
-	pages:
-		'/':
-			name: 'Mod Tools'
-			icon: 'icon-settings'
+module.exports =
+	elements: [
+		name: 'dashboardPagePlugin',
+		pages:
+				'/':
+				name: 'Mod Tools'
+				icon: 'icon-settings'
+	]
 
 checkAuth = (req, res, next) ->
 	if req.isAuthenticated()

@@ -1,17 +1,16 @@
-class exports.Streams
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+Leaderboard = require '../models/Leaderboard'
+
+module.exports = class Streams
+	constructor: (@db) ->
 
 	get: (stream, callback) ->
-		await Mikuia.Database.hgetall 'mikuia:stream:' + stream, defer err, stream
-		callback err, stream
+		@db.hgetall 'mikuia:stream:' + stream, callback
 
 	getAll: (callback) ->
-		await Mikuia.Database.smembers 'mikuia:streams', defer err, streams
-		callback err, streams
+		@db.smembers 'mikuia:streams', callback
 
 	getAllSorted: (sortMethod, callback) ->
-		sortLeaderboard = new Mikuia.Models.Leaderboard sortMethod
+		sortLeaderboard = new Leaderboard sortMethod
 		sorting = []
 		streams = {}
 		await @getAll defer err, onlineStreams

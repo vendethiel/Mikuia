@@ -1,4 +1,4 @@
-class exports.Element
+module.exports = class Element
 	constructor: (Mikuia) ->
 		@Mikuia = Mikuia
 		@elements = {}
@@ -17,10 +17,9 @@ class exports.Element
 					title: panel.title,
 					content: response
 
-		callback results			
+		callback results
 
-	register: (key, name) ->
-		if !@elements[key]
-			@elements[key] = []
-		if @elements[key].indexOf(name) == -1
-			@elements[key].push name
+	register: (name, value) ->
+		@elements[key] ?= []
+		if value not in @elements[key]
+			@elements[key].push value
