@@ -1,9 +1,8 @@
 Model = require '../core/Model'
 
 class exports.Badge extends Model
-	constructor: (name) ->
+	constructor: (@db, @name) ->
 		@model = 'badge'
-		@name = name
 
 	exists: (callback) ->
 		await @_exists callback
@@ -23,12 +22,10 @@ class exports.Badge extends Model
 	getMembers: (callback) ->
 		@_smembers 'members', callback
 
-	getName: (callback) ->
-		# wtf???
-		return @name
+	getName: -> @name
 
 	setDescription: (display, callback) ->
-		await @setInfo 'description', description, defer err, data
+		@setInfo 'description', description, defer err, data
 		callback? err, data
 
 	setDisplayName: (display, callback) ->

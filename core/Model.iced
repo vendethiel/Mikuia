@@ -6,115 +6,84 @@ module.exports = class Model
 	_exists: (key, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.exists @model + ':' + @name + key, defer err, data
-		callback err, data
+		@db.exists @model + ':' + @name + key, callback
 
 	_get: (key, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.get @model + ':' + @name + key, defer err, data
-		callback err, data
+		@db.get @model + ':' + @name + key, callback
 
 	_hdel: (key, field, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.hdel @model + ':' + @name + key, field, defer err, data
-		callback err, data
+		@db.hdel @model + ':' + @name + key, field, callback
 
 	_hget: (key, field, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.hget @model + ':' + @name + key, field, defer err, data
-		callback err, data
+		@db.hget @model + ':' + @name + key, field, callback
 
 	_hgetall: (key, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.hgetall @model + ':' + @name + key, defer err, data
-		callback err, data
+		@db.hgetall @model + ':' + @name + key, callback
 
 	_hincrby: (key, field, value, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.hincrby @model + ':' + @name + key, field, value, defer err, data
-		callback err, data
+		@db.hincrby @model + ':' + @name + key, field, value, callback
 
 	_hset: (key, field, value, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.hset @model + ':' + @name + key, field, value, defer err, data
-		callback err, data
+		@db.hset @model + ':' + @name + key, field, value, callback
 
 	_sadd: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.sadd @model + ':' + @name + key, member, defer err, data
-		callback err, data
+		@db.sadd @model + ':' + @name + key, member, callback
 
 	_scard: (key, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.scard @model + ':' + @name + key, defer err, data
-		callback err, data
+		@db.scard @model + ':' + @name + key, callback
 
 	_set: (key, value, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.set @model + ':' + @name + key, value, defer err, data
-		callback err, data
+		@db.set @model + ':' + @name + key, value, callback
 
 	_setex: (key, ttl, value, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.setex @model + ':' + @name + key, ttl, value, defer err, data
-		callback err, data
+		@db.setex @model + ':' + @name + key, ttl, value, callback
 
 	_sismember: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.sismember @model + ':' + @name + key, member, defer err, data
-		callback err, data
+		@db.sismember @model + ':' + @name + key, member, callback
 
 	_smembers: (key, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.smembers @model + ':' + @name + key, defer err, data
-		callback err, data
+		@db.smembers @model + ':' + @name + key, callback
 
 	_srem: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.srem @model + ':' + @name + key, member, defer err, data
-		callback err, data
+		@db.srem @model + ':' + @name + key, member, callback
 
 	_zadd: (key, score, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.zadd @model + ':' + @name + key, score, member, defer err, data
-		callback err, data
+		@db.zadd @model + ':' + @name + key, score, member, callback
 
 	_zincrby: (key, increment, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.zincrby @model + ':' + @name + key, increment, member, defer err, data
-		callback err, data
+		@db.zincrby @model + ':' + @name + key, increment, member, callback
 
 	_zscore: (key, member, callback) ->
 		if key != ''
 			key = ':' + key
-		await Mikuia.Database.zscore @model + ':' + @name + key, member, defer err, data
-		callback err, data
-
-	trackGet: (key, callback) ->
-		await Mikuia.Tracker.get @model, @name, key, defer err, data
-		callback err, data
-
-	trackIncrement: (key, value, callback) ->
-		await Mikuia.Tracker.increment @model, @name, key, value, defer err, data
-		if callback
-			callback err, data
-
-	trackValue: (key, value, callback) ->
-		await Mikuia.Tracker.track @model, @name, key, value, defer err, data
-		if callback
-			callback err, data
+		@db.zscore @model + ':' + @name + key, member, callback

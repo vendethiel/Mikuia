@@ -2,17 +2,15 @@ request = require 'request'
 twitchy = require 'twitchy'
 
 module.exports = class Twitch
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@settings, @logger) ->
 
 	init: ->
-		if @Mikuia.settings.twitch.key != 'TWITCH_API_KEY' && @Mikuia.settings.twitch.secret != 'TWITCH_API_SECRET'
-			@twitch = new twitchy {
-				key: @Mikuia.settings.twitch.key
-				secret: @Mikuia.settings.twitch.secret
-			}
+		if @settings.twitch.key != 'TWITCH_API_KEY' && @settings.twitch.secret != 'TWITCH_API_SECRET'
+			@twitch = new twitchy
+				key: @settings.twitch.key
+				secret: @settings.twitch.secret
 		else
-			@Mikuia.Log.fatal 'Please specify correct Twitch API key and secret.'
+			@logger.fatal 'Please specify correct Twitch API key and secret.'
 
 	getChatters: (channel, callback) ->
 		if channel.indexOf('#') > -1
@@ -37,7 +35,7 @@ module.exports = class Twitch
 		@twitch._get 'streams/?channel=' + channels.join(','), (err, result) =>
 			if err || not result.req.res.body?.streams?
 				if !completed
-					@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
+					@logger.error 'Failed to obtain stream list from Twitch API.'
 					callback true, null
 					completed = true
 			else

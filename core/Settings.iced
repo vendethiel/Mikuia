@@ -37,6 +37,9 @@ module.exports = class Settings
 	pluginGet: (plugin, key) ->
 		@Mikuia.settings.plugins[plugin]?[key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
 
+	# XXX this should probably return the settings
+	#     instead of assigning them to @Mikuia.settings
+	#     but this breaks @set
 	read: ->
 		try
 			data = fs.readFileSync 'settings.json'

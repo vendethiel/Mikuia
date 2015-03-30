@@ -4,7 +4,7 @@ request = require 'request'
 Model = require '../core/Model'
 
 module.exports = class Channel extends Model
-	constructor: (name) ->
+	constructor: (@db, @settings, name) ->
 		@model = 'channel'
 		@name = name.replace('#', '').toLowerCase()
 
@@ -15,26 +15,25 @@ module.exports = class Channel extends Model
 
 	getName: -> @name
 
-	isAdmin: ->
-		return Mikuia.settings.bot.admins.indexOf(@getName()) > -1
+	isAdmin: -> Mikuia.settings.bot.admins.indexOf(@getName()) > -1
 
 	isBot: (callback) ->
-		await Mikuia.Database.sismember 'mikuia:bots', @getName(), callback
+		@db.sismember 'mikuia:bots', @getName(), callback
 
 	isLive: (callback) ->
 		# This is bad D:
-		await Mikuia.Database.sismember 'mikuia:streams', @getName(), callback
+		@db.sismember 'mikuia:streams', @getName(), callback
 
 	isStreamer: (callback) ->
-		await @_exists 'plugins', callback
+		@_exists 'plugins', callback
 
 	# Info & settings
 
 	getAll: (callback) ->
-		await @_hgetall '', callback
+		@_hgetall '', callback
 
 	getInfo: (field, callback) ->
-		await @_hget '', field, callback
+		@_hget '', field, callback
 
 	getSetting: (plugin, field, callback) ->
 		await @_hget 'plugin:' + plugin + ':settings', field, defer err, data
@@ -50,7 +49,7 @@ module.exports = class Channel extends Model
 		callback err, data
 
 	getSettings: (plugin, callback) ->
-		await @_hgetall 'plugin:' + plugin + ':settings', callback
+		@_hgetall 'plugin:' + plugin + ':settings', callback
 
 	setInfo: (field, value, callback) ->
 		await @_hset '', field, value, defer err, data
@@ -65,13 +64,13 @@ module.exports = class Channel extends Model
 	# Enabling & disabling, whatever.
 
 	disable: (callback) ->
-		Mikuia.Database.srem 'mikuia:channels', @getName(), callback
+		@db.srem 'mikuia:channels', @getName(), callback
 
 	enable: (callback) ->
-		Mikuia.Database.sadd 'mikuia:channels', @getName(), callback
+		@db.sadd 'mikuia:channels', @getName(), callback
 
 	isEnabled: (callback) ->
-		Mikuia.Database.sismember 'mikuia:channels', @getName(), callback
+		@db.sismember 'mikuia:channels', @getName(), callback
 
 	# Commands
 	queryCommand: (trigger, user, callback) ->
@@ -97,7 +96,7 @@ module.exports = class Channel extends Model
 		else if settings?._onlyBroadcaster and user.username isnt @getName()
 			callback false
 		else if settings?._coinCost and settings._coinCost > 0
-			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
+			await @db.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < settings._coinCost
 				callback false
 		else
@@ -302,14 +301,14 @@ module.exports = class Channel extends Model
 		await @getAllExperience defer err, experience
 		for data in experience
 			totalExperience += parseInt data[1]
-			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
+			await @db.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
 
 		totalLevel = Mikuia.Tools.getLevel totalExperience
 
 		await @setInfo 'level', totalLevel, defer whatever, whatever
 		await @setInfo 'experience', totalExperience, defer whatever, whatever
-		await Mikuia.Database.zadd 'mikuia:experience', totalExperience, @getName(), defer whatever, whatever
-		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
+		await @db.zadd 'mikuia:experience', totalExperience, @getName(), defer whatever, whatever
+		await @db.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
 
 		callback totalLevel
 
@@ -319,10 +318,10 @@ module.exports = class Channel extends Model
 		@getInfo 'supporterStart', callback
 
 	getSupporterStatus: (callback) ->
-		Mikuia.Database.zscore 'mikuia:supporters', @getName(), callback
+		@db.zscore 'mikuia:supporters', @getName(), callback
 
 	isDonator: (callback) ->
-		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
+		await @db.zscore 'mikuia:donators', @getName(), defer err, data
 		callback err, (data? && data >= 10)
 
 	isSupporter: (callback) ->
@@ -332,7 +331,7 @@ module.exports = class Channel extends Model
 	# Badges
 
 	addBadge: (badgeId, callback) =>
-		await Mikuia.Database.sadd 'badge:' + badgeId + ':members', @getName(), defer err2, data2
+		await @db.sadd 'badge:' + badgeId + ':members', @getName(), defer err2, data2
 		@_sadd 'badges', badgeId, callback
 
 	getBadges: (callback) =>
@@ -351,5 +350,5 @@ module.exports = class Channel extends Model
 
 	removeBadge: (badgeId, callback) =>
 		await @_srem 'badges', badgeId, defer err, data
-		await Mikuia.Database.srem 'badge:' + badgeId + ':members', @getName(), defer err2, data2
+		await @db.srem 'badge:' + badgeId + ':members', @getName(), defer err2, data2
 		callback err, data

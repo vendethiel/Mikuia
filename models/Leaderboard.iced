@@ -1,7 +1,7 @@
 Model = require '../core/Model'
 
 module.exports = class Leaderboard extends Model
-	constructor: (@name) ->
+	constructor: (@db, @name) ->
 		@model = 'leaderboard'
 
 	getName: -> @name

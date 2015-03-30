@@ -6,31 +6,30 @@ fs = require 'fs-extra'
 module.exports = class Mikuia
 	constructor: ->
 		@Events = new EventEmitter
-		@Models = {}
 		@Stuff = {}
 		@settings = {}
 
-	loadCoreFiles: ->
-		console.log 'core'
+	initialize: ->
 		@Log = new (require './Log')
 		@Settings = new (require './Settings')(this, @Log)
-		@Twitch = new (require './Twitch')
+		@Settings.read()
+
 		@Database = new (require './Database')(@settings, @Log)
-		@Chat = new (require './Chat')(@settings, @Log, @Database)
+		# Chat does *a bit* too much
+		@Chat = new (require './Chat')(@settings, @Log, @Database, @Models, @Events, @Plugin)
 		@Format = new (require './Format')
-		@Plugin = new (require './Plugin')(@Log)
-		@Tracker = new (require './Tracker')
+		@Plugin = new (require './Plugin')(@Settings, @Log)
+
+		@Database.connect @settings.redis.host, @settings.redis.port, @settings.redis.options
+		@loadModelFiles()
 
 	loadModelFiles: ->
-		console.log 'models'
-		# Models... at least that's how I call this weird stuff.
-		console.dir fs.readdirSync 'models'
-		for fileName in fs.readdirSync 'models'
-			continue if isEditorFile(fileName)
-			filePath = path.resolve './', 'models', fileName
-			modelFile = require filePath
-			shortName = fileName.replace '.iced', ''
-			@Models[shortName] = modelFile
+		# TODO there's probably a better way to do that...
+		ModelClasses = require('../models')
+		@Models =
+			Badge: (name) => new ModelClasses.Badge(@Database, name)
+			Leaderboard: (name) => new ModelClasses.Leaderboard(@Database, name)
+			Channel: (name) => new ModelClasses.Channel(@Database, @settings, name)
 
 	loadPlugins: (files, fileType) ->
 		@settings.plugins ?= {}

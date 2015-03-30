@@ -14,8 +14,6 @@ global.iced = iced
 fs.mkdirs 'logs/mikuia'
 
 Mikuia = new (require './core/Mikuia')
-Mikuia.loadCoreFiles()
-Mikuia.loadModelFiles()
 
 r = repl.start 'Mikuia> '
 r.context.Mikuia = Mikuia
@@ -24,8 +22,7 @@ console.log '\n'
 # Welp, we have our settings ready, we can now slowly check stuff, and launch!
 # First thing to check - database connection, Redis FTW.
 # CoffeeScript makes this line look really weird :D
-Mikuia.Settings.read()
-Mikuia.Database.connect Mikuia.settings.redis.host, Mikuia.settings.redis.port, Mikuia.settings.redis.options
+Mikuia.initialize()
 
 isBot = false
 isWeb = false
@@ -39,7 +36,6 @@ switch process.argv[2]
 # 	flipOut()
 
 # Let's load plugins.
-console.log 'ooo'
 fs.readdir 'plugins', (pluginDirErr, fileList) ->
 	if pluginDirErr
 		Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Can\'t access plugin directory.')
@@ -50,7 +46,6 @@ fs.readdir 'plugins', (pluginDirErr, fileList) ->
 
 	if isBot
 		Mikuia.Chat.connect()
-		Mikuia.Twitch.init()
 		Mikuia.Chat.update()
 
 	if Mikuia.settings.sentry.enable
@@ -65,6 +60,6 @@ fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		Mikuia.Web = require './web/web.iced'
 
 # Stock Leaderboards
-viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
+viewerLeaderboard = Mikuia.Models.Leaderboard 'viewers'
 viewerLeaderboard.setDisplayName 'Viewers'
 viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'

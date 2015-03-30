@@ -1,29 +1,29 @@
 module.exports = class Tracker
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@db, @inst) ->
+		@model = @inst.model
+		@name = @inst.getName()
 
-	_lb: (model, name, key, value, callback) ->
-		if model == 'channel'
+	_lb: (key, value, callback) ->
+		if @model == 'channel'
+			# TODO fix this. this is broken
 			lb = new Mikuia.Models.Leaderboard key
 			lb.setScore name, value
-		if callback
-			callback err, data
+		callback? err, data
 
-	get: (model, name, key, callback) ->
-		await Mikuia.Database.get model + ':' + name + ':_tracker:' + key + ':value', defer err, data
-		if !data?
-			data = 0
+	get: (key, callback) ->
+		await Mikuia.Database.get @model + ':' + @name + ':_tracker:' + key + ':value', defer err, data
+		data = 0 if !data? # iced scoping bug with defer
 		callback err, data
 
-	increment: (model, name, key, value, callback) ->
-		await Mikuia.Database.incrby model + ':' + name + ':_tracker:' + key + ':value', value, defer err, data
-		if !err
-			@_lb model, name, key, data
+	increment: (key, value, callback) ->
+		await Mikuia.Database.incrby @model + ':' + @name + ':_tracker:' + key + ':value', value, defer err, data
+		if err
+			@_lb key, value
 		else
-			@_lb model, name, key, value
+			@_lb key, data
 		callback err, data
 
-	track: (model, name, key, value, callback) ->
-		await Mikuia.Database.set model + ':' + name + ':_tracker:' + key + ':value', value, defer err, data
-		@_lb model, name, key, value
+	value: (key, value, callback) ->
+		await Mikuia.Database.set @model + ':' + @name + ':_tracker:' + key + ':value', value, defer err, data
+		@_lb key, value
 		callback err, data
