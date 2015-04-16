@@ -1,25 +1,23 @@
-addDummy = (username, channel, tokens) =>
-	Channel = new Mikuia.Models.Channel channel
-	isMod = checkMod channel, username
-
-	if isMod
+addDummy = (user, channel, tokens) =>
+	{channel} = user
+	if user.mod
 		if tokens.length == 1 || tokens.length == 2
-			Mikuia.Chat.say channel, 'You failed D:'
+			Chat.say channel, 'You failed D:'
 		else if tokens.length > 2
 			command = tokens[1]
 			text = tokens.slice(2, tokens.length).join ' '
 
 			await
-				Channel.addCommand command, 'base.dummy', defer err, data
-				Channel.setCommandSetting command, 'message', text, defer err2, data
+				channel.addCommand command, 'base.dummy', defer err, data
+				channel.setCommandSetting command, 'message', text, defer err2, data
 			if !err & !err2
-				Mikuia.Chat.say channel, 'Command "' + command + '" probably added.'
+				@Chat.say channel, 'Command "' + command + '" added.'
 			else
-				Mikuia.Chat.say channel, 'Um, something failed. Oops.'
+				@Chat.say channel, 'Um, something failed. Oops.'
 
-removeCommand = (username, channel, tokens) =>
-	Channel = new Mikuia.Models.Channel channel
-	isMod = checkMod channel, username
+removeCommand = (user, channel, tokens) =>
+	{channel} = user
+
 
 	if isMod
 		if tokens.length == 1 || tokens.length > 2

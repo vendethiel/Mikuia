@@ -5,7 +5,7 @@ class exports.Badge extends Model
 		@model = 'badge'
 
 	exists: (callback) ->
-		await @_exists callback
+		@_exists callback
 
 	getAll: (callback) ->
 		@_hgetall '', callback
@@ -24,10 +24,8 @@ class exports.Badge extends Model
 
 	getName: -> @name
 
-	setDescription: (display, callback) ->
-		@setInfo 'description', description, defer err, data
-		callback? err, data
+	setDescription: (display, callback = ->) ->
+		@setInfo 'description', description, callback
 
-	setDisplayName: (display, callback) ->
-		await @setInfo 'display_name', display, defer err, data
-		callback? err, data
+	setDisplayName: (display, callback = ->) ->
+		await @setInfo 'display_name', display, callback

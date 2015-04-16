@@ -82,7 +82,6 @@ module.exports = class Channel extends Model
 		callback commandError || settingsError, {command, settings, isAllowed}
 
 	isCommandAllowed: (settings, user, callback) ->
-		chatter = new exports.Channel user.username
 		if user.username == @getName()
 			callback true
 		else if settings?._minLevel and settings._minLevel > 0

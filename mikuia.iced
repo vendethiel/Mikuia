@@ -14,14 +14,12 @@ global.iced = iced
 fs.mkdirs 'logs/mikuia'
 
 Mikuia = new (require './core/Mikuia')
+Leaderboard = require './models/Leaderboard'
 
 r = repl.start 'Mikuia> '
 r.context.Mikuia = Mikuia
 console.log '\n'
 
-# Welp, we have our settings ready, we can now slowly check stuff, and launch!
-# First thing to check - database connection, Redis FTW.
-# CoffeeScript makes this line look really weird :D
 Mikuia.initialize()
 
 isBot = false
@@ -59,7 +57,7 @@ fs.readdir 'plugins', (pluginDirErr, fileList) ->
 	if isWeb
 		Mikuia.Web = require './web/web.iced'
 
-# Stock Leaderboards
-viewerLeaderboard = Mikuia.Models.Leaderboard 'viewers'
+# Stock Leaderboards (why is that here?)
+viewerLeaderboard = new Leaderboard Mikuia.Database, 'viewers'
 viewerLeaderboard.setDisplayName 'Viewers'
 viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'

@@ -83,9 +83,13 @@ module.exports = class Chat
 
 	getChatters: (channel) => @chatters[channel]
 
+	createChannel: (name) ->
+		new Channel(@db, @settings, name)
+
 	handleMessage: (user, to, message) =>
-		channel = @Models.Channel to
-		chatter = @Models.Channel user.username
+		channel = @createChannel to
+		chatter = @createChannel user.username
+		user.channel = chatter
 		await channel.getDisplayName defer err, displayName
 
 		chatterUsername = cli.yellowBright user.username
@@ -93,7 +97,8 @@ module.exports = class Chat
 		if chatter.isAdmin()
 			chatterUsername = cli.redBright user.username
 
-		if chatter.isModOf channel.getName()
+		chatter.mod = chatter.isModOf(to)
+		if chatter.mod
 			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
 		if user.special.indexOf('subscriber') > -1
@@ -111,7 +116,7 @@ module.exports = class Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
-		await channel.queryCommand trigger, user, defer err, o
+		await channel.queryCommand trigger, chatter, defer err, o
 		{command, settings, isAllowed} = o
 
 		# abort if there's an error, access denied or no command
@@ -173,7 +178,7 @@ module.exports = class Chat
 		@sayUnfiltered channel, message
 
 	sayUnfiltered: (channel, message) ->
-		hannel = @Models.Channel channel
+		channel = @Models.Channel channel
 		await channel.getDisplayName defer err, displayName
 
 		lines = message.split '\\n'
