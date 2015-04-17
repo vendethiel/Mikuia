@@ -5,7 +5,7 @@ class exports.Streams
 		@Mikuia.Database.hgetall 'mikuia:stream:' + stream, d callback
 
 	getAll: (callback) ->
-		@Mikuia.Database.smembers 'mikuia:streams', de callback
+		@Mikuia.Database.smembers 'mikuia:streams', callback
 
 	getAllSorted: (sortMethod, callback) ->
 		sortLeaderboard = new Mikuia.Models.Leaderboard sortMethod
