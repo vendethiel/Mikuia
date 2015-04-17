@@ -10,36 +10,30 @@ class exports.Channel extends Mikuia.Model
 	# Core functions, changing those often end up breaking half of the universe.
 
 	exists: (callback) ->
-		await @_exists '', defer err, data
-		callback err, data
+		@_exists '', callback
 
 	getName: -> @name
 
 	isAdmin: ->
-		return Mikuia.settings.bot.admins.indexOf(@getName()) > -1
+		Mikuia.settings.bot.admins.indexOf(@getName()) > -1
 
 	isBot: (callback) ->
-		await Mikuia.Database.sismember 'mikuia:bots', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.sismember 'mikuia:bots', @getName(), callback
 
 	isLive: (callback) ->
 		# This is bad D:
-		await Mikuia.Database.sismember 'mikuia:streams', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.sismember 'mikuia:streams', @getName(), callback
 
 	isStreamer: (callback) ->
-		await @_exists 'plugins', defer err, data
-		callback err, data
+		@_exists 'plugins', callback
 
 	# Info & settings
 
 	getAll: (callback) ->
-		await @_hgetall '', defer err, data
-		callback err, data
+		@_hgetall '', callback
 
 	getInfo: (field, callback) ->
-		await @_hget '', field, defer err, data
-		callback err, data
+		@_hget '', field, callback
 
 	getSetting: (plugin, field, callback) ->
 		await @_hget 'plugin:' + plugin + ':settings', field, defer err, data
@@ -55,36 +49,27 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	getSettings: (plugin, callback) ->
-		await @_hgetall 'plugin:' + plugin + ':settings', defer err, data
-		callback err, data
+		@_hgetall 'plugin:' + plugin + ':settings', callback
 
-	setInfo: (field, value, callback) ->
-		await @_hset '', field, value, defer err, data
-		if callback
-			callback err, data
+	setInfo: (field, value, callback = ->) ->
+		@_hset '', field, value, callback
 
 	setSetting: (plugin, field, value, callback) ->
 		if value != ''
-			await @_hset 'plugin:' + plugin + ':settings', field, value, defer err, data
+			@_hset 'plugin:' + plugin + ':settings', field, value, callback
 		else
-			await @_hdel 'plugin:' + plugin + ':settings', field, defer err, data
-		callback err, data
+			@_hdel 'plugin:' + plugin + ':settings', field, callback
 
 	# Enabling & disabling, whatever.
 
 	disable: (callback) ->
-		await
-			Mikuia.Database.srem 'mikuia:channels', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.srem 'mikuia:channels', @getName(), callback
 
 	enable: (callback) ->
-		await
-			Mikuia.Database.sadd 'mikuia:channels', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.sadd 'mikuia:channels', @getName(), callback
 
 	isEnabled: (callback) ->
-		await Mikuia.Database.sismember 'mikuia:channels', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.sismember 'mikuia:channels', @getName(), callback
 
 	# Commands
 	queryCommand: (trigger, user, callback) ->
@@ -117,12 +102,10 @@ class exports.Channel extends Mikuia.Model
 			callback true
 
 	addCommand: (command, handler, callback) ->
-		await @_hset 'commands', command, handler, defer err, data
-		callback err, data
+		@_hset 'commands', command, handler, callback
 
 	getCommand: (command, callback) ->
-		await @_hget 'commands', command, defer err, data
-		callback err, data
+		@_hget 'commands', command, callback
 
 	getCommandSettings: (command, defaults, callback) ->
 		await
@@ -147,43 +130,35 @@ class exports.Channel extends Mikuia.Model
 		callback err, settings
 
 	getCommands: (callback) ->
-		await @_hgetall 'commands', defer err, data
-		callback err, data
+		@_hgetall 'commands', callback
 
 	removeCommand: (command, callback) ->
-		await @_hdel 'commands', command, defer err, data
-		callback err, data
+		@_hdel 'commands', command, callback
 
 	setCommandSetting: (command, key, value, callback) ->
 		if value != ''
-			await @_hset 'command:' + command, key, value, defer err, data
+			await @_hset 'command:' + command, key, value, callback
 		else
-			await @_hdel 'command:' + command, key, defer err, data
-		callback err, data
+			await @_hdel 'command:' + command, key, callback
 
 	# Plugins
 
 	disablePlugin: (name, callback) ->
-		await @_srem 'plugins', name, defer err, data
-		callback err, data
+		@_srem 'plugins', name, callback
 
 	enablePlugin: (name, callback) ->
-		await @_sadd 'plugins', name, defer err, data
-		callback err, data
+		@_sadd 'plugins', name, callback
 
 	getEnabledPlugins: (callback) ->
-		await @_smembers 'plugins', defer err, data
-		callback err, data
+		@_smembers 'plugins', callback
 
 	isPluginEnabled: (name, callback) ->
-		await @_sismember 'plugins', name, defer err, data
-		callback err, data
+		@_sismember 'plugins', name, callback
 
 	# "Convenience" functions that help get and set data...  or something.
 
 	getBio: (callback) ->
-		await @getInfo 'bio', defer err, data
-		callback err, data
+		@getInfo 'bio', callback
 
 	getDisplayName: (callback) ->
 		await
@@ -201,8 +176,7 @@ class exports.Channel extends Mikuia.Model
 			callback err, data
 
 	getEmail: (callback) ->
-		await @getInfo 'email', defer err, data
-		callback err, data
+		@getInfo 'email', callback
 
 	getLogo: (callback) ->
 		await @getInfo 'logo', defer err, data
@@ -212,28 +186,22 @@ class exports.Channel extends Mikuia.Model
 			callback err, data
 
 	getProfileBanner: (callback) ->
-		await @getInfo 'profileBanner', defer err, data
-		callback err, data
+		@getInfo 'profileBanner', callback
 
 	setBio: (bio, callback) ->
-		await @setInfo 'bio', bio, defer err, data
-		callback err, data
+		@setInfo 'bio', bio, callback
 
 	setDisplayName: (name, callback) ->
-		await @setInfo 'display_name', name, defer err, data
-		callback err, data
+		@setInfo 'display_name', name, callback
 
 	setEmail: (email, callback) ->
-		await @setInfo 'email', email, defer err, data
-		callback err, data
+		@setInfo 'email', email, callback
 
 	setLogo: (logo, callback) ->
-		await @setInfo 'logo', logo, defer err, data
-		callback err, data
+		@setInfo 'logo', logo, callback
 
 	setProfileBanner: (profileBanner, callback) ->
-		await @setInfo 'profileBanner', profileBanner, defer err, data
-		callback err, data
+		@setInfo 'profileBanner', profileBanner, callback
 
 	# Moderatoring (LOL)
 
@@ -275,14 +243,15 @@ class exports.Channel extends Mikuia.Model
 			await otherChannel.getSetting 'base', 'disableLevels', defer err, disableLevels
 
 			if !disableLevels
-				await @_hincrby 'experience', channel, experience, defer err, data
-				await @getLevel channel, defer err, newLevel
-
-				await @updateTotalLevel defer whatever
-
 				await
+					@_hincrby 'experience', channel, experience, defer err, data
+					@getLevel channel, defer err, newLevel
+
+					@updateTotalLevel defer whatever
+
 					otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
 					otherChannel.getSetting 'base', 'announceLimit', defer err2, announceLimit
+
 				if !err && announceLevels && newLevel > level
 					if !err2 && newLevel % announceLimit == 0 && activity > 0
 						await @getDisplayName defer err, displayName
@@ -306,8 +275,7 @@ class exports.Channel extends Mikuia.Model
 			callback false, data
 
 	getExperience: (channel, callback) =>
-		await @_hget 'experience', channel, defer err, data
-		callback err, data
+		@_hget 'experience', channel, callback
 
 	getAllExperience: (callback) =>
 		await @_hgetall 'experience', defer err, data
@@ -315,8 +283,7 @@ class exports.Channel extends Mikuia.Model
 		sortable = []
 		for channel, experience of data
 			sortable.push [channel, experience]
-		sortable.sort (a,b) ->
-			return b[1] - a[1]
+		sortable.sort (a,b) -> b[1] - a[1]
 
 		callback err, sortable
 
@@ -337,29 +304,25 @@ class exports.Channel extends Mikuia.Model
 
 		totalLevel = Mikuia.Tools.getLevel totalExperience
 
-		await @setInfo 'level', totalLevel, defer whatever, whatever
-		await @setInfo 'experience', totalExperience, defer whatever, whatever
-		await Mikuia.Database.zadd 'mikuia:experience', totalExperience, @getName(), defer whatever, whatever
-		await Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
+		await
+			@setInfo 'level', totalLevel, defer whatever, whatever
+			@setInfo 'experience', totalExperience, defer whatever, whatever
+			Mikuia.Database.zadd 'mikuia:experience', totalExperience, @getName(), defer whatever, whatever
+			Mikuia.Database.zadd 'mikuia:levels', totalLevel, @getName(), defer whatever, whatever
 
 		callback totalLevel
 
 	# Donator / Supporter stuff
 
 	getSupporterStart: (callback) =>
-		await @getInfo 'supporterStart', defer err, data
-		callback err, data
+		@getInfo 'supporterStart', callback
 
 	getSupporterStatus: (callback) ->
-		await Mikuia.Database.zscore 'mikuia:supporters', @getName(), defer err, data
-		callback err, data
+		Mikuia.Database.zscore 'mikuia:supporters', @getName(), callback
 
 	isDonator: (callback) ->
 		await Mikuia.Database.zscore 'mikuia:donators', @getName(), defer err, data
-		if data? && data >= 10
-			callback err, true
-		else
-			callback err, false
+		callback err, (data? && data >= 10)
 
 	isSupporter: (callback) ->
 		await @getSupporterStatus defer err, data
@@ -373,8 +336,7 @@ class exports.Channel extends Mikuia.Model
 		callback err, data
 
 	getBadges: (callback) =>
-		await @_smembers 'badges', defer err, data
-		callback err, data
+		@_smembers 'badges', callback
 
 	getBadgesWithInfo: (callback) =>
 		await @getBadges defer err, data

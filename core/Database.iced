@@ -2,8 +2,7 @@ cli = require 'cli-color'
 redis = require 'redis'
 
 class exports.Database
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	connect: (host, port, options) ->
 		@Mikuia.Log.info cli.redBright('Redis') + ' / ' + cli.whiteBright('Attempting to connect with the server at ' + host + ':' + port + '...')
@@ -16,140 +15,112 @@ class exports.Database
 
 	del: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.del key, (err, data) ->
-			callback err, data
+		@client.del key, callback
 
 	exists: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.exists key, (err, data) ->
-			callback err, data
+		@client.exists key, callback
 
 	expire: (key, timeout, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.expire key, timeout, (err, data) ->
-			callback err, data
+		@client.expire key, timeout, callback
 
 	get: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.get key, (err, data) ->
-			callback err, data
+		@client.get key, callback
 
 	hdel: (key, field, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.hdel key, field, (err, data) ->
-			callback err, data
+		@client.hdel key, field, callback
 
 	hget: (key, field, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.hget key, field, (err, data) ->
-			callback err, data
+		@client.hget key, field, callback
 
 	hgetall: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.hgetall key, (err, data) ->
-			callback err, data
+		@client.hgetall key, callback
 
 	hincrby: (key, field, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.hincrby key, field, value, (err, data) ->
-			callback err, data
+		@client.hincrby key, field, value, callback
 
 	hset: (key, field, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.hset key, field, value, (err, data) ->
-			callback err, data
+		@client.hset key, field, value, callback
 
 	incrby: (key, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.incrby key, value, (err, data) ->
-			callback err, data
+		@client.incrby key, value, callback
 
 	sadd: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.sadd key, member, (err, data) ->
-			callback err, data
+		@client.sadd key, member, callback
 
 	scard: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.scard key, (err, data) ->
-			callback err, data
+		@client.scard key, callback
 
 	set: (key, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.set key, value, (err, data) ->
-			callback err, data
+		@client.set key, value, callback
 
 	setex: (key, ttl, value, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.setex key, ttl, value, (err, data) ->
-			callback err, data
+		@client.setex key, ttl, value, callback
 
 	sismember: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.sismember key, member, (err, data) ->
-			callback err, data
+		@client.sismember key, member, callback
 
 	smembers: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.smembers key, (err, data) ->
-			callback err, data
+		@client.smembers key, callback
 
 	srem: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.srem key, member, (err, data) ->
-			callback err, data
+		@client.srem key, member, callback
 
 	zadd: (key, score, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zadd key, score, member, (err, data) ->
-			callback err, data
+		@client.zadd key, score, member, callback
 
 	zcard: (key, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zcard key, (err, data) ->
-			callback err, data
+		@client.zcard key, callback
 
 	zcount: (key, min, max, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zcount key, min, max, (err, data) ->
-			callback err, data
+		@client.zcount key, min, max, callback
 
 	zincrby: (key, member, increment, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zincrby key, member, increment, (err, data) ->
-			callback err, data
+		@client.zincrby key, member, increment, callback
 
 	zrank: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zrank key, member, (err, data) ->
-			callback err, data
+		@client.zrank key, member, callback
 
 	zrevrange: (key, start, stop, withscores, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		if !callback?
 			callback = withscores
-			@client.zrevrange key, start, stop, (err, data) ->
-				callback err, data
+			@client.zrevrange key, start, stop, callback
 		else
-			@client.zrevrange key, start, stop, withscores, (err, data) ->
-				callback err, data
+			@client.zrevrange key, start, stop, withscores, callback
 
 	zrevrangebyscore: (key, max, min, withscores, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		if !callback?
 			callback = withscores
-			@client.zrevrangebyscore key, max, min, (err, data) ->
-				callback err, data
+			@client.zrevrangebyscore key, max, min, callback
 		else
-			@client.zrevrangebyscore key, max, min, withscores, (err, data) ->
-				callback err, data
+			@client.zrevrangebyscore key, max, min, withscores, callback
 
 	zrevrank: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zrevrank key, member, (err, data) ->
-			callback err, data
+		@client.zrevrank key, member, callback
 
 	zscore: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
-		@client.zscore key, member, (err, data) ->
-			callback err, data
+		@client.zscore key, member, callback

@@ -32,8 +32,7 @@ defaultSettings =
 		port: 5587
 
 class exports.Settings
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	pluginGet: (plugin, key) ->
 		@Mikuia.settings.plugins[plugin]?[key] ? @Mikuia.Plugin.getManifest(plugin)?.settings?.server?[key]
@@ -55,9 +54,9 @@ class exports.Settings
 					@Mikuia.Log.success cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Loaded settings from settings.json.')
 				catch e
 				 	@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Failed to parse settings.json file: ' + e + ' (if you want to generate a default file, delete it)')
-          
+
 			callback settingsErr
-	
+
 	save: ->
 		fs.writeFileSync 'settings.json', JSON.stringify @Mikuia.settings, null, '\t'
 
