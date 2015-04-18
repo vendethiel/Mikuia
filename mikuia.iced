@@ -60,9 +60,9 @@ Mikuia.Settings.read ->
 			isBot = true
 		when 'web'
 			isWeb = true
-		# else
-		# 	flipOut()
-
+		else
+			isBot = true
+			
 	# Let's load plugins.
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
 		if pluginDirErr
