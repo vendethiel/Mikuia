@@ -27,7 +27,7 @@ class exports.Chat
 				exitOnError: true
 			connection:
 				reconnect: true
-				retries: 3
+				retries: -1
 				serverType: 'chat'
 				preferredServer: @Mikuia.settings.bot.server
 			identity:
