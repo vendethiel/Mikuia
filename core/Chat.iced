@@ -117,8 +117,14 @@ class exports.Chat
 
 		if !err && enabled
 			if settings?._coinCost and settings._coinCost > 0
-				await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
+				User = new Mikuia.Models.Channel user.username
 
+				await Mikuia.Database.zscore  "channel:#{Channel.getName()}:coins", User.getName(), defer whatever, coinBalance
+				if coinBalance >= settings._coinCost
+					await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
+				else
+					return
+					
 			@Mikuia.Events.emit command, {user, to, message, tokens, settings}
 			Channel.trackIncrement 'commands', 1
 
