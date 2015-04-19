@@ -49,12 +49,13 @@ block content
 					img(src='/img/glitch.png', height='18', width='18')
 					|  View Twitch.tv profile
 
-				each pluginButtons in splashButtons
-					each button in pluginButtons.buttons
-						br
-						a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
-							img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
-							|  #{button.name}
+				if splashButtons
+					each pluginButtons in splashButtons
+						each button in pluginButtons.buttons
+							br
+							a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
+								img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
+								|  #{button.name}
 
 	if Channel.isLive
 		.infobox.infobox-live
