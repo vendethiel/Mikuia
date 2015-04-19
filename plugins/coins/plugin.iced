@@ -114,7 +114,7 @@ Mikuia.Events.on 'coins.command', (data) =>
 		trigger = data.tokens[1]
 
 		switch trigger
-			when 'add', 'give', 'remove', 'set', 'take'
+			when 'add', 'remove', 'set', 'take'
 				if data.tokens.length == 4 && data.user.username == data.to.replace('#', '')
 					username = data.tokens[2]
 					coinAmount = data.tokens[3]
@@ -127,7 +127,7 @@ Mikuia.Events.on 'coins.command', (data) =>
 						Channel.getSetting 'coins', 'namePlural', defer error, namePlural
 						Viewer.getDisplayName defer error, displayName
 
-					if trigger is 'add' or trigger is 'give'
+					if trigger is 'add'
 						await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
@@ -149,7 +149,7 @@ Mikuia.Events.on 'coins.command', (data) =>
 						else
 							Mikuia.Chat.say data.to, displayName + ' now has ' + coinAmount + ' ' + namePlural + '.'
 
-			when 'pay'
+			when 'give', 'pay'
 				if data.tokens.length == 4
 					username = data.tokens[2]
 					coinAmount = parseInt data.tokens[3]
