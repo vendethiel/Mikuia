@@ -39,28 +39,28 @@ body.mikuia {
 
 .bg-material-deep-purple-800 {
 	background-color: #4527a0 !important;
-	box-shadow: 0px 0px 50px #311b92 !important;
+	box-shadow: 0px 0px 10px #311b92 !important;
 }
 
 .bg-material-grey {
 	background-color: #9E9E9E !important;
-	box-shadow: 0px 0px 50px #212121 !important;
+	box-shadow: 0px 0px 10px #212121 !important;
 }
 
 .bg-material-light-blue {
 	background-color: #03A9F4 !important;
-	box-shadow: 0px 0px 50px #01579B !important;
+	box-shadow: 0px 0px 10px #01579B !important;
 }
 
 .bg-material-light-green {
 	background-color: #8BC34A !important;
-	box-shadow: 0px 0px 50px #33691E !important;
+	box-shadow: 0px 0px 10px #33691E !important;
 }
 
 
 .bg-material-red {
 	background-color: #F44336 !important;
-	box-shadow: 0px 0px 50px #B71C1C !important;
+	box-shadow: 0px 0px 10px #B71C1C !important;
 }
 
 .blackbox {
@@ -123,7 +123,7 @@ body.mikuia {
 
 .infobox {
 	background-color: #111;
-	box-shadow: 0px 0px 50px black;
+	box-shadow: 0px 0px 10px black;
 	color: #fff;
 	min-height: 8em;
 	margin-bottom: 2em;
@@ -226,7 +226,7 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 
 .splash {
 	background-color: #7a62d3;
-	box-shadow: 0px 0px 50px #311b92;
+	box-shadow: 0px 0px 10px #311b92;
 	color: #fff;
 	height: 10em;
 	margin-bottom: 3em;
