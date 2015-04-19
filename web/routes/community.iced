@@ -53,6 +53,9 @@ module.exports =
 			logos: logos
 			total: total
 
+	guide: (req, res) ->
+		res.render 'community/guide'
+
 	index: (req, res) ->
 		await Mikuia.Streams.getAllSorted Mikuia.settings.web.featureMethod, defer sorting, streams
 
@@ -282,15 +285,39 @@ module.exports =
 						name: req.params.userId
 					displayNames = {}
 					ranks = {}
+
 					await
 						Channel.getAllExperience defer err, channel.experience
 						Channel.getBadgesWithInfo defer err, channel.badges
 						Channel.getBio defer err, channel.bio
-						Channel.getDisplayName defer err, channel.display_name
+						Channel.getCleanDisplayName defer err, channel.display_name
+						Channel.getCommands defer err, commands
+						Channel.getEnabledPlugins defer err, channel.plugins
 						Channel.getLogo defer err, channel.logo
 						Channel.getProfileBanner defer err, channel.profileBanner
 						Channel.getTotalLevel defer err, channel.level
 						Channel.isLive defer err, channel.isLive
+
+					channel.commands = []
+					sorting = []
+					for commandName, commandHandler of commands
+						sorting.push commandName
+
+					sorting.sort()
+					for command in sorting
+						description = Mikuia.Plugin.getHandler(commands[command]).description
+						codeText = false
+
+						if commands[command] == 'base.dummy'
+							await Channel.getCommandSettings command, true, defer err, settings
+							description = settings.message
+							codeText = true
+						
+						channel.commands.push
+							name: command
+							description: description
+							plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
+							codeText: codeText
 
 					if channel.isLive
 						await Mikuia.Streams.get req.params.userId, defer err, channel.stream
@@ -303,16 +330,28 @@ module.exports =
 					for name, rank of ranks
 						ranks[name]++
 
+					splashButtons = []
+					for element in Mikuia.Element.getAll 'userPageSplashButton'
+						if channel.plugins.indexOf(element.plugin) > -1
+							splashButtons = splashButtons.concat element
+
+					for element in splashButtons
+						for button in element.buttons
+							if button.setting?
+								await Channel.getSetting element.plugin, button.setting, defer err, value
+								button.link = button.linkFunction value
+
 					if req.params.subpage?
 						if req.params.subpage == 'levels'
 							res.render 'community/userLevels',
-								Channel: channel,
-								displayNames: displayNames,
+								Channel: channel
+								displayNames: displayNames
 								ranks: ranks
 					else
 						res.render 'community/user',
-							Channel: channel,
+							Channel: channel
 							displayNames: displayNames
+							splashButtons: splashButtons
 				else
 					res.render 'community/error',
 						error: 'User does not exist.'

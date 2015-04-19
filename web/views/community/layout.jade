@@ -21,15 +21,25 @@ html
 				.collapse.navbar-collapse
 					ul.nav.navbar-nav
 						li(class=(path == '/streams' ? 'active' : undefined))
-							a(href='/streams') Streams
+							a(href='/streams')
+								i.fa.fa-video-camera
+								|  Streams
 						li(class=(path.indexOf('/levels') == 0 ? 'active' : undefined))
-							a(href='/levels') Levels
-						li
-							a(href='http://forums.mikuia.tv', rel='tooltip', title='You are now visiting the forums.<br />Remember to come back here later!', data-placement='bottom') Forums
+							a(href='/levels')
+								i.fa.fa-star-o
+								|  Levels
+						li(class=(path.indexOf('/guide') == 0 ? 'active' : undefined))
+							a(href='/guide')
+								i.fa.fa-book
+								|  Guide
 						li(class=(path == '/supporter' ? 'active' : undefined))
-							a(href='/supporter') Supporter
+							a(href='/supporter')
+								i.fa.fa-money
+								|  Supporter
 						li(class=(path == '/stats' ? 'active' : undefined))
-							a(href='/stats') Statistics
+							a(href='/stats')
+								i.fa.fa-line-chart
+								|  Statistics
 					if !user
 						ul.nav.navbar-nav.navbar-right.pull-right
 							li

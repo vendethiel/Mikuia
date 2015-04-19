@@ -19,6 +19,15 @@ class exports.Leaderboard extends Mikuia.Model
 
 	# Display
 
+	getDisplayColor: (callback) ->
+		await @getInfo 'display_color', defer err, data
+		callback err, data
+
+	setDisplayColor: (display, callback) ->
+		await @setInfo 'display_color', display, defer err, data
+		if callback
+			callback err, data
+
 	getDisplayName: (callback) ->
 		await @getInfo 'display_name', defer err, data
 		callback err, data
@@ -55,6 +64,10 @@ class exports.Leaderboard extends Mikuia.Model
 			callback err, data
 		
 	# Scores
+
+	getRank: (channel, callback) ->
+		await @_zrank 'scores', channel, defer err, data
+		callback err, data
 
 	getScore: (channel, callback) ->
 		await @_zscore 'scores', channel, defer err, data

@@ -2,11 +2,6 @@ extends layout
 
 block content
 	.splash(style=(profileBanner != null && profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
-		//- .avatars
-		//- 	ul
-		//- 		each avatarFile in Mikuia.Tools.getAvatars(500)
-		//- 			li
-		//- 				img(src='/img/avatars/' + avatarFile, width='64', height='64')
 		.container
 			.row
 				.col-md-12

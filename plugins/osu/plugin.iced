@@ -49,11 +49,6 @@ leaderboard = [
 	omLeaderboard
 ]
 
-for lb, i in leaderboard
-	lb.setDisplayName 'osu! - ' + modes[i] + ' Rank'
-	lb.setDisplayHtml '<b style="color: #FC74B0;">#<%value%></b>'
-	lb.setReverseOrder true
-
 insertStars = (length) =>
 	string = ''
 	for i in [1..length]

@@ -1,8 +1,56 @@
 extends layout
 
 block content
-	+userHeader(Channel)
-	
+	.splash.profile.bg-material-deep-purple-800(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(\'' + Channel.profileBanner + '\'); background-position: top; background-repeat: no-repeat; background-size: cover;' : undefined))
+		.container
+			.row
+				.col-xs-3.text-center
+					img.img-circle.media-object.profile-avatar(src=Channel.logo, width='150', height='150')
+					- var fontSize = 32
+					if Channel.display_name.length > 16
+						- fontSize = 24
+					if Channel.display_name.length > 20
+						- fontSize = 18
+
+					h2.weight-500(style='font-size: ' + fontSize + 'px;')=Channel.display_name
+					+level(Channel.level, true)
+					br
+					if Object.keys(Channel.badges).length > 0
+						small.text-muted BADGES
+						br
+						each badge, badgeId in Channel.badges
+							a(href='/badge/' + badgeId)
+								img(src='/img/badges/' + badgeId + '.png', width='24', height='24', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
+					
+					//- .media
+					//- 	.pull-left
+					//- 		
+					//- 	.media-body.profile-name
+					//- 		h1.media-heading
+					//- 			| #{Channel.display_name}
+
+					//- 			.pull-right.hidden-xs
+					//- 				+level(Channel.level)
+
+				.col-xs-9
+					if Channel.bio != 'null' && Channel.bio != null
+						h1
+							i=Channel.bio
+					else
+						h1.text-muted
+							i No bio.
+
+				a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + Channel.name)
+					img(src='/img/glitch.png', height='18', width='18')
+					|  View Twitch.tv profile
+
+				each pluginButtons in splashButtons
+					each button in pluginButtons.buttons
+						br
+						a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
+							img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
+							|  #{button.name}
+
 	if Channel.isLive
 		.infobox.infobox-live
 			.container
@@ -12,12 +60,12 @@ block content
 							img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
 					.col-md-10
 						h1.hidden-xs
-							i.fa.fa-circle(style='color: red;')
+							i.fa.fa-circle(style='color: #f44336;')
 							|  Currently Live 
 							small playing #{Channel.stream.game}
 						h2.visible-xs-block
 							br
-							i.fa.fa-circle(style='color: red;')
+							i.fa.fa-circle(style='color: #f44336;')
 							|  Currently Live 
 							small playing #{Channel.stream.game}
 						p
@@ -26,32 +74,29 @@ block content
 								a(href='http://twitch.tv/' + Channel.name, target='_blank') Watch on Twitch
 	.container
 		.row
-			.col-md-8
-				.panel.panel-default
-					.panel-heading Bio
-					.panel-body
-						if Channel.bio != 'null' && Channel.bio != null
-							i=Channel.bio
-						else
-							i.text-muted No bio.
 			.col-md-4
 				.panel.panel-default
-					.panel-heading Badges
-					.panel-body
-						if Object.keys(Channel.badges).length > 0
-							each badge, badgeId in Channel.badges
-								a(href='/badge/' + badgeId)
-									img(src='/img/badges/' + badgeId + '.png', width='64', height='64', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
-						else
-							.text-muted No badges yet.
-
-				.visible-xs-block
-					h1
-						+level(Channel.level)
-
-				.panel.panel-default
-					.panel-heading Levels
+					.panel-heading User Levels
 					.panel-body
 						+levelOverview(Channel.experience)
 					.panel-footer
 						a(href='/user/' + Channel.name + '/levels') See more >>
+
+			if Channel.commands.length > 0
+				.col-md-8
+					.panel.panel-default
+						.panel-heading Commands
+						ul.list-group
+							each command in Channel.commands
+								li.list-group-item
+									.badge.pull-right=command.plugin
+									b=command.name
+									|  - 
+									if command.codeText
+										code=command.description
+									else
+										| #{command.description}
+
+
+
+					

@@ -2,7 +2,7 @@ extends layout
 
 block content
 	if featured
-		.splash.splash-index.featured.nomargin(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
+		.splash.splash-index.featured.nomargin.bg-mikuia(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + featured.profile_banner + '\'); background-position: top; background-repeat: no-repeat; background-size: cover;' : undefined))
 			//- .avatars
 			//- 	ul
 			//- 		each avatarFile in Mikuia.Tools.getAvatars(1000)
@@ -44,7 +44,7 @@ block content
 	else
 		br
 		br
-	.infobox
+	.infobox(style='background-color: #FF8F00; box-shadow: 0px 0px 50px #FF6F00;')
 		.container(style='height: 100%;')
 			.infobox-mikuia
 				.row
@@ -93,7 +93,7 @@ block content
 							| Mikuia is a Twitch bot that will help your chat interact with games you're playing!
 							br
 							| Looking up stats, sharing accomplishments and useful information, providing level and coin systems!
-						a.btn.btn-info.btn-xs.pull-right(href='http://forums.mikuia.tv/topic/6/how-to-use-mikuia') Read the guide >>
+						a.btn.btn-info.btn-xs.pull-right(href='/guide') Read the guide >>
 
 
 	.well

@@ -185,13 +185,18 @@ class exports.Channel extends Mikuia.Model
 		await @getInfo 'bio', defer err, data
 		callback err, data
 
-	getDisplayName: (callback) ->
-		await
-			@getInfo 'display_name', defer err, data
-			@isSupporter defer err2, isSupporter
+	getCleanDisplayName: (callback) ->
+		await @getInfo 'display_name', defer err, data
 
 		if !data
 			data = @getName()
+
+		callback err, data
+
+	getDisplayName: (callback) ->
+		await
+			@getCleanDisplayName defer err, data
+			@isSupporter defer err2, isSupporter
 
 		if @isAdmin()
 			callback err, '✜ ' + data

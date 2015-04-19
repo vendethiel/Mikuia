@@ -114,6 +114,7 @@ app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 
 app.get '/', routes.community.index
 app.get '/badge/:badgeId', routes.community.badge
+app.get '/guide', routes.community.guide
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.get '/mlvl', routes.community.mlvl

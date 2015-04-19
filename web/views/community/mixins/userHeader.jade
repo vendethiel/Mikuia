@@ -1,11 +1,11 @@
 mixin userHeader(Channel)
-	.splash.profile(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + Channel.profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
+	.splash.user(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + Channel.profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
 		.container
 			.row
 				.col-md-12
 					.media
 						.pull-left
-							img.img-circle.media-object(src=Channel.logo, width='120', height='120')
+							img.img-circle.media-object.profile-avatar(src=Channel.logo, width='120', height='120')
 						.media-body.profile-name
 							h1.media-heading
 								| #{Channel.display_name}
