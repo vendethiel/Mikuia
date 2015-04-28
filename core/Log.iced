@@ -8,7 +8,7 @@ class exports.Log
 
 	consoleLog: (message) =>
 		console.log message
-		fs.appendFileSync 'logs/mikuia/' + moment().format('YYYY-MM-DD') + '.txt', message
+		fs.appendFileSync 'logs/mikuia/' + moment().format('YYYY-MM-DD') + '.txt', message + '\n'
 
 	log: (message, status, color) ->
 		if status?
