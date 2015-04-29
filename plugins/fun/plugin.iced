@@ -6,6 +6,9 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 		Attacker = new Mikuia.Models.Channel data.user.username
 		Defender = new Mikuia.Models.Channel data.tokens[1]
 
+		if Attacker.getName() == Defender.getName()
+			return
+
 		chatters = Mikuia.Chat.getChatters data.to.replace('#', '')
 		for categoryName, category of chatters
 			if category.indexOf(Defender.getName()) > -1
