@@ -106,6 +106,14 @@ class exports.Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
+		inChatters = false
+		for categoryName, category of @getChatters Channel.getName()
+			console.log category
+			if category.indexOf(user.username) > -1
+				inChatters = true
+		if !inChatters
+			@chatters[Channel.getName()].viewers.push user.username
+
 		await Channel.queryCommand trigger, user, defer err, o
 		{command, settings, isAllowed} = o
 
