@@ -112,6 +112,7 @@ class exports.Chat
 			if category.indexOf(user.username) > -1
 				inChatters = true
 		if !inChatters
+			@chatters[Channel.getName()] ?= { viewers: [] }
 			@chatters[Channel.getName()].viewers.push user.username
 
 		await Channel.queryCommand trigger, user, defer err, o
