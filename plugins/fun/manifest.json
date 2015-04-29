@@ -4,13 +4,24 @@
 	"baseFile": "plugin.iced",
 	"hidden": false,
 	"handlers": {
+		"fun.1v1": {
+			"description": "Allows viewers to challenge others to 1v1.",
+			"settings": {
+				"timeoutLength": {
+					"name": "Timeout Length",
+					"description": "Length in seconds of the timeout for losers (0 to disable)",
+					"default": 15,
+					"type": "number"
+				}
+			}
+		},
 		"fun.roll": {
 			"description": "Rolls a dice.",
 			"settings": {
 				"limit": {
 					"name": "Limit",
 					"description": "Maximum number that can get rolled (unless overriden)",
-					"default": "100",
+					"default": 100,
 					"type": "number"
 				},
 				"blockOverride": {
