@@ -108,7 +108,6 @@ class exports.Chat
 
 		inChatters = false
 		for categoryName, category of @getChatters Channel.getName()
-			console.log category
 			if category.indexOf(user.username) > -1
 				inChatters = true
 		if !inChatters
