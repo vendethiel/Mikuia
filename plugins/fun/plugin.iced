@@ -24,8 +24,8 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 					if Defender.getName() == Channel.getName()
 						defenderLevel = 100
 
-					attackerFightLevel = parseInt(attackerTotalLevel) + Math.pow(attackerLevel, 1.5)
-					defenderFightLevel = parseInt(defenderTotalLevel) + Math.pow(defenderLevel, 1.5)
+					attackerFightLevel = Math.round(parseInt(attackerTotalLevel) + Math.pow(attackerLevel, 1.5))
+					defenderFightLevel = Math.round(parseInt(defenderTotalLevel) + Math.pow(defenderLevel, 1.5))
 
 					if attackerFightLevel == 0
 						attackerFightLevel = 1
