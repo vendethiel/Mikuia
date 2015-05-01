@@ -116,6 +116,7 @@ app.get '/', routes.community.index
 app.get '/badge/:badgeId', routes.community.badge
 app.get '/guide', routes.community.guide
 app.get '/leagues', checkAuth, routes.community.leagues
+app.get '/leagues/leaderboards', routes.community.leagueleaderboards
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.get '/mlvl', routes.community.mlvl
