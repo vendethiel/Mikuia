@@ -43,6 +43,7 @@ class exports.Chat
 			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 			@Mikuia.Events.emit 'twitch.connected'
 			@connected = true
+			@update()
 
 		@client.addListener 'disconnected', (reason) =>
 			@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
@@ -200,14 +201,16 @@ class exports.Chat
 	update: =>
 		twitchFailure = false
 
+		await @Mikuia.Chat.joinMultiple @Mikuia.settings.bot.autojoin, defer whatever
 		await @Mikuia.Database.smembers 'mikuia:channels', defer err, channels
 		if err then @Mikuia.Log.error err else
 			chunks = @Mikuia.Tools.chunkArray channels, 100
-			joinList = @Mikuia.settings.bot.autojoin
 			streamData = {}
 			streamList = []
+
 			for chunk, i in chunks
 				if chunk.length > 0
+					joinList = []
 					@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Checking channels live... (' + (i + 1) + '/' + chunks.length + ')')
 					await @Mikuia.Twitch.getStreams chunk, defer err, streams
 					if err
@@ -231,7 +234,7 @@ class exports.Chat
 								Channel.trackValue 'supporterValue', Math.floor(Math.random() * 10000)
 
 						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
-			await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
+						await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 
 			# Yay, save dat stuff.
 			if !twitchFailure

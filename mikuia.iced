@@ -79,7 +79,6 @@ Mikuia.Settings.read ->
 	if isBot
 		Mikuia.Chat.connect()
 		Mikuia.Twitch.init()
-		Mikuia.Chat.update()
 
 		if Mikuia.settings.sentry.enable
 			raven = require 'raven'
