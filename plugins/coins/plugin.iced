@@ -167,15 +167,14 @@ Mikuia.Events.on 'coins.command', (data) =>
 							Mikuia.Database.zscore 'channel:' + Channel.getName() + ':coins', Sender.getName(), defer whatever, senderCoins
 
 						if senderCoins >= coinAmount
-							Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount * -1, Sender.getName(), defer whatever
-							Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Recipient.getName(), defer whatever
+							await
+								Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount * -1, Sender.getName(), defer whatever
+								Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Recipient.getName(), defer whatever
 
 							if coinAmount == 1
 								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + name + ')'
 							else
 								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + namePlural + ')'
-
-
 
 			when 'help'
 				Mikuia.Chat.say data.to, 'There\'s no help for you! :D'
