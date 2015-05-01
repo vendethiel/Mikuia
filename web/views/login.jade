@@ -18,17 +18,11 @@ html
 		link(href='/assets/admin/layout/css/themes/default.css', rel='stylesheet', type='text/css', id='style_color')
 		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
 	body.login(style='background-color: black !important;')
-		.avatars
-			ul
-				each avatarFile in Mikuia.Tools.getAvatars(1000)
-					li
-						img(src='/img/avatars/' + avatarFile, width='64', height='64')
-
 		.logo
 			a(href='/', style='color: white;')
 				h1 Mikuia.tv
 		.content
-			h3.form-title Please login or something.
+			h3.form-title.align-center You have to login first.
 			a.btn.btn-twitch.center-block(href='/auth/twitch', type='button')
 				img(src='/img/glitch.png', height='24', width='24')
 				|  Login with Twitch
