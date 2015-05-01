@@ -156,10 +156,10 @@ class exports.Chat
 		for channel, i in channels
 			await @join channel, defer whatever
 
+		callback false
+
 		for channel in channels
 			await @updateChatters channel, defer whatever
-
-		callback false
 
 	mods: (channel) =>
 		channel = channel.replace('#', '')
