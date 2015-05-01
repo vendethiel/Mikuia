@@ -93,7 +93,7 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 						attackerRating += eloChange
 						defenderRating -= eloChange
 
-						chatMessage = attackerDisplayName + ' <' + attackerFightLevel + '> WON (' + attackerRating + ')[+' + eloChange + '] with ' + defenderDisplayName + ' <' + defenderFightLevel + '> (' + defenderRating + ')[-' + eloChange + ']'
+						chatMessage = attackerDisplayName + ' <' + attackerChancePercent + '%> WON (' + attackerRating + ')[+' + eloChange + '] with ' + defenderDisplayName + ' (' + defenderRating + ')[-' + eloChange + ']'
 
 						await
 							Mikuia.Leagues.addFightWin Attacker.getName(), defer err
@@ -111,7 +111,7 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 						attackerRating -= eloChange
 						defenderRating += eloChange
 
-						chatMessage = attackerDisplayName + ' <' + attackerFightLevel + '> lost (' + attackerRating + ')[-' + eloChange + '] with ' + defenderDisplayName + ' <' + defenderFightLevel + '> (' + defenderRating + ')[+' + eloChange + ']'
+						chatMessage = attackerDisplayName + ' <' + attackerChancePercent + '%> lost (' + attackerRating + ')[-' + eloChange + '] with ' + defenderDisplayName + ' (' + defenderRating + ')[+' + eloChange + ']'
 
 						await
 							Mikuia.Leagues.addFightWin Defender.getName(), defer err
