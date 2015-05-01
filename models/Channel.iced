@@ -15,7 +15,7 @@ class exports.Channel extends Mikuia.Model
 	getName: -> @name
 
 	isAdmin: ->
-		Mikuia.settings.bot.admins.indexOf(@getName()) > -1
+		@name in Mikuia.settings.bot.admins
 
 	isBot: (callback) ->
 		Mikuia.Database.sismember 'mikuia:bots', @getName(), callback

@@ -2,7 +2,7 @@ class exports.Streams
 	constructor: (@Mikuia) ->
 
 	get: (stream, callback) ->
-		@Mikuia.Database.hgetall 'mikuia:stream:' + stream, d callback
+		@Mikuia.Database.hgetall 'mikuia:stream:' + stream, callback
 
 	getAll: (callback) ->
 		@Mikuia.Database.smembers 'mikuia:streams', callback
