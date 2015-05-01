@@ -128,7 +128,7 @@ class exports.Chat
 				User = new Mikuia.Models.Channel user.username
 
 				await Mikuia.Database.zscore  "channel:#{Channel.getName()}:coins", User.getName(), defer whatever, coinBalance
-				if coinBalance >= settings._coinCost
+				if parseInt(coinBalance) >= settings._coinCost
 					await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 				else
 					return
