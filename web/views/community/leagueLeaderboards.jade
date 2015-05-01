@@ -1,0 +1,60 @@
+extends layout
+
+block content
+	.splash.bg-black
+		.container
+			.row
+				.col-md-12
+					h1 League Leaderboards
+	.container
+		.row
+			.col-md-8
+				table.table.table-bordered.table-striped
+					thead
+						tr
+							th Rank
+							th User
+							th Rating
+							th Fights
+							th League
+					tbody
+						- var i = 1
+						each data in channels
+							if data.length > 0
+								- var channel = data[0]
+								- var rating = data[1]
+
+								tr(class=(user && user.username == channel ? 'info' : undefined))
+									td
+										h4 ##{i}
+									td
+										.media
+											a.pull-left(href='/user/' + channel)
+												img.img-circle.media-object(src=logos[channel], width=24, height=24)
+											.media-body
+												h4.media-heading
+													a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
+									td
+										h4=rating
+									td
+										h4=fights[channel]
+									td
+										h4
+											img(src='/img/leagues/' + Mikuia.Leagues.getLeague(rating) + '.png', width='24')
+											|  #{Mikuia.Leagues.getLeagueFullText(rating)}
+								- i++
+			.col-md-4
+				.panel.panel-default
+					.panel-heading What is this?
+					.panel-body
+						| League rankings for 1v1 fights!
+
+				.panel.panel-default
+					.panel-heading Why does it exist?
+					.panel-body
+						| I was bored!
+
+				.panel.panel-default
+					.panel-heading How about you add something useful?
+					.panel-body
+						| No.
