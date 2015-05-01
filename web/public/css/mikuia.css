@@ -37,6 +37,11 @@ body.mikuia {
 	z-index: -10;
 }
 
+.bg-black {
+	background-color: #333 !important;
+	box-shadow: 0px 0px 10px black !important;
+}
+
 .bg-material-deep-purple-800 {
 	background-color: #4527a0 !important;
 	box-shadow: 0px 0px 10px #311b92 !important;
@@ -56,7 +61,6 @@ body.mikuia {
 	background-color: #8BC34A !important;
 	box-shadow: 0px 0px 10px #33691E !important;
 }
-
 
 .bg-material-red {
 	background-color: #F44336 !important;
@@ -242,9 +246,13 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 	margin-bottom: 0em !important;
 }
 
+.splash.leagues {
+	height: 30em;
+}
+
 .splash.profile {
 	border-bottom: 4px solid #7a62d3;
-	height: 27em;
+	min-height: 27em;
 	padding-top: 6em;
 	z-index: -10;
 }

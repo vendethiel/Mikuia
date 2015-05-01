@@ -40,6 +40,10 @@ html
 							a(href='/stats')
 								i.fa.fa-line-chart
 								|  Statistics
+						li(class=(path == '/leagues' ? 'active' : undefined))
+							a(href='/leagues')
+								i.fa.fa-trophy
+								|  Leagues
 					if !user
 						ul.nav.navbar-nav.navbar-right.pull-right
 							li

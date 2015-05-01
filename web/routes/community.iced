@@ -97,6 +97,21 @@ module.exports =
 			streams: streams
 			displayHtml: displayHtml
 
+	leagues: (req, res) ->
+		Channel = new Mikuia.Models.Channel req.user.username
+
+		await
+			Mikuia.Leagues.getFightCount Channel.getName(), defer err, fightCount
+			Mikuia.Leagues.getFightCountLost Channel.getName(), defer err, fightsLost
+			Mikuia.Leagues.getFightCountWon Channel.getName(), defer err, fightsWon
+			Mikuia.Leagues.getRating Channel.getName(), defer err, rating
+		
+		res.render 'community/leagues',
+			fightCount: fightCount
+			fightsLost: fightsLost
+			fightsWon: fightsWon
+			rating: rating
+
 	levels: (req, res) ->
 		if req.params.userId?
 			Channel = new Mikuia.Models.Channel req.params.userId

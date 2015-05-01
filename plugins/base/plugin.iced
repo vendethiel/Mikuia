@@ -149,6 +149,15 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 						moderators = Mikuia.Chat.mods to
 						if moderators?
 							Mikuia.Chat.say to, 'This is what I know:' + JSON.stringify(moderators)
+				when 'rating'
+					await
+						Mikuia.Leagues.getFightCount User.getName(), defer err, fights
+						Mikuia.Leagues.getRating User.getName(), defer err, rating
+						User.getDisplayName defer err, displayName
+					if fights < 10
+						Mikuia.Chat.say to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)'
+					else
+						Mikuia.Chat.say to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)'
 				when 'remove'
 					removeCommand from.username, to, tokens.slice 1
 				when 'say'
