@@ -79,15 +79,15 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 						attackerWin = false
 
 					chatMessage = null
-					kFactor = 32
+					kFactor = 50
 
 					if attackerWin
 						chatMessage += ' and WON!'
 
 						if attackerRating > 2400
-							kFactor = 16
-						else if attackerRating > 2100
 							kFactor = 24
+						else if attackerRating > 2100
+							kFactor = 32
 
 						eloChange = Math.floor(((kFactor * (1 - attackerChance)) + (kFactor * (1 - attackerEloChance))) / 2)
 						attackerRating += eloChange
