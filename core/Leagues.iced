@@ -42,12 +42,12 @@ class exports.Leagues
 		callback err, parseInt fights
 
 	getLeague: (elo) ->
-		return Math.max(Math.min(1 + Math.floor((elo - 500) / 250), 9), 1)
+		return Math.max(Math.min(1 + Math.floor((elo - 600) / 200), 9), 1)
 
 	getLeagueDivision: (elo) ->
-		if elo < 2700
-			if elo >= 500
-				return 5 - Math.floor((elo % 250) / 50)
+		if elo < 2360
+			if elo >= 600
+				return 5 - Math.floor((elo % 200) / 40)
 			else
 				return 5
 		else

@@ -22,19 +22,19 @@ block content
 				.col-md-6
 					h1 Progress
 					br
-					if rating < 500
+					if rating < 600
 						b Even progress bar doesn't want to talk with you.
 						br
-					else if rating < 2500
+					else if rating < 2200
 						.progress
-							.progress-bar.progress-bar-warning.progress-bar-striped.active(style='width: ' + (((rating % 250) / 250) * 100) + '%;')
-					else if rating < 2700
+							.progress-bar.progress-bar-warning.progress-bar-striped.active(style='width: ' + (((rating % 200) / 200) * 100) + '%;')
+					else if rating < 2360
 						.progress
-							.progress-bar.progress-bar-warning.progress-bar-striped.active(style='width: ' + ((((rating - 100) % 200) / 200) * 100) + '%;')
+							.progress-bar.progress-bar-warning.progress-bar-striped.active(style='width: ' + ((((rating + 40) % 160) / 160) * 100) + '%;')
 					h3
 						| ELO: #{rating}
-						if rating < 2500 && rating >= 500
-							.pull-right #{250 - (rating % 250)} to rank up
+						if rating < 2200 && rating >= 600
+							.pull-right #{200 - (rating % 200)} to rank up
 						br
 						br
 						| #{fightCount} fights
