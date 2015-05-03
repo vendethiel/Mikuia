@@ -20,8 +20,8 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 		chatters = Mikuia.Chat.getChatters data.to.replace('#', '')
 		for categoryName, category of chatters
 			if category.indexOf(Defender.getName()) > -1
-				if challenges[Defender.getName()]?[Attacker.getName()]?
-					delete challenges[Defender.getName()][Attacker.getName()]
+				if challenges[Channel.getName()][Defender.getName()]?[Attacker.getName()]?
+					delete challenges[Channel.getName()][Defender.getName()][Attacker.getName()]
 
 					await
 						Attacker.getDisplayName defer whatever, attackerDisplayName
@@ -150,8 +150,9 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 						Mikuia.Chat.sayUnfiltered data.to, '.timeout ' + timeoutName + ' ' + data.settings.timeoutLength
 
 				else
-					challenges[Attacker.getName()] ?= {}
-					challenges[Attacker.getName()][Defender.getName()] = true
+					challenges[Channel.getName()] ?= {}
+					challenges[Channel.getName()][Attacker.getName()] ?= {}
+					challenges[Channel.getName()][Attacker.getName()][Defender.getName()] = true
 
 Mikuia.Events.on 'fun.roll', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username
