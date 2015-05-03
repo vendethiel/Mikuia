@@ -20,7 +20,7 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 		chatters = Mikuia.Chat.getChatters data.to.replace('#', '')
 		for categoryName, category of chatters
 			if category.indexOf(Defender.getName()) > -1
-				if challenges[Channel.getName()][Defender.getName()]?[Attacker.getName()]?
+				if challenges[Channel.getName()]?[Defender.getName()]?[Attacker.getName()]?
 					delete challenges[Channel.getName()][Defender.getName()][Attacker.getName()]
 
 					await
