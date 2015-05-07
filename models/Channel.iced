@@ -294,6 +294,10 @@ class exports.Channel extends Mikuia.Model
 						await otherChannel.getDisplayName defer err, otherName
 						Mikuia.Chat.sayUnfiltered channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
 
+		else
+			await @_hset 'experience', channel, 0, defer err, data
+			await @updateTotalLevel defer whatever
+			
 		callback false
 
 	getLevel: (channel, callback) =>
