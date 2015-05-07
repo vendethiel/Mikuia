@@ -43,8 +43,8 @@ block content
 										+levelProgress(exp)
 								- i++
 
-			if user
-				.col-md-4
+			.col-md-4
+				if user
 					.panel.panel-default
 						.panel-heading Your Stats
 						.panel-body
@@ -58,9 +58,20 @@ block content
 								+levelProgress(experience)
 							else
 								.text-muted No progress on this channel.
-			else
-				.col-md-4
+				else
 					.panel.panel-default
 						.panel-heading Your avatar or name broken?
 						.panel-body
 							.text-muted Login to update them!
+
+					.panel.panel-default
+						.panel-heading Bots taking your places?
+						.panel-body
+							.text-muted
+								| You can report bots and get them blocked from gaining experience.
+								br
+								| Please let me know via email or Twitter.
+								br
+								a(href='twitter.com/Maxorq') Twitter
+								|  | 
+								a(href='mailto:psqmaxor@gmail.com') Email
