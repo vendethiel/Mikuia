@@ -1,21 +1,18 @@
 class exports.Leaderboard extends Mikuia.Model
-	constructor: (name) ->
+	constructor: (@name) ->
 		@model = 'leaderboard'
-		@name = name
 
-		Mikuia.Element.register 'leaderboards', name
+		Mikuia.Element.register 'leaderboards', @name
 
 	getName: -> @name
 
 	# Info :o
 
 	getInfo: (field, callback) ->
-		await @_hget '', field, defer err, data
-		callback err, data
+		@_hget '', field, callback
 
 	setInfo: (field, value, callback) ->
-		await @_hset '', field, value, defer err, data
-		callback err, data
+		@_hset '', field, value, callback
 
 	# Display
 
@@ -29,13 +26,10 @@ class exports.Leaderboard extends Mikuia.Model
 			callback err, data
 
 	getDisplayName: (callback) ->
-		await @getInfo 'display_name', defer err, data
-		callback err, data
+		@getInfo 'display_name', callback
 
-	setDisplayName: (display, callback) ->
-		await @setInfo 'display_name', display, defer err, data
-		if callback
-			callback err, data
+	setDisplayName: (display, callback = ->) ->
+		@setInfo 'display_name', display, callback
 
 	getDisplayHtml: (callback) ->
 		await @getInfo 'display_html', defer err, data
@@ -43,10 +37,8 @@ class exports.Leaderboard extends Mikuia.Model
 			data = '<%value%>'
 		callback err, data
 
-	setDisplayHtml: (display, callback) ->
-		await @setInfo 'display_html', display, defer err, data
-		if callback
-			callback err, data
+	setDisplayHtml: (display, callback = ->) ->
+		@setInfo 'display_html', display, callback
 
 	# Ordering
 
@@ -58,11 +50,9 @@ class exports.Leaderboard extends Mikuia.Model
 			data = false
 		callback err, data
 
-	setReverseOrder: (order, callback) ->
-		await @setInfo 'reverseOrder', order, defer err, data
-		if callback
-			callback err, data
-		
+	setReverseOrder: (order, callback = ->) ->
+		@setInfo 'reverseOrder', order, callback
+
 	# Scores
 
 	getRank: (channel, callback) ->
@@ -70,10 +60,7 @@ class exports.Leaderboard extends Mikuia.Model
 		callback err, data
 
 	getScore: (channel, callback) ->
-		await @_zscore 'scores', channel, defer err, data
-		callback err, data
+		@_zscore 'scores', channel, callback
 
-	setScore: (channel, score, callback) ->
-		await @_zadd 'scores', score, channel, defer err, data
-		if callback
-			callback err, data
+	setScore: (channel, score, callback = ->) ->
+		@_zadd 'scores', score, channel, callback

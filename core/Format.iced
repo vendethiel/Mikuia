@@ -1,6 +1,5 @@
 class exports.Format
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	parse: (format, data) ->
 		re = /<%([^%>]+)?%>/g

@@ -1,6 +1,5 @@
 class exports.Element
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 		@elements = {}
 
 	getAll: (key) -> @elements[key]
@@ -17,10 +16,9 @@ class exports.Element
 					title: panel.title,
 					content: response
 
-		callback results			
+		callback results
 
 	register: (key, name) ->
-		if !@elements[key]
-			@elements[key] = []
-		if @elements[key].indexOf(name) == -1
+		@elements[key] ?= []
+		if name not in @elements[key]
 			@elements[key].push name

@@ -2,8 +2,7 @@ fs = require 'fs'
 _ = require 'underscore'
 
 class exports.Tools
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	chunkArray: (array, size) ->
 		R = []
@@ -14,19 +13,19 @@ class exports.Tools
 	colorRarity: (rarity) ->
 		switch rarity
 			when 'common'
-				return '<span style="color: white;">Common</span>';
+				'<span style="color: white;">Common</span>'
 			when 'uncommon'
-				return '<span style="color: #1eff00;">Uncommon</span>';
+				'<span style="color: #1eff00;">Uncommon</span>'
 			when 'rare'
-				return '<span style="color: #338BFF;">Rare</span>';
+				'<span style="color: #338BFF;">Rare</span>'
 			when 'epic'
-				return '<span style="color: #B356F0;">Epic</span>';
+				'<span style="color: #B356F0;">Epic</span>'
 			when 'legendary'
-				return '<span style="color: #FF9933;">Legendary</span>';
+				'<span style="color: #FF9933;">Legendary</span>'
 			when 'unique'
-				return '<span style="color: #e6cc80;">Unique</span>';
+				'<span style="color: #e6cc80;">Unique</span>'
 			else
-				return '<span style="color: red;">UNKNOWN</span>';
+				'<span style="color: red;">UNKNOWN</span>'
 
 	fillArray: (data, size) ->
 		array = data.slice 0

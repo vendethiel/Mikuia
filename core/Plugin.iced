@@ -3,8 +3,7 @@ fs = require 'fs'
 path = require 'path'
 
 class exports.Plugin
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 		@handlers = {}
 		@plugins = {}
 
@@ -12,11 +11,11 @@ class exports.Plugin
 
 	get: (plugin) -> @plugins[plugin].module
 
-	getAll: () -> @plugins
+	getAll: -> @plugins
 
 	getHandler: (handler) -> @handlers[handler]
 
-	getHandlers: () -> @handlers
+	getHandlers: -> @handlers
 
 	getManifest: (plugin) ->
 		@plugins[plugin]?.manifest

@@ -7,9 +7,7 @@ joinLimiter = new RateLimiter 25, 10000
 messageLimiter = new RateLimiter 10, 30000
 
 class exports.Chat
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
-
+	constructor: (@Mikuia) ->
 		@chatters = {}
 		@connected = false
 		@joined = []
@@ -77,8 +75,7 @@ class exports.Chat
 			@connected = false
 			@joined = []
 
-	getChatters: (channel) =>
-		return @chatters[channel]
+	getChatters: (channel) => @chatters[channel]
 
 	handleMessage: (user, to, message) =>
 		Channel = new @Mikuia.Models.Channel to
@@ -162,11 +159,7 @@ class exports.Chat
 			await @updateChatters channel, defer whatever
 
 	mods: (channel) =>
-		channel = channel.replace('#', '')
-		if @moderators[channel]?
-			return @moderators[channel]
-		else
-			return null
+		@moderators[channel.replace('#', '')]
 
 	part: (channel, callback) =>
 		joinLimiter.removeTokens 1, (err, rr) =>

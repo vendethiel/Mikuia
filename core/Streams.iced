@@ -1,14 +1,11 @@
 class exports.Streams
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	get: (stream, callback) ->
-		await Mikuia.Database.hgetall 'mikuia:stream:' + stream, defer err, stream
-		callback err, stream
+		@Mikuia.Database.hgetall 'mikuia:stream:' + stream, callback
 
 	getAll: (callback) ->
-		await Mikuia.Database.smembers 'mikuia:streams', defer err, streams
-		callback err, streams
+		@Mikuia.Database.smembers 'mikuia:streams', callback
 
 	getAllSorted: (sortMethod, callback) ->
 		sortLeaderboard = new Mikuia.Models.Leaderboard sortMethod

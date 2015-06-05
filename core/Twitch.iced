@@ -2,8 +2,7 @@ request = require 'request'
 twitchy = require 'twitchy'
 
 class exports.Twitch
-	constructor: (Mikuia) ->
-		@Mikuia = Mikuia
+	constructor: (@Mikuia) ->
 
 	init: ->
 		if @Mikuia.settings.twitch.key != 'TWITCH_API_KEY' && @Mikuia.settings.twitch.secret != 'TWITCH_API_SECRET'
@@ -15,8 +14,7 @@ class exports.Twitch
 			@Mikuia.Log.fatal 'Please specify correct Twitch API key and secret.'
 
 	getChatters: (channel, callback) ->
-		if channel.indexOf('#') > -1
-			channel = channel.split('#').join('')
+		channel = channel.replace('#', '')
 		request 'http://tmi.twitch.tv/group/user/' + channel + '/chatters', (error, response, body) ->
 			if !error && response.statusCode == 200
 				data = {}
