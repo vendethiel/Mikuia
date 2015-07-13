@@ -87,7 +87,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
 	if message.indexOf(globalCommand) == 0
 		if message.trim() == globalCommand
-			Mikuia.Chat.say to, 'Hey, I\'m Mikuia, and I\'m a bot made by Maxorq / Hatsuney! Learn more about me at http://mikuia.tv'
+			Mikuia.Chat.say to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv'
 		else
 			tokens = message.trim().split ' '
 			trigger = tokens[1]

@@ -53,6 +53,18 @@ class exports.Database
 		await @client.select @Mikuia.settings.redis.db
 		@client.incrby key, value, callback
 
+	lpop: (key, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.lpop key, callback
+
+	lpush: (key, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.lpush key, value, callback
+
+	rpush: (key, value, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		@client.rpush key, value, callback
+
 	sadd: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.sadd key, member, callback
