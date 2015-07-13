@@ -235,7 +235,7 @@ class exports.Chat
 
 				line = JSON.stringify
 					channel: channel
-					message: message
+					message: line
 				await Mikuia.Database.rpush 'mikuia:chat:queue', line, defer whatever
 
 	sayRaw: (channel, message) =>
