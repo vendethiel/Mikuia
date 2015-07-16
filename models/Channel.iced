@@ -116,7 +116,6 @@ class exports.Channel extends Mikuia.Model
 
 		if !commandError
 			for settingName, setting of settings
-				console.log 'get command setting', settingName, settings[settingName]
 				if settings[settingName] == 'true'
 					settings[settingName] = true
 				if settings[settingName] == 'false'
