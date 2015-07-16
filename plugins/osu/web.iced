@@ -51,7 +51,10 @@ Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
 		if username?
 			Channel = new Mikuia.Models.Channel req.user.username
 
-			await Channel.setSetting 'osu', 'name', username, defer err, data
+			await
+				Channel.setSetting 'osu', 'name', username, defer err, data
+				Mikuia.Database.hset 'plugin:osu:channels', username, Channel.getName(), defer errar, whatever
+				
 			@Plugin.Log.info 'Authenticated ' + cli.yellowBright(username) + '.'
 			await Mikuia.Database.del 'plugin:osu:auth:code:' + req.body.authCode, defer error, whatever
 

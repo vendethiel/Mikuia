@@ -522,17 +522,21 @@ Mikuia.Events.on 'twitch.connected', =>
 				trigger = tokens[0].replace '!', ''
 				
 				if trigger in twitchCommands
-					await
-						Mikuia.Database.hget 'plugin:osu:channels', message.from, defer err, name
 					
-					Channel = new Mikuia.Models.Channel name
-					await Channel.isSupporter defer err, isSupporter
+					await Mikuia.Database.hget 'plugin:osu:channels', message.from, defer err, name
 
 					if name?
-						if isSupporter
-							Mikuia.Chat.say name, message.message.replace '!', '.'
-						else
-							banchoSay message.from, 'This feature is available only for Mikuia Supporters.'
+						Channel = new Mikuia.Models.Channel name
+
+						await
+							Channel.getSetting 'osu', 'name', defer err, osuName
+							Channel.isSupporter defer err, isSupporter
+
+						if osuName == message.from
+							if isSupporter
+								Mikuia.Chat.sayUnfiltered name, message.message.split('!').join('.')
+							else
+								banchoSay message.from, 'This feature is available only for Mikuia Supporters.'
 
 	for word in @Plugin.getSetting('blockedWords')
 		patterns.push new RegExp word, 'ig'
