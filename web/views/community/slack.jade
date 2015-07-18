@@ -32,9 +32,14 @@ block content
 										button.btn.btn-success(type='submit', href='/slack/invite', style='width: 100%;') Request an invite
 									br
 
-									small.text-muted
-										| The invite will be sent to your Twitch email: 
-										b=user.email
+									small
+										.text-muted
+											| The invite will be sent to your Twitch email: 
+											b=user.email
+										.text-danger
+											| This email address will be public on Slack.
+											| If you don't want that to happen, change your Twitch email and re-login.
+
 								else
 									p
 										| Your Twitch account email is not confirmed.
