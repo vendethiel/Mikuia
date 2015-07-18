@@ -120,6 +120,8 @@ app.get '/leagues/leaderboards', routes.community.leagueleaderboards
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.get '/mlvl', routes.community.mlvl
+app.get '/slack', routes.community.slack
+app.post '/slack/invite', routes.community.slackInvite
 app.get '/stats', routes.community.stats
 app.get '/streams', routes.community.streams
 app.get '/supporter', routes.community.support

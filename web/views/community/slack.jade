@@ -1,0 +1,45 @@
+extends layout
+
+block content
+	.splash.bg-material-red
+		.container
+			.row
+				.col-md-12
+					h1 Slack Access
+	.container
+		.row
+			.col-md-8
+				h1 What's Slack?
+				p An amazing chatroom/messaging/talky-talky thingy!
+				h1 What can I do on Slack?
+				ul
+					li Report bugs / request features.
+					li Talk about whatever you want.
+					li Discuss waifus, I DON'T CARE.
+					li MAGIC.
+				h1 What are the requirements?
+				ul
+					li Don't be an idiot.
+					li Mikuia Level 10
+			.col-md-4
+				.panel.panel-default
+					.panel-heading Request an invite
+					.panel-body
+						if user
+							if totalLevel >= 10
+								if user.email
+									form(action='/slack/invite', method='post')
+										button.btn.btn-success(type='submit', href='/slack/invite', style='width: 100%;') Request an invite
+									br
+
+									small.text-muted
+										| The invite will be sent to your Twitch email: 
+										b=user.email
+								else
+									p
+										| Your Twitch account email is not confirmed.
+										| Please confirm your email and re-login.
+							else
+								p Your level is too low to request an invite.
+						else
+							.text-muted Please login first.

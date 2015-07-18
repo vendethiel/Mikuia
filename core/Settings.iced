@@ -22,6 +22,9 @@ defaultSettings =
 	sentry:
 		enable: false
 		dsn: 'https://username:password@app.getsentry.com/id'
+	slack:
+		channel: 'SLACK_CHANNEL_ID'
+		token: 'SLACK_TOKEN_FOR_INVITES'
 	twitch:
 		callbackURL: 'http://127.0.0.1:2912/auth/twitch/callback'
 		key: 'TWITCH_API_KEY'
