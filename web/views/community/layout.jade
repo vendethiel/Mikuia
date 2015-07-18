@@ -36,14 +36,14 @@ html
 							a(href='/supporter')
 								i.fa.fa-money
 								|  Supporter
-						li(class=(path == '/stats' ? 'active' : undefined))
-							a(href='/stats')
-								i.fa.fa-line-chart
-								|  Stats
 						li(class=(path == '/leagues' ? 'active' : undefined))
 							a(href='/leagues')
 								i.fa.fa-trophy
 								|  Leagues
+						li(class=(path.indexOf('/slack') == 0 ? 'active' : undefined))
+							a(href='/slack')
+								i.fa.fa-slack
+								|  Slack
 					if !user
 						ul.nav.navbar-nav.navbar-right.pull-right
 							li

@@ -157,6 +157,19 @@ body.mikuia {
 	margin-top: 14px;
 }
 
+.infobox-slack {
+	background-image: url('/img/slack.png');
+	background-position: 100% -10px;
+	background-repeat: no-repeat;
+	height: 100%;
+	text-shadow: 0px 0px 10px #999;
+}
+
+.infobox-slack a {
+	color: white;
+}
+
+
 .level {
 	border: 2px solid #999;
 	border-radius: 16px;
