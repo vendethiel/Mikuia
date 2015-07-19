@@ -9,6 +9,7 @@ class exports.Database
 		@client = redis.createClient port, host, options
 		@client.on 'ready', =>
 			@Mikuia.Log.success cli.redBright('Redis') + ' / ' + cli.whiteBright('Connected to the database.')
+
 		@client.on 'error', (err) =>
 			console.trace()
 			@Mikuia.Log.fatal cli.redBright('Redis') + ' / ' + cli.whiteBright('Database error: ' + err)
@@ -112,6 +113,17 @@ class exports.Database
 	zrank: (key, member, callback) ->
 		await @client.select @Mikuia.settings.redis.db
 		@client.zrank key, member, callback
+
+	zrangebyscore: (key, min, max, withscores, limit, offset, count, callback) ->
+		await @client.select @Mikuia.settings.redis.db
+		if !callback? and !count? and !offset? and !limit?
+			callback = withscores
+			@client.zrangebyscore key, min, max, callback
+		else if !callback? and !count? and !offset?
+			callback = limit
+			@client.zrangebyscore key, min, max, withscores, callback
+		else
+			@client.zrangebyscore key, min, max, withscores, limit, offset, count, callback
 
 	zrevrange: (key, start, stop, withscores, callback) ->
 		await @client.select @Mikuia.settings.redis.db

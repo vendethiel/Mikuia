@@ -41,6 +41,13 @@ class exports.Chat
 			namespace: 'mikuia:chat:limiter'
 			redis: Mikuia.Database.client
 
+		@client.addListener 'banned', (channel) =>
+			Channel = new Mikuia.Models.Channel channel
+			await Channel.getDisplayName defer err, displayName
+
+			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Banned on ' + cli.greenBright(displayName) + cli.whiteBright('.'))
+			@Mikuia.Events.emit 'twitch.banned', channel
+
 		@client.addListener 'chat', (channel, user, message) =>
 			@handleMessage user, channel, message
 
@@ -48,6 +55,11 @@ class exports.Chat
 			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 			@Mikuia.Events.emit 'twitch.connected'
 			@connected = true
+
+			@client.raw 'CAP REQ :twitch.tv/membership'
+			@client.raw 'CAP REQ :twitch.tv/commands'
+			@client.raw 'CAP REQ :twitch.tv/tags'
+
 			@update()
 
 		@client.addListener 'disconnected', (reason) =>
@@ -180,20 +192,40 @@ class exports.Chat
 			if channelLimiter[Channel.getName()]?
 				channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
 					if channelRR > -1
-						@messageLimiter '', (err, timeLeft) =>
-							if !timeLeft
-								@client.say data.channel, data.message
+						await Mikuia.Database.zrangebyscore 'mikuia:chat:limiter', '-inf', '+inf', defer err, limitEntries
+					
+						currentTime = (new Date).getTime() * 1000
+						remainingRequests = 20
+						
+						for limitEntry in limitEntries
+							if parseInt(limitEntry) + 30000000 > currentTime
+								remainingRequests--
 
-								await Mikuia.Database.zcount 'mikuia:chat:limiter', '-inf', '+inf', defer err, remainingRequests
-								@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(20 - remainingRequests) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + data.message
+						if remainingRequests > 0
+							@messageLimiter '', (err, timeLeft) =>
+								if !timeLeft
+									@client.say data.channel, data.message
 
-								@parseQueue()
-							else
-								await Mikuia.Database.lpush 'mikuia:chat:queue', jsonData, defer whatever
-							
-								setTimeout () =>
+									@Mikuia.Log.info cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(remainingRequests) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + data.message
+
 									@parseQueue()
-								, 30000
+								else
+									await Mikuia.Database.lpush 'mikuia:chat:queue', jsonData, defer whatever
+									
+									setTimeout () =>
+										@parseQueue()
+									, 30000
+						else
+							await Mikuia.Database.zrangebyscore 'mikuia:chat:limiter', '-inf', '+inf', defer err, lastRequestTimes
+							lastRequestTime = lastRequestTimes[0]
+							currentTime = (new Date).getTime() * 1000
+							waitTime = Math.floor((30000000 - (currentTime -  lastRequestTime)) / 1000)
+
+							console.log waitTime + 'ms'
+							console.log lastRequestTimes
+							setTimeout () =>
+								@parseQueue()
+							, waitTime
 
 					else
 						await Mikuia.Database.rpush 'mikuia:chat:queue', jsonData, defer whatever
