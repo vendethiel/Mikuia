@@ -17,6 +17,9 @@ class exports.Channel extends Mikuia.Model
 	isAdmin: ->
 		@name in Mikuia.settings.bot.admins
 
+	isBanned: (callback) ->
+		Mikuia.Database.sismember 'mikuia:banned', @getName(), callback
+
 	isBot: (callback) ->
 		Mikuia.Database.sismember 'mikuia:bots', @getName(), callback
 

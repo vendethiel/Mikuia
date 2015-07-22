@@ -73,21 +73,28 @@ app.use (req, res, next) ->
 	res.locals.path = req.path
 	res.locals.user = req.user
 
+	isBanned = false
 	pages = []
-	if req.user && req.path.indexOf('/dashboard') == 0
+	if req.user
 		Channel = new Mikuia.Models.Channel req.user.username
-		pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
-		for pagePlugin in pagePlugins || []
-			await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
-			if !err && enabled
-				for pagePath, {name, icon} of pagePlugin.pages
-					pages.push {
-						name, icon,
-						path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
-					}
+		await Channel.isBanned defer err, isBanned
 
-	res.locals.pages = pages
-	next()
+		if !isBanned and req.path.indexOf('/dashboard') == 0
+			pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
+			for pagePlugin in pagePlugins || []
+				await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
+				if !err && enabled
+					for pagePath, {name, icon} of pagePlugin.pages
+						pages.push {
+							name, icon,
+							path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
+						}
+
+	if !isBanned
+		res.locals.pages = pages
+		next()
+	else
+		res.send 'This account ("' + req.user.username + '") has been permanently banned from using Mikuia.'
 
 fs.mkdirs 'web/public/img/avatars'
 

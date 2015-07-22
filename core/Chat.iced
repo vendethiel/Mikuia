@@ -100,7 +100,9 @@ class exports.Chat
 	handleMessage: (user, to, message) =>
 		Channel = new @Mikuia.Models.Channel to
 		Chatter = new @Mikuia.Models.Channel user.username
-		await Channel.getDisplayName defer err, displayName
+		await
+			Channel.getDisplayName defer err, displayName
+			Chatter.isBanned defer err, isBanned
 
 		chatterUsername = cli.yellowBright user.username
 
@@ -117,7 +119,9 @@ class exports.Chat
 			@Mikuia.Log.info cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
 		else
 			@Mikuia.Log.info cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
-		@Mikuia.Events.emit 'twitch.message', user, to, message
+
+		if !isBanned
+			@Mikuia.Events.emit 'twitch.message', user, to, message
 
 		Channel.trackIncrement 'messages', 1
 
@@ -136,12 +140,12 @@ class exports.Chat
 		{command, settings, isAllowed} = o
 
 		# abort if there's an error, access denied or no command
-		return if err || !isAllowed || !command?
+		return if err || !isAllowed || isBanned || !command?
 
 		handler = @Mikuia.Plugin.getHandler command
 		await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-		if !err && enabled
+		if !err and enabled and !isBanned 
 			if settings?._coinCost and settings._coinCost > 0
 				User = new Mikuia.Models.Channel user.username
 
@@ -159,9 +163,11 @@ class exports.Chat
 			channel = '#' + channel
 
 		Channel = new Mikuia.Models.Channel channel
-		await Channel.isEnabled defer err, isMember
+		await
+			Channel.isBanned defer err, isBanned
+			Channel.isEnabled defer err, isMember
 
-		if @joined.indexOf(channel) == -1 && isMember
+		if @joined.indexOf(channel) == -1 and isMember and !isBanned
 			joinLimiter.removeTokens 1, (err, rr) =>
 				@client.join channel
 				@joined.push channel
