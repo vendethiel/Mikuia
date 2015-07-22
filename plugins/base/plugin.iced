@@ -101,6 +101,8 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 				isMod = true
 				
 			switch trigger
+				when 'commands'
+					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/' + Channel.getName()
 				when 'dummy'
 					addDummy from.username, to, tokens.slice 1
 				when 'emit'
