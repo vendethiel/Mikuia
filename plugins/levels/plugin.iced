@@ -8,16 +8,19 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	await liveChannel.isLive defer err, live
 
 	if live
-		gibePoints = user.username not of lastMessage or new Date().getTime() / 1000 > lastMessage[user.username] + 60
+		Channel = new Mikuia.Models.Channel user.username
+		await Channel.isBanned defer err, isBanned
 
-		chatActivity[user.username] ?= {}
-		chatActivity[user.username][liveChannel.getName()] = 10
+		if !isBanned
+			gibePoints = user.username not of lastMessage or new Date().getTime() / 1000 > lastMessage[user.username] + 60
 
-		if gibePoints and user.username isnt to.replace '#', ''
-			Channel = new Mikuia.Models.Channel user.username
-			await Channel.addExperience to.replace('#', ''), Math.round(Math.random() * 1), chatActivity[user.username][liveChannel.getName()], defer whatever
+			chatActivity[user.username] ?= {}
+			chatActivity[user.username][liveChannel.getName()] = 10
 
-			lastMessage[user.username] = new Date().getTime() / 1000
+			if gibePoints and user.username isnt to.replace '#', ''
+				await Channel.addExperience to.replace('#', ''), Math.round(Math.random() * 1), chatActivity[user.username][liveChannel.getName()], defer whatever
+
+				lastMessage[user.username] = new Date().getTime() / 1000
 
 updateLevels = () ->
 	await Mikuia.Database.get 'mikuia:lastUpdate', defer err, time
