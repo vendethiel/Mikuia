@@ -169,6 +169,9 @@ body.mikuia {
 	color: white;
 }
 
+.label {
+	line-height: 1.5;
+}
 
 .level {
 	border: 2px solid #999;

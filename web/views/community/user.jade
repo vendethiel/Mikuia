@@ -99,7 +99,27 @@ block content
 						ul.list-group
 							each command in Channel.commands
 								li.list-group-item
-									.badge.pull-right=command.plugin
+									- console.log(command)
+									.label.label-default.pull-right=command.plugin
+									if command.settings
+										if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
+											.label.label-danger.pull-right Level #{command.settings._minLevel}
+
+										if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
+											if parseInt(command.settings._coinCost) > 1
+												.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
+											else
+												.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinName}
+
+										if command.settings._onlyMods
+											.label.label-success.pull-right Only Mods
+
+										if command.settings._onlySubs
+											.label.label-info.pull-right Only Subs
+
+										if command.settings._onlyBroadcaster
+											.label.label-primary.pull-right Only Broadcaster
+									
 									b=command.name
 									|  - 
 									if command.codeText

@@ -365,6 +365,8 @@ module.exports =
 						Channel.getEnabledPlugins defer err, channel.plugins
 						Channel.getLogo defer err, channel.logo
 						Channel.getProfileBanner defer err, channel.profileBanner
+						Channel.getSetting 'coins', 'name', defer err, coinName
+						Channel.getSetting 'coins', 'namePlural', defer err, coinNamePlural
 						Channel.getTotalLevel defer err, channel.level
 						Channel.isLive defer err, channel.isLive
 
@@ -378,8 +380,9 @@ module.exports =
 						description = Mikuia.Plugin.getHandler(commands[command]).description
 						codeText = false
 
+						await Channel.getCommandSettings command, true, defer err, settings
+
 						if commands[command] == 'base.dummy'
-							await Channel.getCommandSettings command, true, defer err, settings
 							description = settings.message
 							codeText = true
 						
@@ -387,6 +390,10 @@ module.exports =
 							name: command
 							description: description
 							plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
+							settings: settings
+							coin:
+								coinName: coinName
+								coinNamePlural: coinNamePlural
 							codeText: codeText
 
 					if channel.isLive
