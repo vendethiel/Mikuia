@@ -235,20 +235,13 @@ class exports.Chat
 
 					else
 						await Mikuia.Database.rpush 'mikuia:chat:queue', jsonData, defer whatever
-
-						setTimeout () =>
-							@parseQueue()
-						, 100
+						@parseQueue()
 
 			else
-				setTimeout () =>
-					@parseQueue()
-				, 100
+				@parseQueue()
 
 		else
-			setTimeout () =>
-				@parseQueue()
-			, 100
+			@parseQueue()
 
 	part: (channel, callback) =>
 		joinLimiter.removeTokens 1, (err, rr) =>
