@@ -37,7 +37,7 @@ class exports.Chat
 
 		@messageLimiter = RollingLimiter
 			interval: 30000
-			maxInInterval: 20
+			maxInInterval: 19
 			namespace: 'mikuia:chat:limiter'
 			redis: Mikuia.Database.client
 
@@ -201,7 +201,7 @@ class exports.Chat
 						await Mikuia.Database.zrangebyscore 'mikuia:chat:limiter', '-inf', '+inf', defer err, limitEntries
 					
 						currentTime = (new Date).getTime() * 1000
-						remainingRequests = 20
+						remainingRequests = 19
 						
 						for limitEntry in limitEntries
 							if parseInt(limitEntry) + 30000000 > currentTime
