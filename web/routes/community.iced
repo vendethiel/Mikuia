@@ -412,11 +412,14 @@ module.exports =
 						if channel.plugins.indexOf(element.plugin) > -1
 							splashButtons = splashButtons.concat element
 
-					for element in splashButtons
-						for button in element.buttons
+					for element, i in splashButtons
+						for button, j in element.buttons
 							if button.setting?
 								await Channel.getSetting element.plugin, button.setting, defer err, value
-								button.link = button.linkFunction value
+								if value
+									button.link = button.linkFunction value
+								else
+									button.link = false
 
 					if req.params.subpage?
 						if req.params.subpage == 'levels'

@@ -80,10 +80,11 @@ block content
 						if splashButtons
 							each pluginButtons in splashButtons
 								each button in pluginButtons.buttons
-									br
-									a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
-										img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
-										|  #{button.name}
+									if button.link
+										br
+										a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
+											img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
+											|  #{button.name}
 
 				.panel.panel-default
 					.panel-heading User Levels
