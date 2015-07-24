@@ -100,7 +100,6 @@ block content
 						ul.list-group
 							each command in Channel.commands
 								li.list-group-item
-									- console.log(command)
 									.label.label-default.pull-right=command.plugin
 									if command.settings
 										if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
