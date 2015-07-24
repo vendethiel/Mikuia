@@ -14,4 +14,5 @@ mixin stream(stream, displayHtml, sortValue)
 				.media-body
 					.media-heading
 						a(href='/user/' + stream.display_name.toLowerCase()) #{stream.display_name}
-						|  playing #{stream.game}
+						if stream.game
+							|  playing #{stream.game}
