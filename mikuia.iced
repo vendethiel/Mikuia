@@ -8,6 +8,7 @@ cli = require 'cli-color'
 fs = require 'fs-extra'
 iced = require('iced-coffee-script').iced
 path = require 'path'
+redis = require 'redis'
 repl = require 'repl'
 
 # So yeah, let's see what happens if we go with this.
@@ -50,7 +51,16 @@ Mikuia.Settings.read ->
 	# Welp, we have our settings ready, we can now slowly check stuff, and launch!
 	# First thing to check - database connection, Redis FTW.
 	# CoffeeScript makes this line look really weird :D
-	Mikuia.Database.connect Mikuia.settings.redis.host, Mikuia.settings.redis.port, Mikuia.settings.redis.options
+
+	Mikuia.Log.info cli.redBright('Redis') + ' / ' + cli.whiteBright('Attempting to connect with the server at ' + Mikuia.settings.redis.host + ':' + Mikuia.settings.redis.port + '...')
+	Mikuia.Database = redis.createClient Mikuia.settings.redis.port, Mikuia.settings.redis.host, Mikuia.settings.redis.options
+	Mikuia.Database.on 'ready', =>
+		Mikuia.Log.success cli.redBright('Redis') + ' / ' + cli.whiteBright('Connected to the database.')
+		await Mikuia.Database.select Mikuia.settings.redis.db
+
+	Mikuia.Database.on 'error', (err) =>
+		console.trace()
+		Mikuia.Log.fatal cli.redBright('Redis') + ' / ' + cli.whiteBright('Database error: ' + err)
 
 	isBot = false
 	isWeb = false

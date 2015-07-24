@@ -39,7 +39,7 @@ class exports.Chat
 			interval: 30000
 			maxInInterval: 19
 			namespace: 'mikuia:chat:limiter'
-			redis: Mikuia.Database.client
+			redis: Mikuia.Database
 
 		@client.addListener 'banned', (channel) =>
 			Channel = new Mikuia.Models.Channel channel
@@ -235,12 +235,12 @@ class exports.Chat
 
 					else
 						await Mikuia.Database.rpush 'mikuia:chat:queue', jsonData, defer whatever
-						setTimeout() =>
+						setTimeout () =>
 							@parseQueue()
 						, 10
 
 			else
-				setTimeout() =>
+				setTimeout () =>
 					@parseQueue()
 				, 10
 
