@@ -179,7 +179,7 @@ app.listen Mikuia.settings.web.port
 
 updateGithub = (callback) =>
 	request 
-		url: 'https://api.github.com/repos/Maxorq/Mikuia/commits'
+		url: 'https://api.github.com/repos/Hatsuney/Mikuia/commits'
 		headers: 
 			'User-Agent': 'Mikuia/0.0.0.0.1'
 	, (error, response, body) =>
