@@ -59,26 +59,31 @@ block content
 					.panel-heading Changelog
 					.panel-body
 
-						each commit in Mikuia.Stuff.githubCommits
-							- var date = moment(commit.commit.author.date).format('MMMM Do, YYYY')
-							
-							if previousDate
-								if date != previousDate
-									br
+						if Mikuia.Stuff.githubCommits.length > 5
+							each commit in Mikuia.Stuff.githubCommits
+								- var date = moment(commit.commit.author.date).format('MMMM Do, YYYY')
+								
+								if previousDate
+									if date != previousDate
+										br
+										h3.text-primary=date
+										br
+								else
 									h3.text-primary=date
 									br
-							else
-								h3.text-primary=date
-								br
 
-							- var previousDate = date						
+								- var previousDate = date						
 
-							.media.nomargin
-								a.pull-left(href=commit.author.html_url)
-									img.media-object(src=commit.author.avatar_url, width='20', height='20')
-								.media-body
-									a(href=commit.html_url)
-										h5.media-heading!=commit.commit.message
+								.media.nomargin
+									a.pull-left(href=commit.author.html_url)
+										img.media-object(src=commit.author.avatar_url, width='20', height='20')
+									.media-body
+										a(href=commit.html_url)
+											h5.media-heading!=commit.commit.message
+						else
+							.text-muted
+								| Error reading changelog. You can check out the
+								a(href='http://github.com/Hatsuney/Mikuia/commits')  GitHub commits.
 				
 				each panel in panels
 					.panel.panel-default
