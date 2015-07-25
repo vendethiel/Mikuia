@@ -237,7 +237,7 @@ class exports.Chat
 			@clients[@channelClients[channel]].part channel
 			if @joined.indexOf(channel) > -1
 				@joined.splice @joined.indexOf(channel), 1
-			delete channelClients[channel]
+			delete @channelClients[channel]
 
 	say: (channel, message) =>
 		if channel.indexOf('#') == -1
