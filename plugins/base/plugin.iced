@@ -102,7 +102,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 				
 			switch trigger
 				when 'commands'
-					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/' + Channel.getName()
+					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName()
 				when 'dummy'
 					addDummy from.username, to, tokens.slice 1
 				when 'emit'
