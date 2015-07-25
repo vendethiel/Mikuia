@@ -314,11 +314,11 @@ class exports.Chat
 					Channel.isSupporter defer err, isSupporter
 
 				if isSupporter
-					channelLimiter[Channel.getName()] = new RateLimiter 3, 30000, true
-					rateLimitingProfile = cli.redBright 'Supporter (3 per 30s)'
+					channelLimiter[Channel.getName()] = new RateLimiter 5, 30000, true
+					rateLimitingProfile = cli.redBright 'Supporter (5 per 30s)'
 				else
-					channelLimiter[Channel.getName()] = new RateLimiter 2, 30000, true
-					rateLimitingProfile = cli.greenBright 'Free (2 per 30s)'
+					channelLimiter[Channel.getName()] = new RateLimiter 3, 30000, true
+					rateLimitingProfile = cli.greenBright 'Free (3 per 30s)'
 
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
 
