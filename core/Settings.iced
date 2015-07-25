@@ -7,6 +7,7 @@ defaultSettings =
 		admins: [
 			'hatsuney'
 		]
+		connections: 2
 		debug: false
 		disableChat: false
 		name: 'YourBotNameHere'
