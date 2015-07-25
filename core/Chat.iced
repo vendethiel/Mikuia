@@ -13,7 +13,6 @@ class exports.Chat
 		@clients = {}
 		@connected = false
 		@joined = []
-		@joinLimiters = {}
 		@messageLimiter = null
 		@moderators = {}
 		@nextJoinClient = 0
@@ -38,7 +37,12 @@ class exports.Chat
 			await @spawnConnection i, defer err, client
 			@clients[i] = client
 			@clientJoins[i] = []
-			@joinLimiters[i] = new RateLimiter 25, 10000
+
+		@joinLimiter = RollingLimiter
+			interval: 15000
+			maxInInterval: 49
+			namespace: 'mikuia:join:limiter:'
+			redis: Mikuia.Database		
 
 		@messageLimiter = RollingLimiter
 			interval: 30000
@@ -124,14 +128,30 @@ class exports.Chat
 			Channel.isEnabled defer err, isMember
 
 		if @joined.indexOf(channel) == -1 and isMember and !isBanned
-			@joinLimiters[@nextJoinClient].removeTokens 1, (err, rr) =>
-				@clients[@nextJoinClient].join channel
-				@joined.push channel
-				@clientJoins[@nextJoinClient].push channel
-				@channelClients[channel] = @nextJoinClient
 
-				@nextJoinClient++
-				callback? false
+			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter:' + @nextJoinClient, '-inf', '+inf', defer err, limitEntries
+					
+			currentTime = (new Date).getTime() * 1000
+			remainingRequests = 49
+			
+			for limitEntry in limitEntries
+				if parseInt(limitEntry) + 15000000 > currentTime
+					remainingRequests--
+
+			if remainingRequests > 0
+				@joinLimiter @nextJoinClient, (err, timeLeft) =>
+					if !timeLeft
+						@clients[@nextJoinClient].join channel
+						@joined.push channel
+						@clientJoins[@nextJoinClient].push channel
+						@channelClients[channel] = @nextJoinClient
+
+						@nextJoinClient++
+						callback? false
+					else
+						callback? true
+			else
+				callback? true
 		else
 			callback? true
 
