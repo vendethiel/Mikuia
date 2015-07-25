@@ -166,6 +166,8 @@ class exports.Chat
 								if !timeLeft
 									@clients[@channelClients['#' + Channel.getName()]].say data.channel, data.message
 
+									Mikuia.Events.emit 'mikuia.say', data.channel, data.message
+
 									@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(remainingRequests) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + data.message
 
 									@parseQueue()
