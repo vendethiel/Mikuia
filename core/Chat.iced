@@ -11,6 +11,7 @@ class exports.Chat
 		@channelClients = {}
 		@clientJoins = {}
 		@clients = {}
+		@connected = false
 		@joined = []
 		@joinLimiters = {}
 		@messageLimiter = null
@@ -27,6 +28,11 @@ class exports.Chat
 
 		if connections < 1
 			connections = 1
+
+		setTimeout () =>
+			if !@connected
+				@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Failed to connect to Twitch IRC. Restarting...')
+		, connections * 10 * 1000
 
 		for i in [0..(connections - 1)]
 			await @spawnConnection i, defer err, client
@@ -272,6 +278,7 @@ class exports.Chat
 
 			if client.id == Mikuia.settings.bot.connections - 1
 				@Mikuia.Events.emit 'twitch.connected'
+				@connected = true
 				@update()
 
 			callback false, client
