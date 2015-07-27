@@ -36,10 +36,16 @@ html
 							a(href='/supporter')
 								i.fa.fa-money
 								|  Supporter
-						li(class=(path == '/leagues' ? 'active' : undefined))
-							a(href='/leagues')
+						li.dropdown(class=(path == '/leagues' ? 'active' : undefined))
+							a.dropdown-toggle(href='#', data-toggle='dropdown')
 								i.fa.fa-trophy
 								|  Leagues
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									a(href='/leagues') Your Rank
+								li
+									a(href='/leagues/leaderboards') Leaderboards
 						li(class=(path.indexOf('/slack') == 0 ? 'active' : undefined))
 							a(href='/slack')
 								i.fa.fa-slack
