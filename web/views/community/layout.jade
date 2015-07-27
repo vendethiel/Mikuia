@@ -39,7 +39,7 @@ html
 						li.dropdown(class=(path == '/leagues' ? 'active' : undefined))
 							a.dropdown-toggle(href='#', data-toggle='dropdown')
 								i.fa.fa-trophy
-								|  Leagues
+								|  Leagues 
 								span.caret
 							ul.dropdown-menu(role='menu')
 								li
@@ -50,6 +50,10 @@ html
 							a(href='/slack')
 								i.fa.fa-slack
 								|  Slack
+						li
+							a(href='https://p.datadoghq.com/sb/AF-ona-ccd2288b29')
+								i.fa.fa-bar-chart
+								|  Status
 					if !user
 						ul.nav.navbar-nav.navbar-right.pull-right
 							li
