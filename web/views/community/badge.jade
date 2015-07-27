@@ -4,7 +4,7 @@ block content
 	.splash.profile
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					.media
 						.pull-left
 							img.img-circle.media-object(src='/img/badges/' + badgeId + '.png', width='120', height='120')
@@ -17,7 +17,7 @@ block content
 							small=Badge.description
 	.container
 		.row
-			.col-md-12
+			.col-md-12.animation-fade-in-left
 				h2
 					if members.length == 1
 						| 1 user has this badge 
@@ -25,7 +25,7 @@ block content
 						| #{members.length} users have this badge 
 					| (out of #{uniqueChatters})
 		br
-		.row
+		.row.animation-fade-in-down
 			each memberName in members
 				- var member = memberData[memberName]
 				.col-md-3

@@ -4,11 +4,11 @@ block content
 	.splash(style=(profileBanner != null && profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					h1 #{displayName} Level's Top 100
 	.container
 		.row
-			.col-md-8
+			.col-md-8.animation-fade-in-right
 				table.table.table-bordered.table-striped
 					thead
 						tr
@@ -43,7 +43,7 @@ block content
 										+levelProgress(exp)
 								- i++
 
-			.col-md-4
+			.col-md-4.animation-fade-in-left
 				if user
 					.panel.panel-default
 						.panel-heading Your Stats

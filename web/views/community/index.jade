@@ -8,7 +8,7 @@ block content
 			//- 		each avatarFile in Mikuia.Tools.getAvatars(1000)
 			//- 			li
 			//- 				img(src='/img/avatars/' + avatarFile, width='64', height='64')
-			.container
+			.container.animation-fade-in-down
 				.row
 					.col-xs-4
 						object.player(type='application/x-shockwave-flash', height='225', width='369', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel=' + featured.name)
@@ -46,7 +46,7 @@ block content
 		br
 	.infobox(style='background-color: #333; box-shadow: 0px 0px 50px #999;')
 		.container(style='height: 100%;')
-			.infobox-slack
+			.infobox-slack.animation-fade-in-down
 				.row
 					.col-md-12
 						h1 Mikuia.tv has a Slack group now.
@@ -54,7 +54,7 @@ block content
 							| Click here to request an invite.
 	.container
 		.row
-			.col-md-8
+			.col-md-8.animation-fade-in-right
 				.panel.panel-default
 					.panel-heading Changelog
 					.panel-body
@@ -89,7 +89,7 @@ block content
 					.panel.panel-default
 						.panel-heading=panel.title
 						.panel-body!=panel.content
-			.col-md-4
+			.col-md-4.animation-fade-in-left
 				.panel.panel-default
 					.panel-heading What?
 					.panel-body
@@ -104,11 +104,11 @@ block content
 	.well
 		.container
 			.row
-				.col-md-9
+				.col-md-9.animation-fade-in-right
 					h1 Other Streams
 					each miniData in sorting
 						+stream(streams[miniData[0]], displayHtml, miniData[1])
-				.col-md-3
+				.col-md-3.animation-fade-in-left
 					h1 Woo, Twitter
 					a.twitter-timeline(href='https://twitter.com/Maxorq', data-widget-id='540548781029462017') Tweets by @Maxorq
 					script(type='text/javascript').

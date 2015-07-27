@@ -4,11 +4,11 @@ block content
 	.splash.bg-material-red
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					h1 Levels
 	.container
 		.row
-			.col-md-8
+			.col-md-8.animation-fade-in-right
 				table.table.table-bordered.table-striped
 					thead
 						tr
@@ -50,7 +50,7 @@ block content
 									td.text-muted -
 									td.text-muted -
 									td.text-muted Login to see your progress!
-			.col-md-4
+			.col-md-4.animation-fade-in-left
 				if user
 					h2
 						+level(level)

@@ -2,7 +2,7 @@ mixin userHeader(Channel)
 	.splash.user(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + Channel.profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					.media
 						.pull-left
 							img.img-circle.media-object.profile-avatar(src=Channel.logo, width='120', height='120')

@@ -4,7 +4,7 @@ block content
 	.splash.profile.bg-material-deep-purple-800(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(\'' + Channel.profileBanner + '\'); background-position: top; background-repeat: no-repeat; background-size: cover;' : undefined))
 		.container
 			.row
-				.col-xs-3.text-center
+				.col-xs-3.text-center.animation-fade-in-right
 					img.img-circle.media-object.profile-avatar(src=Channel.logo, width='150', height='150')
 					- var fontSize = 32
 					if Channel.display_name.length > 16
@@ -32,7 +32,7 @@ block content
 					//- 			.pull-right.hidden-xs
 					//- 				+level(Channel.level)
 
-				.col-xs-9
+				.col-xs-9.animation-fade-in-left
 					if Channel.bio != 'null' && Channel.bio != null
 						h1
 							i=Channel.bio
@@ -42,7 +42,7 @@ block content
 
 	if Channel.isLive
 		.infobox.infobox-live
-			.container
+			.container.animation-fade-in-left
 				.row
 					.col-md-2.visible-lg-block
 						a(href='http://twitch.tv/' + Channel.name, target='_blank')
@@ -63,8 +63,7 @@ block content
 								a(href='http://twitch.tv/' + Channel.name, target='_blank') Watch on Twitch
 	.container
 		.row
-			.col-md-4
-
+			.col-md-4.animation-fade-in-right
 				.panel.panel-default
 					.panel-heading Actions
 					.panel-body
@@ -94,7 +93,7 @@ block content
 						a(href='/user/' + Channel.name + '/levels') See more >>
 
 			if Channel.commands.length > 0
-				.col-md-8
+				.col-md-8.animation-fade-in-left
 					.panel.panel-default
 						.panel-heading Commands
 						ul.list-group

@@ -4,11 +4,11 @@ block content
 	.splash.bg-black
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					h1 League Leaderboards
 	.container
 		.row
-			.col-md-8
+			.col-md-8.animation-fade-in-right
 				table.table.table-bordered.table-striped
 					thead
 						tr
@@ -43,7 +43,7 @@ block content
 											img(src='/img/leagues/' + Mikuia.Leagues.getLeague(rating) + '.png', width='24')
 											|  #{Mikuia.Leagues.getLeagueFullText(rating)}
 								- i++
-			.col-md-4
+			.col-md-4.animation-fade-in-left
 				.panel.panel-default
 					.panel-heading What is this?
 					.panel-body

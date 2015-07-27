@@ -4,11 +4,11 @@ block content
 	.splash
 		.container
 			.row
-				.col-md-12
+				.col-md-12.animation-fade-in-right
 					h1 Streams
 	.container
 		.row
-			.col-md-3
+			.col-md-3.animation-fade-in-right
 				.well
 					h4 Options
 
@@ -26,6 +26,6 @@ block content
 						.form-group
 							.col-sm-12
 								button.btn.btn-primary.btn-sm(type='submit') Filter
-			.col-md-9
+			.col-md-9.animation-fade-in-left
 				each miniData in sorting
 					+stream(streams[miniData[0]], displayHtml, miniData[1])

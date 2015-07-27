@@ -13,7 +13,7 @@ html
 		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
 		title=Mikuia.settings.bot.name
 	body(class=(path == '/' ? 'mikuia' : undefined))
-		nav.navbar.navbar-default.navbar-fixed-top.navbar-mikuia(role='navigation')
+		nav.navbar.navbar-default.navbar-fixed-top.navbar-mikuia.animation-fade-in-down(role='navigation')
 			.container
 				.navbar-header
 					a.navbar-brand(href='/')=Mikuia.settings.bot.name
@@ -65,7 +65,7 @@ html
 					if Mikuia.settings.bot.disableChat
 						p.navbar-text.navbar-right.navbar-alert #{Mikuia.settings.bot.name} is currently globally banned from the chat.
 		block content
-		.container
+		.container.animation-fade-in-up
 			hr
 			.row
 				.col-md-3
