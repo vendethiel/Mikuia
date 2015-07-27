@@ -165,6 +165,8 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 				when 'say'
 					if isAdmin
 						Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
+				when 'status'
+					Mikuia.Chat.say to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29'
 				else
 					# do nothing
 
