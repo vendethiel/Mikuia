@@ -310,7 +310,11 @@ checkRankUpdates = (stream, callback) =>
 
 makeAPIRequest = (link, callback) =>
 	apiLimiter.removeTokens 1, (err, rr) =>
+		start = process.hrtime()
 		request 'https://osu.ppy.sh/api' + link + '&k=' + @Plugin.getSetting('apiKey'), (error, response, body) ->
+			response.responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
+			Mikuia.Events.emit 'osu.api.request', response.responseTime
+
 			if !error && response.statusCode == 200
 				data = {}
 				try
