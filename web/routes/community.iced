@@ -81,7 +81,7 @@ module.exports =
 				featuredStream.name = featuredStream.display_name
 
 				if isSupporter
-					featuredStream.display_name = '❤' + featuredStream.display_name
+					featuredStream.display_name = '❤ ' + featuredStream.display_name
 
 		await Mikuia.Element.preparePanels 'community.index', defer panels
 
