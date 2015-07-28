@@ -363,7 +363,9 @@ class exports.Chat
 
 							await Channel.isSupporter defer err, isSupporter
 							if isSupporter
-								Channel.trackValue 'supporterValue', Math.floor(Math.random() * 10000)
+								Channel.trackValue 'supporterValue', Math.floor(Math.random() * 10000) + 1
+							else
+								Channel.trackValue 'supporterValue', 0
 
 						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 						await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
