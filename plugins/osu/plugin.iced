@@ -313,9 +313,10 @@ makeAPIRequest = (link, callback) =>
 		start = process.hrtime()
 		request 'https://osu.ppy.sh/api' + link + '&k=' + @Plugin.getSetting('apiKey'), (error, response, body) ->
 			response.responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
-			Mikuia.Events.emit 'osu.api.request', response.responseTime
 
 			if !error && response.statusCode == 200
+				Mikuia.Events.emit 'osu.api.request', response.responseTime
+
 				data = {}
 				try
 					data = JSON.parse body
@@ -329,9 +330,10 @@ makeTillerinoRequest = (beatmap_id, mods, callback) =>
 	start = process.hrtime()
 	request 'http://bot.tillerino.org:1666/beatmapinfo?k=' + @Plugin.getSetting('tillerinoKey') + '&wait=2000&beatmapid=' + beatmap_id + '&mods=' + mods, (error, response, body) ->
 		response.responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
-		Mikuia.Events.emit 'osu.tillerino.request', response.responseTime
-
+		
 		if !error && response.statusCode == 200
+			Mikuia.Events.emit 'osu.tillerino.request', response.responseTime
+
 			data = {}
 			try
 				data = JSON.parse body
