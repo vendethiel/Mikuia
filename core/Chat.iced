@@ -4,6 +4,7 @@ RateLimiter = require('limiter').RateLimiter
 RollingLimiter = require 'rolling-rate-limiter'
 
 channelLimiter = {}
+channelTotalLimiter = {}
 
 class exports.Chat
 	constructor: (@Mikuia) ->
@@ -250,14 +251,17 @@ class exports.Chat
 	sayUnfiltered: (channel, message) ->
 		Channel = new Mikuia.Models.Channel channel
 
-		lines = message.split '\\n'
-		for line in lines
-			if !Mikuia.settings.bot.disableChat && line.trim() != ''
+		if channelTotalLimiter[Channel.getName()]
+			channelTotalLimiter.removeTokens 1, (err, remainingRequests) =>
+				if remainingRequests > -1
+					lines = message.split '\\n'
+					for line in lines
+						if !Mikuia.settings.bot.disableChat && line.trim() != ''
 
-				line = JSON.stringify
-					channel: channel
-					message: line
-				await Mikuia.Database.rpush 'mikuia:chat:queue', line, defer whatever
+							line = JSON.stringify
+								channel: channel
+								message: line
+							await Mikuia.Database.rpush 'mikuia:chat:queue', line, defer whatever
 
 	sayRaw: (channel, message) =>
 		@clients[@channelClients[channel]].say channel, message
@@ -315,9 +319,11 @@ class exports.Chat
 
 				if isSupporter
 					channelLimiter[Channel.getName()] = new RateLimiter 5, 30000, true
+					channelTotalLimiter[Channel.getName()] = new RateLimiter 10, 30000, true
 					rateLimitingProfile = cli.redBright 'Supporter (5 per 30s)'
 				else
 					channelLimiter[Channel.getName()] = new RateLimiter 3, 30000, true
+					channelTotalLimiter[Channel.getName()] = new RateLimiter 6, 30000, true
 					rateLimitingProfile = cli.greenBright 'Free (3 per 30s)'
 
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
@@ -328,6 +334,7 @@ class exports.Chat
 				await Channel.getDisplayName defer err, displayName
 
 				delete channelLimiter[Channel.getName()]
+				delete channelTotalLimiter[Channel.getName()]
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
 
 	update: =>
