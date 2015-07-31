@@ -252,7 +252,7 @@ class exports.Chat
 		Channel = new Mikuia.Models.Channel channel
 
 		if channelTotalLimiter[Channel.getName()]
-			channelTotalLimiter.removeTokens 1, (err, remainingRequests) =>
+			channelTotalLimiter[Channel.getName()].removeTokens 1, (err, remainingRequests) =>
 				if remainingRequests > -1
 					lines = message.split '\\n'
 					for line in lines
