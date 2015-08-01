@@ -3,6 +3,12 @@ class exports.Model
 		@model = 'model'
 		@name = ''
 
+	_del: (key, callback) ->
+		if key != ''
+			key = ':' + key
+		await Mikuia.Database.del @model + ':' + @name + key, defer err, data
+		callback err, data
+
 	_exists: (key, callback) ->
 		if key != ''
 			key = ':' + key

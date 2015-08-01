@@ -266,7 +266,6 @@ class exports.Channel extends Mikuia.Model
 						Mikuia.Chat.sayUnfiltered channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
 
 		else
-			await @_hset 'experience', channel, 0, defer err, data
 			await @updateTotalLevel defer whatever
 			
 		callback false
@@ -308,8 +307,17 @@ class exports.Channel extends Mikuia.Model
 	updateTotalLevel: (callback) =>
 		totalExperience = 0
 
-		await @getAllExperience defer err, experience
+		await
+			@getAllExperience defer err, experience
+			@isBot defer err, isBot
+
+		if isBot
+			await @_del 'experience', defer err
+		
 		for data in experience
+			if isBot
+				data[1] = 0
+				
 			totalExperience += parseInt data[1]
 			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
 
