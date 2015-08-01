@@ -13,7 +13,17 @@ block content
 						- fontSize = 18
 
 					h2.weight-500(style='font-size: ' + fontSize + 'px;')=Channel.display_name
-					+level(Channel.level, true)
+					if Channel.isBot
+						.label.label-info
+							i.fa.fa-cogs
+							|  Bot
+					else if Channel.isBanned
+						.label.label-danger
+							i.fa.fa-minus-circle
+							|  Banned
+					else
+						+level(Channel.level, true)
+					br
 					br
 					if Object.keys(Channel.badges).length > 0
 						small.text-muted BADGES
@@ -33,99 +43,95 @@ block content
 					//- 				+level(Channel.level)
 
 				.col-xs-9.animation-fade-in-left
-					if Channel.bio != 'null' && Channel.bio != null
+					if Channel.bio != 'null' && Channel.bio != null && !Channel.isBot && !Channel.isBanned
 						h1
 							i=Channel.bio
 					else
 						h1.text-muted
 							i No bio.
-
-	if Channel.isLive
-		.infobox.infobox-live
-			.container.animation-fade-in-left
-				.row
-					.col-md-2.visible-lg-block
-						a(href='http://twitch.tv/' + Channel.name, target='_blank')
-							img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
-					.col-md-10
-						h1.hidden-xs
-							i.fa.fa-circle(style='color: #f44336;')
-							|  Currently Live 
-							small playing #{Channel.stream.game}
-						h2.visible-xs-block
-							br
-							i.fa.fa-circle(style='color: #f44336;')
-							|  Currently Live 
-							small playing #{Channel.stream.game}
-						p
-							h4.text-muted
-								| #{Channel.stream.status} >> 
-								a(href='http://twitch.tv/' + Channel.name, target='_blank') Watch on Twitch
-	.container
-		.row
-			.col-md-4.animation-fade-in-right
-				.panel.panel-default
-					.panel-heading Actions
-					.panel-body
-						a.btn.btn-primary.btn-xs(href='/levels/' + Channel.name)
-							.fa.fa-user(style='width: 18px;')
-							|  View top 100 levels
-						br
-
-						a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + Channel.name)
-							img(src='/img/glitch.png', height='18', width='18')
-							|  View Twitch.tv profile
-
-						if splashButtons
-							each pluginButtons in splashButtons
-								each button in pluginButtons.buttons
-									if button.link
-										br
-										a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
-											img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
-											|  #{button.name}
-
-				.panel.panel-default
-					.panel-heading User Levels
-					.panel-body
-						+levelOverview(Channel.experience)
-					.panel-footer
-						a(href='/user/' + Channel.name + '/levels') See more >>
-
-			if Channel.commands.length > 0
-				.col-md-8.animation-fade-in-left
+	if !Channel.isBot
+		if Channel.isLive
+			.infobox.infobox-live
+				.container.animation-fade-in-left
+					.row
+						.col-md-2.visible-lg-block
+							a(href='http://twitch.tv/' + Channel.name, target='_blank')
+								img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
+						.col-md-10
+							h1.hidden-xs
+								i.fa.fa-circle(style='color: #f44336;')
+								|  Currently Live 
+								small playing #{Channel.stream.game}
+							h2.visible-xs-block
+								br
+								i.fa.fa-circle(style='color: #f44336;')
+								|  Currently Live 
+								small playing #{Channel.stream.game}
+							p
+								h4.text-muted
+									| #{Channel.stream.status} >> 
+									a(href='http://twitch.tv/' + Channel.name, target='_blank') Watch on Twitch
+		.container
+			.row
+				.col-md-4.animation-fade-in-right
 					.panel.panel-default
-						.panel-heading Commands
-						ul.list-group
-							each command in Channel.commands
-								li.list-group-item
-									.label.label-default.pull-right=command.plugin
-									if command.settings
-										if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
-											.label.label-danger.pull-right Level #{command.settings._minLevel}
+						.panel-heading Actions
+						.panel-body
+							a.btn.btn-primary.btn-xs(href='/levels/' + Channel.name)
+								.fa.fa-user(style='width: 18px;')
+								|  View top 100 levels
+							br
 
-										if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
-											if parseInt(command.settings._coinCost) > 1
-												.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
-											else
-												.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinName}
+							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + Channel.name)
+								img(src='/img/glitch.png', height='18', width='18')
+								|  View Twitch.tv profile
 
-										if command.settings._onlyMods
-											.label.label-success.pull-right Only Mods
+							if splashButtons
+								each pluginButtons in splashButtons
+									each button in pluginButtons.buttons
+										if button.link
+											br
+											a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
+												img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
+												|  #{button.name}
 
-										if command.settings._onlySubs
-											.label.label-info.pull-right Only Subs
+					.panel.panel-default
+						.panel-heading User Levels
+						.panel-body
+							+levelOverview(Channel.experience)
+						.panel-footer
+							a(href='/user/' + Channel.name + '/levels') See more >>
 
-										if command.settings._onlyBroadcaster
-											.label.label-primary.pull-right Only Broadcaster
-									
-									b=command.name
-									|  - 
-									if command.codeText
-										code=command.description
-									else
-										| #{command.description}
+				if Channel.commands.length > 0
+					.col-md-8.animation-fade-in-left
+						.panel.panel-default
+							.panel-heading Commands
+							ul.list-group
+								each command in Channel.commands
+									li.list-group-item
+										.label.label-default.pull-right=command.plugin
+										if command.settings
+											if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
+												.label.label-danger.pull-right Level #{command.settings._minLevel}
 
+											if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
+												if parseInt(command.settings._coinCost) > 1
+													.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
+												else
+													.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinName}
 
+											if command.settings._onlyMods
+												.label.label-success.pull-right Only Mods
 
-					
+											if command.settings._onlySubs
+												.label.label-info.pull-right Only Subs
+
+											if command.settings._onlyBroadcaster
+												.label.label-primary.pull-right Only Broadcaster
+										
+										b=command.name
+										|  - 
+										if command.codeText
+											code=command.description
+										else
+											| #{command.description}

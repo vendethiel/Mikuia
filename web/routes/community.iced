@@ -368,6 +368,8 @@ module.exports =
 						Channel.getSetting 'coins', 'name', defer err, coinName
 						Channel.getSetting 'coins', 'namePlural', defer err, coinNamePlural
 						Channel.getTotalLevel defer err, channel.level
+						Channel.isBanned defer err, channel.isBanned
+						Channel.isBot defer err, channel.isBot
 						Channel.isLive defer err, channel.isLive
 
 					channel.commands = []
