@@ -4,7 +4,7 @@ mixin stream(stream, displayHtml, sortValue)
 			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
 				img(src=stream.preview, width='260')
 			br
-			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
+			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), title=stream.status, target='_blank')
 				if stream.language
 					img.pull-right.stream-flag(src='/img/flags/' + stream.language + '.png')
 				|  #{stream.status}
