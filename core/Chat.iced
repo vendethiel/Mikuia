@@ -386,9 +386,11 @@ class exports.Chat
 					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
 
 					things = [
+						'broadcaster_language'
 						'display_name'
 						'followers'
 						'game'
+						'language'
 						'logo'
 						'mature'
 						'profile_banner'

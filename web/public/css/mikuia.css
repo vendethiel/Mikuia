@@ -297,6 +297,10 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 	max-height: 21em;
 }
 
+.stream-flag {
+	padding: 5px;
+}
+
 .weight-500 {
 	font-weight: 500;
 }
