@@ -148,7 +148,7 @@ module.exports =
 				if exists
 					await Channel.getDisplayName defer err, displayName
 					await Channel.getProfileBanner defer err, profileBanner
-					await Mikuia.Database.zrevrange 'levels:' + req.params.userId + ':experience', 0, 99, 'withscores', defer err, ranks
+					await Mikuia.Database.zrevrange 'levels:' + Channel.getName() + ':experience', 0, 99, 'withscores', defer err, ranks
 
 					channels = Mikuia.Tools.chunkArray ranks, 2
 					displayNames = {}
@@ -170,8 +170,8 @@ module.exports =
 					if req.isAuthenticated()
 						channel = new Mikuia.Models.Channel req.user.username
 						await
-							channel.getExperience req.params.userId, defer err, experience
-							Mikuia.Database.zrevrank 'levels:' + req.params.userId + ':experience', req.user.username, defer err, rank
+							channel.getExperience Channel.getName(), defer err, experience
+							Mikuia.Database.zrevrank 'levels:' + Channel.getName() + ':experience', req.user.username, defer err, rank
 
 					res.render 'community/levelsUser',
 						channels: channels
@@ -352,7 +352,7 @@ module.exports =
 				if exists
 
 					channel =
-						name: req.params.userId
+						name: Channel.getName()
 					displayNames = {}
 					ranks = {}
 
@@ -399,12 +399,12 @@ module.exports =
 							codeText: codeText
 
 					if channel.isLive
-						await Mikuia.Streams.get req.params.userId, defer err, channel.stream
+						await Mikuia.Streams.get Channel.getName(), defer err, channel.stream
 
 					for data in channel.experience
 						chan = new Mikuia.Models.Channel data[0]
 						await chan.getDisplayName defer err, displayNames[data[0]]
-						await Mikuia.Database.zrevrank 'levels:' + data[0] + ':experience', req.params.userId, defer err, ranks[data[0]]
+						await Mikuia.Database.zrevrank 'levels:' + data[0] + ':experience', Channel.getName(), defer err, ranks[data[0]]
 					
 					for name, rank of ranks
 						ranks[name]++
