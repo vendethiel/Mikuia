@@ -1,5 +1,5 @@
 cli = require 'cli-color'
-irc = require 'twitch-irc'
+irc = require 'tmi.js'
 RateLimiter = require('limiter').RateLimiter
 RollingLimiter = require 'rolling-rate-limiter'
 
@@ -70,7 +70,7 @@ class exports.Chat
 		if Chatter.isModOf Channel.getName()
 			chatterUsername = cli.greenBright '[m] ' + chatterUsername
 
-		if user.special.indexOf('subscriber') > -1
+		if user.subscriber
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
 		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
@@ -270,12 +270,9 @@ class exports.Chat
 		client = new irc.client
 			options:
 				debug: @Mikuia.settings.bot.debug
-				exitOnError: true
 			connection:
+				random: 'chat'
 				reconnect: true
-				retries: -1
-				serverType: 'chat'
-				preferredServer: @Mikuia.settings.bot.server
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth

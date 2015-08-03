@@ -93,7 +93,7 @@ class exports.Channel extends Mikuia.Model
 				callback false
 		else if settings?._onlyMods and not chatter.isModOf @getName()
 			callback false
-		else if settings?._onlySubs and user.special.indexOf('subscriber') == -1
+		else if settings?._onlySubs and !user.subscriber
 			callback false
 		else if settings?._onlyBroadcaster and user.username isnt @getName()
 			callback false

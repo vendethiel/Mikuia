@@ -74,7 +74,7 @@ checkForRequest = (user, Channel, message) =>
 	continueCheck = true
 	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
 	if !err && requestSubMode
-		if user.special.indexOf('subscriber') == -1
+		if user.subscriber
 			continueCheck = false
 
 	await Channel.getSetting 'osu', 'requestUserLimit', defer err, requestUserLimit

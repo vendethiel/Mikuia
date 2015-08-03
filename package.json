@@ -27,7 +27,7 @@
     "request": "^2.53.0",
     "rolling-rate-limiter": "^0.1.2",
     "slate-irc": "^0.7.3",
-    "twitch-irc": "Maxorq/twitch-irc",
+    "tmi.js": "^0.0.20",
     "twitchy": "^0.5.0",
     "underscore": "^1.8.2"
   }
