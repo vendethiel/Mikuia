@@ -280,13 +280,6 @@ class exports.Chat
 		client.id = i
 		client.connect()
 
-		client.addListener 'banned', (channel) =>
-			Channel = new Mikuia.Models.Channel channel
-			await Channel.getDisplayName defer err, displayName
-
-			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Banned on ' + cli.greenBright(displayName) + cli.whiteBright('.'))
-			@Mikuia.Events.emit 'twitch.banned', channel
-
 		client.addListener 'chat', (channel, user, message) =>
 			if user.username != @Mikuia.settings.bot.name.toLowerCase()
 				@handleMessage user, channel, message
@@ -325,6 +318,13 @@ class exports.Chat
 					rateLimitingProfile = cli.greenBright 'Free (3 per 30s)'
 
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the channel. Rate Limiting Profile: ') + rateLimitingProfile
+
+		client.addListener 'notice', (channel, noticeId, params) =>
+			if noticeId == 'msg_banned' || noticeId == 'msg_timedout'
+				Channel = new Mikuia.Models.Channel channel
+				await Channel.getDisplayName defer err, displayName
+
+				@Mikuia.Events.emit 'twitch.banned', channel
 
 		client.addListener 'part', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
