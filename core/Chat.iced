@@ -40,9 +40,9 @@ class exports.Chat
 			@clientJoins[i] = []
 
 		@joinLimiter = RollingLimiter
-			interval: 15000
+			interval: 10000
 			maxInInterval: 49
-			namespace: 'mikuia:join:limiter:'
+			namespace: 'mikuia:join:limiter'
 			redis: Mikuia.Database		
 
 		@messageLimiter = RollingLimiter
@@ -130,7 +130,7 @@ class exports.Chat
 
 		if @joined.indexOf(channel) == -1 and isMember and !isBanned
 
-			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter:' + @nextJoinClient, '-inf', '+inf', defer err, limitEntries
+			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter', '-inf', '+inf', defer err, limitEntries
 					
 			currentTime = (new Date).getTime() * 1000
 			remainingRequests = 49
@@ -140,7 +140,7 @@ class exports.Chat
 					remainingRequests--
 
 			if remainingRequests > 0
-				@joinLimiter @nextJoinClient, (err, timeLeft) =>
+				@joinLimiter '', (err, timeLeft) =>
 					if !timeLeft
 						@clients[@nextJoinClient].join channel
 						@joined.push channel
