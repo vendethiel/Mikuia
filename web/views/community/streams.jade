@@ -28,6 +28,5 @@ block content
 								button.btn.btn-primary.btn-sm(type='submit') Filter
 			.col-md-9.animation-fade-in-left
 				.alert.alert-warning The country flag shown next to stream titles denotes the stream language, not the nationality of the streamer.
-				br
 				each miniData in sorting
 					+stream(streams[miniData[0]], displayHtml, miniData[1])
