@@ -324,6 +324,7 @@ class exports.Chat
 				Channel = new Mikuia.Models.Channel channel
 				await Channel.getDisplayName defer err, displayName
 
+				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Banned or timed out on ' + cli.greenBright(displayName) + cli.whiteBright('.'))
 				@Mikuia.Events.emit 'twitch.banned', channel
 
 		client.addListener 'part', (channel, username) =>
