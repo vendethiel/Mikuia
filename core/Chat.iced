@@ -288,7 +288,8 @@ class exports.Chat
 			@Mikuia.Events.emit 'twitch.banned', channel
 
 		client.addListener 'chat', (channel, user, message) =>
-			@handleMessage user, channel, message
+			if user.username != @Mikuia.settings.bot.name.toLowerCase()
+				@handleMessage user, channel, message
 
 		client.addListener 'connected', (address, port) =>
 			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
