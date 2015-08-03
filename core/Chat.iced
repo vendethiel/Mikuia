@@ -31,7 +31,7 @@ class exports.Chat
 
 		setTimeout () =>
 			if !@connected
-				@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Failed to connect to Twitch IRC. Restarting...')
+				@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Failed to connect to Twitch chat. Restarting...')
 		, connections * 10 * 1000
 
 		for i in [0..(connections - 1)]
@@ -291,7 +291,7 @@ class exports.Chat
 			@handleMessage user, channel, message
 
 		client.addListener 'connected', (address, port) =>
-			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch IRC (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
+			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 
 			client.raw 'CAP REQ :twitch.tv/membership'
 			client.raw 'CAP REQ :twitch.tv/commands'
@@ -305,7 +305,7 @@ class exports.Chat
 			callback false, client
 
 		client.addListener 'disconnected', (reason) =>
-			@Mikuia.Log.fatal cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch IRC. Reason: ' + reason)
+			@Mikuia.Log.fatal cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Reason: ' + reason)
 
 		client.addListener 'join', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
@@ -323,7 +323,7 @@ class exports.Chat
 					channelTotalLimiter[Channel.getName()] = new RateLimiter 6, 30000, true
 					rateLimitingProfile = cli.greenBright 'Free (3 per 30s)'
 
-				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the IRC channel. Rate Limiting Profile: ') + rateLimitingProfile
+				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the channel. Rate Limiting Profile: ') + rateLimitingProfile
 
 		client.addListener 'part', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
@@ -332,7 +332,7 @@ class exports.Chat
 
 				delete channelLimiter[Channel.getName()]
 				delete channelTotalLimiter[Channel.getName()]
-				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the IRC channel.')
+				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the channel.')
 
 	update: =>
 		twitchFailure = false
