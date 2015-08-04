@@ -5,7 +5,6 @@ net = require 'net'
 request = require 'request'
 RateLimiter = require('limiter').RateLimiter
 
-apiLimiter = new RateLimiter 180, 60000
 banchoLimiter = new RateLimiter 1, 'second'
 limits = {}
 userBest = {}
@@ -309,22 +308,21 @@ checkRankUpdates = (stream, callback) =>
 					callback false, null
 
 makeAPIRequest = (link, callback) =>
-	apiLimiter.removeTokens 1, (err, rr) =>
-		start = process.hrtime()
-		request 'https://osu.ppy.sh/api' + link + '&k=' + @Plugin.getSetting('apiKey'), (error, response, body) ->
-			responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
+	start = process.hrtime()
+	request 'https://osu.ppy.sh/api' + link + '&k=' + @Plugin.getSetting('apiKey'), (error, response, body) ->
+		responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
 
-			if !error && response.statusCode == 200
-				Mikuia.Events.emit 'osu.api.request', responseTime
+		if !error && response.statusCode == 200
+			Mikuia.Events.emit 'osu.api.request', responseTime
 
-				data = {}
-				try
-					data = JSON.parse body
-				catch e
-					console.log e
-				callback false, data
-			else
-				callback true, null
+			data = {}
+			try
+				data = JSON.parse body
+			catch e
+				console.log e
+			callback false, data
+		else
+			callback true, null
 
 makeTillerinoRequest = (beatmap_id, mods, callback) =>
 	start = process.hrtime()
