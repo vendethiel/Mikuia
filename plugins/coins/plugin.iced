@@ -56,8 +56,10 @@ updateCoins = () =>
 							else
 								goAhead = false
 
-						await Viewer.isBot defer error, isBot
-						if goAhead and not isBot and viewer isnt stream
+						await
+							Viewer.isBanned defer error, isBanned
+							Viewer.isBot defer error, isBot
+						if goAhead and not isBot and viewer isnt stream and not isBanned
 							coinAmount = dropValue
 							if Math.round(Math.random() * 100) < dropChance
 								await
