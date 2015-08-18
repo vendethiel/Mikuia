@@ -14,7 +14,14 @@
 					"name": "Message",
 					"description": "A message, heh.",
 					"default": "This is a default dummy message.",
-					"type": "text"
+					"type": "format",
+					"variables": {
+						"args": "Command arguments",
+						"color": "Invoker chat color",
+						"displayName": "Display name of the invoker",
+						"message": "Whole message",
+						"username": "Username of the command invoker"
+					}
 				}
 			}
 		},
@@ -50,6 +57,28 @@
 				"description": "Announce every X level up. (ex. 5 will announce 5, 10, 15)",
 				"default": 1,
 				"type": "number"
+			},
+			"dummyCustomFormat": {
+				"name": "Use Custom Dummy Message Format",
+				"category": "Dummy Messages",
+				"description": "Use a custom format for all dummy messages.",
+				"default": true,
+				"type": "boolean"
+			},
+			"dummyCustomMessage": {
+				"name": "Custom Dummy Message Format",
+				"category": "Dummy Messages",
+				"description": "Custom message format used on every dummy message.",
+				"default": "<%displayName%> > <%dummyMessage%>",
+				"type": "format",
+				"variables": {
+					"args": "Command arguments",
+					"color": "Invoker chat color",
+					"displayName": "Display name of the invoker",
+					"dummyMessage": "Actual content of the dummy message",
+					"message": "Whole message",
+					"username": "Username of the command invoker"
+				}
 			}
 		},
 		"server": {

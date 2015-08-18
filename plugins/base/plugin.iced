@@ -36,7 +36,32 @@ Mikuia.Events.on 'base.add.dummy', (data) =>
 	addDummy data.user.username, data.to, data.tokens
 
 Mikuia.Events.on 'base.dummy', (data) =>
-	Mikuia.Chat.say data.to, data.settings.message
+	args = data.tokens.slice(1, data.tokens.length).join ' '
+
+	Channel = new Mikuia.Models.Channel data.to
+	Viewer = new Mikuia.Models.Channel data.user.username
+	await
+		Channel.getSetting 'base', 'dummyCustomFormat', defer err, dummyCustomFormat
+		Channel.getSetting 'base', 'dummyCustomMessage', defer err, dummyCustomMessage
+		Viewer.getDisplayName defer err, viewerDisplayName
+
+	dummyMessage = Mikuia.Format.parse data.settings.message,
+		args: args
+		color: data.user.color
+		displayName: viewerDisplayName
+		message: data.message
+		username: data.user.username
+
+	if dummyCustomFormat
+		dummyMessage = Mikuia.Format.parse dummyCustomMessage,
+			args: args
+			color: data.user.color
+			displayName: viewerDisplayName
+			dummyMessage: dummyMessage
+			message: data.message
+			username: data.user.username
+
+	Mikuia.Chat.say data.to, dummyMessage
 
 Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username
@@ -171,7 +196,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 					# do nothing
 
 checkMod = (channel, username) ->
-	if channel == username
+	if channel == '#' + username
 		return true
 	else
 		moderators = Mikuia.Chat.mods channel
