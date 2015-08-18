@@ -79,12 +79,14 @@ class exports.Channel extends Mikuia.Model
 		await
 			@getCommand trigger, defer commandError, command
 			@getCommandSettings trigger, true, defer settingsError, settings
-			@isCommandAllowed settings, user, defer isAllowed
+		
+		await @isCommandAllowed settings, user, defer isAllowed
 
 		callback commandError || settingsError, {command, settings, isAllowed}
 
 	isCommandAllowed: (settings, user, callback) ->
 		chatter = new exports.Channel user.username
+
 		if user.username == @getName()
 			callback true
 		else if settings?._minLevel and settings._minLevel > 0
