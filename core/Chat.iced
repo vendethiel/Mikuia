@@ -191,7 +191,7 @@ class exports.Chat
 						if remainingRequests > 0
 							@messageLimiter @channelClients['#' + Channel.getName()], (err, timeLeft) =>
 								if !timeLeft
-									@clients[@channelClients['#' + Channel.getName()]].say data.channel, data.message
+									@clients[@channelClients['#' + Channel.getName()]].say data.channel, data.message.split('%%WORKER%%').join(@channelClients['#' + Channel.getName()])
 
 									Mikuia.Events.emit 'mikuia.say', data.channel, data.message
 
