@@ -4,6 +4,23 @@
 	"baseFile": "plugin.iced",
 	"hidden": false,
 	"handlers": {
+		"lol.masteries.active.summary": {
+			"description": "Shows a summary of the currently used mastery page.",
+			"settings": {
+				"format": {
+					"name": "Message Format",
+					"description": "Message format.",
+					"default": "<%pageName%>: <%offensePoints%>/<%defensePoints%>/<%utilityPoints%>",
+					"type": "format",
+					"variables": {
+						"pageName": "Mastery page name",
+						"offensePoints": "Offense tree points",
+						"defensePoints": "Defense tree points",
+						"utilityPoints": "Utility tree points"
+					}
+				}
+			}
+		},
 		"lol.runes.active.list": {
 			"description": "Shows a list of currently used runes.",
 			"settings": {}
