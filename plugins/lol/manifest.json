@@ -1,0 +1,46 @@
+{
+	"name": "League of Legends",
+	"description": "Some LoL stuff",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"lol.runes.active.list": {
+			"description": "Shows a list of currently used runes.",
+			"settings": {}
+		}
+	},
+	"settings": {
+		"channel": {
+			"region": {
+				"name": "Region",
+				"category": "Account Details",
+				"description": "The region you play on.",
+				"default": "euw",
+				"type": "select",
+				"options": {
+					"br": "Brazil",
+					"eune": "Europe Nordic & East",
+					"euw": "Europe West",
+					"kr": "Korea",
+					"lan": "Latin America North",
+					"las": "Latin America South",
+					"na": "North America",
+					"oce": "Oceania",
+					"ru": "Russia",
+					"tr": "Turkey",
+					"pbe": "Public Beta Environment"
+				}
+			},
+			"name": {
+				"name": "Summoner Name",
+				"category": "Account Details",
+				"description": "The name of your summoner.",
+				"default": "",
+				"type": "text"
+			}
+		},
+		"server": {
+			"apiKey": "API_KEY_HERE"
+		}
+	}
+}

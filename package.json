@@ -17,6 +17,7 @@
     "iced-coffee-script": "^1.8.0-d",
     "jade": "^1.9.2",
     "limiter": "^1.0.5",
+    "lol-js": "^1.4.10",
     "moment": "^2.9.0",
     "morgan": "^1.5.2",
     "passport": "^0.2.1",
