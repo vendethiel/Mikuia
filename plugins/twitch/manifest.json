@@ -1,0 +1,23 @@
+{
+	"name": "Twitch Tools",
+	"description": "Twitch.tv utilities.",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"twitch.followcheck": {
+			"description": "Checks the status of a follow relationship.",
+			"settings": {
+				"format": {
+					"name": "Message Format",
+					"description": "Message format.",
+					"default": "<%displayName%> followed at <%dateFollowed%>.",
+					"type": "format",
+					"variables": {
+						"dateFollowed": "Date followed",
+						"displayName": "Display name"
+					}
+				}
+			}
+		}
+	}
+}
