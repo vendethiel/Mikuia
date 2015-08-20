@@ -31,7 +31,7 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "<%championName%>: <%round2/kdaRatio%> KDA (<%totalChampionKills%>/<%totalAssists%>/<%totalDeathsPerSession%>).",
+					"default": "<%championName%>: <%round2/kdaRatio%> KDA (<%totalChampionKills%>/<%totalDeathsPerSession%>/<%totalAssists%>).",
 					"type": "format",
 					"variables": {
 						"championName": "Champion Name",
