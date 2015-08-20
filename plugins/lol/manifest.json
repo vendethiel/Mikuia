@@ -4,6 +4,24 @@
 	"baseFile": "plugin.iced",
 	"hidden": false,
 	"handlers": {
+		"lol.league.summary": {
+			"description": "Provides info about current leagues and rank.",
+			"settings": {
+				"format": {
+					"name": "Message Format",
+					"description": "Message format.",
+					"default": "<%tier%> <%division%> - <%leaguePoints%> LP (<%wins%> won, <%losses%> lost)",
+					"type": "format",
+					"variables": {
+						"tier": "Solo Queue tier",
+						"division": "Solo Queue division",
+						"leaguePoints": "Solo Queue League Points",						
+						"wins": "Wins",
+						"losses": "Losses"
+					}
+				}
+			}
+		},
 		"lol.masteries.active.summary": {
 			"description": "Shows a summary of the currently used mastery page.",
 			"settings": {

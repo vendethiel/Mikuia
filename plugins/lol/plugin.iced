@@ -12,6 +12,15 @@ client = lol.client
 championMappings = {}
 championNameMappings = {}
 championRealNames = {}
+leagueNames =
+	'BRONZE': 'Bronze'
+	'SILVER': 'Silver'
+	'GOLD': 'Gold'
+	'PLATINUM': 'Platinum'
+	'DIAMOND': 'Diamond'
+	'MASTER': 'Master'
+	'CHALLENGER': 'Challenger'
+
 masteryCategories = {}
 
 for championName, championInfo of championStaticData.data
@@ -26,6 +35,35 @@ for treeName, treeCategories of masteryStaticData.tree
 		for treeMastery in treeCategory
 			if treeMastery?
 				masteryCategories[treeMastery.masteryId] = treeName
+
+Mikuia.Events.on 'lol.league.summary', (data) =>
+	Channel = new Mikuia.Models.Channel data.to
+
+	await
+		Channel.getSetting 'lol', 'region', defer err, region
+		Channel.getSetting 'lol', 'name', defer err, name
+
+	await client.getSummonersByName [name],
+		region: region
+	, defer err, summonerData
+
+	if not err and summonerData?[name]?.id?
+		await client.getLeaguesBySummoner summonerData[name].id, 
+			region: region
+		, defer err, leagueData
+
+		if not err and leagueData?[summonerData[name].id]?
+			for league in leagueData[summonerData[name].id]
+				if league.queue == 'RANKED_SOLO_5x5'
+					for player in league.entries
+						console.log player
+						if parseInt(player.playerOrTeamId) == summonerData[name].id
+							Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse data.settings.format,
+								division: player.division
+								leaguePoints: player.leaguePoints
+								losses: player.losses
+								tier: leagueNames[league.tier]
+								wins: player.wins
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
