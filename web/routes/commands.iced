@@ -27,8 +27,11 @@ module.exports =
 			# To do: maybe some validation, I dunno.
 			commandName = data.command.split(' ').join('')
 
-			await Channel.addCommand commandName, data.handler, defer err, data
-			res.redirect '/dashboard/commands/settings/' + commandName
+			if commandName? and commandName != ''
+				await Channel.addCommand commandName, data.handler, defer err, data
+				res.redirect '/dashboard/commands/settings/' + commandName
+			else
+				res.redirect '/dashboard/commands'
 		else
 			res.redirect '/dashboard/commands'
 
