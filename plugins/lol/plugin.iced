@@ -7,6 +7,7 @@ runeStaticData = require './data/rune.json'
 client = lol.client
 	apiKey: Mikuia.settings.plugins.lol.apiKey
 	defaultRegion: 'euw'
+	rateLimit: Mikuia.settings.plugins.lol.rateLimit
 
 championMappings = {}
 championNameMappings = {}

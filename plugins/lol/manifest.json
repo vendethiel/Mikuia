@@ -97,7 +97,17 @@
 			}
 		},
 		"server": {
-			"apiKey": "API_KEY_HERE"
+			"apiKey": "API_KEY_HERE",
+			"rateLimit": [
+				{
+					"time": 10,
+					"limit": 10
+				},
+				{
+					"time": 600,
+					"limit": 500
+				}
+			]
 		}
 	}
 }
