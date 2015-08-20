@@ -148,7 +148,7 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 						formatData.championName = championName
 						formatData.kdRatio = formatData.totalChampionKills / formatData.totalDeathsPerSession
 						formatData.kdaRatio = (formatData.totalChampionKills + formatData.totalAssists) / formatData.totalDeathsPerSession
-						formatData.winRatio = formatData.totalSessionsWon / formatData.totalSessionsPlayed
+						formatData.winRatio = (formatData.totalSessionsWon / formatData.totalSessionsPlayed) * 100
 
 						Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData)
 
