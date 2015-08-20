@@ -64,6 +64,7 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 								losses: player.losses
 								tier: leagueNames[league.tier]
 								wins: player.wins
+								winRatio: (player.wins / (player.wins + player.losses)) * 100 
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to

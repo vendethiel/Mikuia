@@ -17,7 +17,8 @@
 						"division": "Solo Queue division",
 						"leaguePoints": "Solo Queue League Points",						
 						"wins": "Wins",
-						"losses": "Losses"
+						"losses": "Losses",
+						"winRatio": "Win Ratio"
 					}
 				}
 			}
