@@ -24,6 +24,46 @@
 		"lol.runes.active.list": {
 			"description": "Shows a list of currently used runes.",
 			"settings": {}
+		},
+		"lol.stats.ranked.champion": {
+			"description": "Shows ranked stats for a particular champion.",
+			"settings": {
+				"format": {
+					"name": "Message Format",
+					"description": "Message format.",
+					"default": "<%championName%>: <%round2/kdaRatio%> KDA (<%totalChampionKills%>/<%totalAssists%>/<%totalDeathsPerSession%>).",
+					"type": "format",
+					"variables": {
+						"championName": "Champion Name",
+						"kdRatio": "K/D Ratio",
+						"kdaRatio": "(K+A)/D Ratio",
+						"winRatio": "Win Ratio",
+						"totalSessionsPlayed": "Matches played",
+						"totalSessionsLost": "Matches lost",
+						"totalSessionsWon": "Matches won",
+						"totalChampionKills": "Total kills",
+						"totalDeathsPerSession": "Total deaths",
+						"totalAssists": "Total assists",
+						"mostChampionKillsPerSession": "Most kills in a match",
+						"maxNumDeaths": "Most deaths in a match",
+						"totalMinionKills": "Minion kills",
+						"totalFirstBlood": "First Bloods",
+						"totalDoubleKills": "Double Kills",
+						"totalTripleKills": "Triple Kills",
+						"totalQuadraKills": "Quadra Kills",
+						"totalPentaKills": "Penta Kills",
+						"totalUnrealKills": "Unreal Kills",
+						"totalGoldEarned": "Total gold earned",
+						"mostSpellsCast": "Most spells casted in a match",
+						"totalTurretsKilled": "Total turret kills",
+						"totalDamageDealt": "Damage dealt",
+						"totalDamageTaken": "Damage taken",
+						"totalPhysicalDamageDealt": "Physical damage dealt",
+						"totalMagicDamageDealt": "Magic damage dealt",
+						"maxChampionsKilled": "Most kills in a match"
+					}
+				}
+			}
 		}
 	},
 	"settings": {
