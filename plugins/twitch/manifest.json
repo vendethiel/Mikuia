@@ -10,7 +10,7 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "<%displayName%> followed at <%dateFollowed%>.",
+					"default": "<%displayName%> is following for <%countdown/dateFollowed%>.",
 					"type": "format",
 					"variables": {
 						"dateFollowed": "Date followed",

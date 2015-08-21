@@ -115,6 +115,16 @@ mixin setting(setting, settingName, userSettings)
 											tr
 												td upper
 												td Uppercases the text.
+											tr
+												td
+													h4 Dates
+												td
+											tr
+												td countdown
+												td Short, precise amount of difference in time (e.g. 5h 3m)
+											tr
+												td timeago
+												td Relative time of the event (e.g. 5 minutes ago)
 					when 'number'
 						if userSettings && userSettings[settingName]
 							input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])

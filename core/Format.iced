@@ -1,3 +1,13 @@
+countdown = require 'countdown'
+moment = require 'moment'
+
+countdown.setLabels	'ms|s|m|h|d|w|m|y|dc|ct|ml',
+	'ms|s|m|h|d|w|m|y|dc|ct|ml',
+	' ',
+	' ',
+	'',
+	(n) -> n.toString()
+
 class exports.Format
 	constructor: (@Mikuia) ->
 
@@ -45,6 +55,12 @@ class exports.Format
 								variable = variable.toString().toLowerCase()
 							when "upper"
 								variable = variable.toString().toUpperCase()
+
+							# Dates!
+							when "countdown"
+								variable = countdown(new Date(variable)).toString()
+							when "timeago"
+								variable = moment(variable).fromNow()
 
 					format = format.replace match[0], variable
 				else
