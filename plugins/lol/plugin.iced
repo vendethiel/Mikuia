@@ -114,7 +114,7 @@ Mikuia.Events.on 'lol.runes.active.list', (data) =>
 	if not err and summonerData?[name]?.id?
 		await client.getSummonerRunes summonerData[name].id, 
 			region: region
-		, defer err, runeDat
+		, defer err, runeData
 
 		if not err and runeData?[summonerData[name].id]?
 			for runePage in runeData[summonerData[name].id].pages
