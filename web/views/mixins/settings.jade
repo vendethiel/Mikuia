@@ -57,7 +57,8 @@ mixin setting(setting, settingName, userSettings)
 								.form-control-focus
 						span.help-block
 							| #{setting.description} 
-							a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle(); return false;") Need help?
+							a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle(); return false;", data-placement='bottom', rel='tooltip', title='Need help?')
+								i.fa.fa-question-circle
 						span.list(id=settingName, name=settingName, style='display: none;')
 							br
 							br
