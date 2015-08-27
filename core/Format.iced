@@ -1,8 +1,8 @@
 countdown = require 'countdown'
 moment = require 'moment'
 
-countdown.setLabels	'ms|s|m|h|d|w|m|y|dc|ct|ml',
-	'ms|s|m|h|d|w|m|y|dc|ct|ml',
+countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
+	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 	' ',
 	' ',
 	'',

@@ -76,14 +76,14 @@ mixin setting(setting, settingName, userSettings)
 										p You can even use multiple functions for some reason.
 										pre <%function1/function2/function3/variable%>
 								.row
-									small.col-sm-6
+									small.col-md-12
 										h3 Variables
 										table.table.table-condensed.text-muted
 											each variable, name in setting.variables
 												tr
 													td=variable
 													td <%#{name}%>
-									small.col-sm-5.col-sm-offset-1
+									small.col-md-12
 										h3 Functions
 										table.table.table-condensed.text-muted
 											tr

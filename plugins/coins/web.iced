@@ -28,7 +28,6 @@ Mikuia.Web.get '/dashboard/plugins/coins', checkAuth, (req, res) ->
 				channel.getDisplayName defer err, displayNames[data[0]]
 				channel.getLogo defer err, logos[data[0]]
 
-
 	res.render '../../plugins/coins/views/index',
 		coins: coinRawData
 		displayNames: displayNames

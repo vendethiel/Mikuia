@@ -41,8 +41,7 @@
 			}
 		},
 		"lol.runes.active.list": {
-			"description": "Shows a list of currently used runes.",
-			"settings": {}
+			"description": "Shows a list of currently used runes."
 		},
 		"lol.stats.ranked.champion": {
 			"description": "Shows ranked stats for a particular champion.",

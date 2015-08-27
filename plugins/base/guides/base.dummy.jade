@@ -1,0 +1,43 @@
+p.
+	This handler allows you to add a simple command which will respond with a text message you specify.
+	You can also do some cool stuff using various formats.
+h3 Examples:
+br
+.well Hello, <%displayName%>!
+pre
+	b User:
+	|  !hello
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Hello, User!
+br
+.well <%upper/args%>
+pre
+	b User:
+	|  !scream hello!
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  HELLO!
+br
+.well <%round/args%>
+pre
+	b User:
+	|  !round 3.14159
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  3
+br
+p.
+	You can also use dummy commands as a layer of interoperability with other bots.
+	For example, you can make a command usable only by mods in another bot, then add a dummy command in #{Mikuia.settings.bot.name} and set a coin cost for it.
+br
+pre
+	b User:
+	|  !command
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  !othercommand
+	br
+	b Otherbot:
+	|  Oooh, can do!
+br

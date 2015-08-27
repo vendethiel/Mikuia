@@ -1,0 +1,30 @@
+p.
+	This handler provides ranked stats for a particular champion.
+	#[br]
+	There are lots of variables you can use in order to create unique specialized stat commands.
+	#[br]
+	You can specify a champion as an argument to get stats for that champion.
+	#[br]
+	Otherwise, the currently played champion will be chosen.
+	#[br]
+	If the champion is not specified, and the user is not in-game, the command will fail.
+h3 Examples:
+br
+.well <%championName%>: <%round2/kdaRatio%> KDA (<%totalChampionKills%>/<%totalDeathsPerSession%>/<%totalAssists%>).
+br
+pre
+	b User:
+	|  !stats Ashe
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Ashe: 2.50 KDA (5/2/0).
+br
+.well <%championName%>: <%winRatio%> win ratio. <%totalSessionsWon%> won, <%totalSessionsLost%> lost.
+br
+pre
+	b User:
+	|  !winratio
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Katarina: 50.00% win ratio. 1 won, 1 lost.
+	

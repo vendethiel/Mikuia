@@ -1,0 +1,25 @@
+p.
+	This handler is used for carrying out Mikuia Leagues duels.
+	#[br]
+	The fights are based on channel levels and the global level of both users.
+h3 Examples:
+br
+pre
+	b User:
+	|  !1v1 Anotheruser
+	br
+	b Anotheruser:
+	|  !1v1 User
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Anotheruser <32.14%> lost (1024)[-31] with User (956)[+31]
+	br
+	.text-muted Anotheruser has been timed out.
+p.
+	The number in the angle brackets is Anotheruser's win chance.
+	First number in curly brackets is Anotheruser's Elo rating, and square brackets contain their Elo change.
+	Similar goes for the next set of brackets.
+
+.alert.alert-info.
+	Please refrain from using harsh duel timeout lengths (e.g. few minutes or more).
+	They're meant to be used as a way to increase the noticeability of a duel outcome, not as a punishment.

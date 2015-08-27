@@ -6,7 +6,7 @@
 	"hidden": false,
 	"handlers": {
 		"osu.np": {
-			"description": "[NOT WORKING YET] Shows currently playing song."
+			"description": "[NOT WORKING] Shows currently playing song."
 		},
 		"osu.request": {
 			"description": "Allows requesting songs."

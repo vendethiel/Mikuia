@@ -1,0 +1,25 @@
+p.
+	This handler allows you to add dummy commands (commands handled by base.dummy) straight from your chat.
+	#[br]
+	It is only usable by the broadcaster and moderators of the channel, no matter if you select "Only Mods" or not.
+	#[br]
+	The argument is going to be used as the message format.
+	#[br]
+	Creating a command with name already used by another one is going to overwrite the previous command.
+	#[br]
+	Command properties will stay unchanged.
+
+h3 Examples:
+br
+pre
+	b User:
+	|  !addcom !test Hello!
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Command "!addcom" probably added!
+	br
+	b User:
+	|  !test
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Hello!

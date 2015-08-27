@@ -1,0 +1,29 @@
+p.
+	This handler provides stats for a specified user.
+	#[br]
+	If no user has been provided, the handler provides info about the streamer.
+	#[br]
+	You can also specify the username to use always, even when provided with additional arguments.
+h3 Examples:
+br
+pre
+	b User:
+	|  !stats
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Stats for Broadcaster: 1024.00pp, rank: #35,000
+br
+pre
+	b User:
+	|  !stats User
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Stats for User: 420.60pp, rank: #133,337
+br
+.well With an username specified in handler settings:
+pre
+	b User:
+	|  !rafis Kappa
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Stats for Rafis: 9901.28pp, rank: #3

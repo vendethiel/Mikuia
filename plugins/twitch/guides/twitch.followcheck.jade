@@ -1,0 +1,19 @@
+p.
+	This handler provides information about date of an user following the stream.
+	#[br]
+	If no user is provided as an argument, the handler provides info about the invoker.
+h3 Examples:
+br
+pre
+	b User:
+	|  !fc
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  User is following for 1y 6mo 15d 12h 30m 30s.
+br
+pre
+	b User:
+	|  !fc Anotheruser
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Anotheruser is not following this channel.

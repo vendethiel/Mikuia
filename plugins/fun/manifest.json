@@ -20,7 +20,7 @@
 			"settings": {
 				"limit": {
 					"name": "Limit",
-					"description": "Maximum number that can get rolled (unless overriden)",
+					"description": "Maximum number that can get rolled.",
 					"default": 100,
 					"type": "number"
 				},

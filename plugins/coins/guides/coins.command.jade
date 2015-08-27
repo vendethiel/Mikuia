@@ -1,0 +1,55 @@
+p.
+	This handler is used to show the balance of coins and/or manipulate it.
+	#[br]
+	Used without any arguments, it will show the coin balance of the invoker.
+h3 Examples:
+br
+pre
+	b User:
+	|  !coins
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  User: 45 Coins.
+br
+p.
+	There are several arguments that can be used in order to manipulate coin amounts.
+h3 Arguments:
+br
+h4.text-success give/pay
+p.
+	Transfers a specified amount of coins to other user's balance.
+pre
+	b User:
+	|  !coins pay Anotheruser 10
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  User -> Anotheruser (10 Coins)
+h4.text-danger add (Broadcaster Only)
+p.
+	Adds a specified amount of coins to the user's balance.
+pre
+	b Broadcaster:
+	|  !coins add User 10
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Gave 10 Coins to User.
+
+h4.text-danger remove/take (Broadcaster Only)
+p.
+	Removes a specified amount of coins from the user's balance.
+pre
+	b Broadcaster:
+	|  !coins remove User 10
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Took 10 Coins from User.
+
+h4.text-danger set (Broadcaster Only)
+p.
+	Sets user's balance to a specified amount of coins.
+pre
+	b Broadcaster:
+	|  !coins set User 100
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  User now has 100 Coins.
