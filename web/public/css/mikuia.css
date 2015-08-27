@@ -4,6 +4,10 @@ body.mikuia {
 	background-repeat: no-repeat;
 }
 
+.alert {
+	word-wrap: break-word;
+}
+
 .align-center {
 	text-align: center;
 }
