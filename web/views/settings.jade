@@ -1,19 +1,20 @@
 extends layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Settings
-				small  where you change stuff
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
-			i.fa.fa-circle
-		li
-			a(href='/dashboard/settings') Settings			
+	h3.page-title
+		| Settings 
+		small you can set stuff here :o
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/settings') Settings	
+			
 	.row
-		.col-md-5
+		.col-md-6
 			if !enabled
 				- var className = 'font-red-sunglo'
 			else
@@ -23,7 +24,7 @@ block content
 					.caption
 						i.fa.fa-cogs(class=className)
 						span.caption-subject.bold.uppercase(class=className) Status
-						span.caption-helper  help me
+						span.caption-helper  sup
 				.portlet-body
 					if enabled
 						p.lead Mikuia is enabled.
@@ -31,35 +32,17 @@ block content
 					else
 						p.lead Mikuia is disabled.
 						a.btn.green(onclick="toggle('enable')") Enable
-						
-			if enabled
-				.portlet.light
-					.portlet-title
-						.caption
-							i.fa.fa-cogs.font-blue-sharp
-							span.caption-subject.bold.uppercase.font-blue-sharp Plugins
-							span.caption-helper  they make stuff do stuff
-					.portlet-body
-						table.table
-							thead
-								tr
-									th Name
-									th Description
-									th Actions
-							tbody
-								each plugin, pluginName in plugins
-									if !plugin.manifest.hidden
-										tr
-											td=plugin.manifest.name
-											td=plugin.manifest.description
-											td
-												if enabledPlugins.indexOf(pluginName) > -1
-													a.btn.btn-xs.default(onclick="pluginToggle('" + pluginName + "', 'disable')", rel='tooltip', title='Click to disable ' + plugin.manifest.name + '.') Disable
-													a.btn.btn-xs.default(href='#' + pluginName, rel='tooltip', title='View settings for ' + plugin.manifest.name)
-														i.glyphicon.glyphicon-cog
-												else
-													a.btn.btn-xs.green(onclick="pluginToggle('" + pluginName + "', 'enable')", rel='tooltip', title='Click to enable ' + plugin.manifest.name + '.') Enable
-		.col-md-7
+		//- .col-md-6
+		//- 	.portlet.light
+		//- 		.portlet-title
+		//- 			.caption
+		//- 				i.fa.fa-cogs.font-yellow
+		//- 				span.caption-subject.bold.uppercase.font-yellow Chat Control
+		//- 				span.caption-helper  start and stop
+		//- 		.portlet-body
+		//- 			h1 meow
+	.row			
+		.col-md-12
 			each pluginName in enabledPlugins.sort()
 				if plugins[pluginName]
 					- var plugin = plugins[pluginName]
@@ -71,7 +54,7 @@ block content
 								span.caption-helper  plugin settings
 						if plugin.manifest.settings && plugin.manifest.settings.channel
 							.portlet-body.form
-								form.form-horizontal(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
+								form.form(action='/dashboard/settings/save/' + pluginName, method='post', role='form')
 									.form-body
 										+settings(plugin.manifest.settings.channel, settings[pluginName], categories[pluginName])
 									.form-actions
@@ -83,15 +66,6 @@ block content
 
 block footerScript
 	script(type='text/javascript').
-
-		function pluginToggle(name, status) {
-			$.post('/dashboard/settings/plugins/toggle', {
-				name: name,
-				status: status
-			}).done(function() {
-				location.reload()
-			})
-		}
 
 		function toggle(status) {
 			$.post('/dashboard/settings/toggle', {

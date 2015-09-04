@@ -67,6 +67,7 @@ app.use session
 	store: store
 app.use passport.initialize()
 app.use passport.session()
+app.use express.vhost 'api.dev.mikuia.tv', require('./api').app
 app.use (req, res, next) ->
 	res.locals.Mikuia = Mikuia
 	res.locals.moment = moment
@@ -75,11 +76,23 @@ app.use (req, res, next) ->
 
 	isBanned = false
 	pages = []
+	tracker = {}
 	if req.user
 		Channel = new Mikuia.Models.Channel req.user.username
 		await Channel.isBanned defer err, isBanned
 
 		if !isBanned and req.path.indexOf('/dashboard') == 0
+			await Channel.isLive defer err, isLive
+
+			if isLive
+				await 
+					Channel.trackGet 'viewers', defer err, tracker.viewers
+					Channel.trackGet 'chatters', defer err, tracker.chatters
+			await Channel.trackGet 'commands', defer err, tracker.commands
+			await Channel.trackGet 'followers', defer err, tracker.followers
+			await Channel.trackGet 'messages', defer err, tracker.messages
+			await Channel.trackGet 'views', defer err, tracker.views
+
 			pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
 			for pagePlugin in pagePlugins || []
 				await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
@@ -92,6 +105,7 @@ app.use (req, res, next) ->
 
 	if !isBanned
 		res.locals.pages = pages
+		res.locals.tracker = tracker
 		next()
 	else
 		res.send 'This account ("' + req.user.username + '") has been permanently banned from using Mikuia.'
@@ -106,6 +120,7 @@ for file in fileList
 app.get '/dashboard', checkAuth, routes.dashboard
 app.get '/dashboard/commands', checkAuth, routes.commands.commands
 app.get '/dashboard/commands/settings/:name', checkAuth, routes.commands.settings
+app.get '/dashboard/plugins', checkAuth, routes.plugins.plugins
 app.get '/dashboard/settings', checkAuth, routes.settings.settings
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
@@ -115,7 +130,7 @@ app.get '/logout', (req, res) ->
 app.post '/dashboard/commands/add', checkAuth, routes.commands.add
 app.post '/dashboard/commands/remove', checkAuth, routes.commands.remove
 app.post '/dashboard/commands/save/:name', checkAuth, routes.commands.save
-app.post '/dashboard/settings/plugins/toggle', checkAuth, routes.settings.pluginToggle
+app.post '/dashboard/plugins/toggle', checkAuth, routes.plugins.pluginToggle
 app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
 

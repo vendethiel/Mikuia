@@ -1,0 +1,87 @@
+extends layout
+
+block content
+	h3.page-title
+		| Plugins 
+		small things that do things
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/plugins') Plugins
+	.row
+		.col-md-12
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-blue-sharp
+						span.caption-subject.bold.uppercase.font-blue-sharp Plugin List 
+						span.caption-helper choose what you need
+				.portlet-body
+					each plugin, pluginName in plugins
+						if !plugin.manifest.hidden
+							.media
+								.media-left
+									img.media-object(src='/img/plugins/#{pluginName}.png', width='48', height='48')
+								.media-body
+									h3.media-heading=plugin.manifest.name
+									p=plugin.manifest.description
+
+									if enabledPlugins.indexOf(pluginName) > -1
+										a.btn.btn-danger.btn-sm.plugin-toggle(name=pluginName, onclick="pluginToggle('" + pluginName + "', 'disable')") Disable
+										a.btn.btn-default.btn-sm.plugin-settings(name=pluginName, href='/dashboard/settings#' + pluginName) Settings
+									else
+										a.btn.btn-success.btn-sm.plugin-toggle(name=pluginName, onclick="pluginToggle('" + pluginName + "', 'enable')") Enable
+										a.btn.btn-default.btn-sm.plugin-settings(name=pluginName, href='/dashboard/settings#' + pluginName, style='display: none;') Settings
+
+
+									if plugin.manifest.handlers
+										a.btn.btn-warning.btn-sm(onclick="jQuery('.handler-list[name=\"" + pluginName + "\"]').toggle()") Handlers (#{Object.keys(plugin.manifest.handlers).length})
+										.handler-list(name=pluginName, style='display: none;')
+											table.table.table-striped
+												thead
+													tr
+														th Name
+														th Description
+												tbody
+													each handler, handlerName in plugin.manifest.handlers
+														tr
+															td=handlerName
+															td=handler.description
+							br
+
+block footerScript
+	script(type='text/javascript').
+
+		function pluginToggle(name, status) {
+			$('.plugin-toggle[name=' + name + ']').removeClass('btn-success')
+			$('.plugin-toggle[name=' + name + ']').removeClass('btn-danger')
+			switch(status) {
+				case "enable":
+					$('.plugin-toggle[name=' + name + ']').html('<i class="fa fa-spinner"></i> Enabling...')
+					break;
+				case "disable":
+					$('.plugin-toggle[name=' + name + ']').html('<i class="fa fa-spinner"></i> Disabling...')
+					break;
+			}
+			
+			$.post('/dashboard/plugins/toggle', {
+				name: name,
+				status: status
+			}).done(function(response) {
+				if(response.enabled) {
+					$('.plugin-toggle[name=' + name + ']').addClass('btn-danger')
+					$('.plugin-toggle[name=' + name + ']').html('Disable')
+					$('.plugin-toggle[name=' + name + ']').attr('onclick', "pluginToggle('" + name + "', 'disable')")
+					$('.plugin-settings[name=' + name + ']').show()
+				} else {
+					$('.plugin-toggle[name=' + name + ']').addClass('btn-success')
+					$('.plugin-toggle[name=' + name + ']').html('Enable')
+					$('.plugin-toggle[name=' + name + ']').attr('onclick', "pluginToggle('" + name + "', 'enable')")
+					$('.plugin-settings[name=' + name + ']').hide()
+				}
+			})
+		}

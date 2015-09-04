@@ -1,44 +1,94 @@
 extends layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Dashboard
-				small  stuff and more stuff
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
+	h3.page-title
+		| Dashboard 
+		small this is where stuff happens
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
 	.row
 		.col-md-12
-			if !enabled
-				.alert.alert-block.alert-danger
+			if tracker.messages < 50
+				.portlet.light.portlet-mikuia
+					.portlet-title
+						.caption
+							i.icon-bar-chart.font-blue-sharp
+							span.caption-subject.font-blue-sharp.bold.uppercase Welcome to Mikuia
+							span.caption-helper  enjoy your stay
+					.portlet-body(style='background-color: rgba(255, 255, 255, 0.5);')
+						if !enabled
+							p.lead.
+								Hi, #{user.displayName}!
+								#[br]
+								It seems like you're new around here!
+								#[br]
+								First, you have to enable Mikuia.
+								#[br]
+								Click "Settings" on the sidebar to your left, or use this convenient button.
+							a.btn.btn-primary(href='/dashboard/settings') Settings
+							br
+							br
+							small.text-muted This popup will disappear after 50 messages on your chat.
+						else
+							p.lead.
+								Great job!
+								#[br]
+								You can now start setting up stuff!
+								#[br]
+							a.btn.btn-success(href='/dashboard/plugins') Plugins
+							p.
+								Plugins provide things like commands and specific features for various games and services.
+
+							a.btn.btn-primary(href='/dashboard/settings') Settings
+							p.
+								Settings let you configure the behaviour of plugins and their features.
+
+							a.btn.btn-warning(href='/dashboard/commands') Commands
+							p.
+								Commands let you and your viewers do many different things straight from your chat.
+
+							small.text-muted This popup will disappear after 50 messages on your chat.
+
+			if !enabled && tracker.messages > 50
+				.note.note-block.note-danger
 					h4.alert-heading Mikuia is not enabled on your channel!
 					p
 						| If you start complaining that it's not working without even trying to enable it, I'll fucking cut you.
 					p
-						a.btn.btn-default(href='/dashboard/settings') Settings
-	.row
-		.col-lg-3.col-md-3.col-sm-16.col-xs-12
+						a.btn.btn-danger(href='/dashboard/settings') Settings
+	if tracker.messages > 50
+		.row
 			if live
+				.col-lg-3.col-md-3.col-sm-16.col-xs-12
+					.dashboard-stat2
+						.display
+							.number
+								h3.font-red-haze=tracker.viewers
+								small Viewers
+							.icon
+								i.icon-user
+				.col-lg-3.col-md-3.col-sm-16.col-xs-12
+					.dashboard-stat2
+						.display
+							.number
+								h3.font-blue-sharp=tracker.chatters
+								small Chatters
+							.icon
+								i.icon-users
+			else
+				.col-lg-6.col-md-6.col-sm-16.col-xs-12
+					.dashboard-stat2
+						.display
+							.number
+								h3.font-grey-silver So empty around here.
+								small This is going to be a real dashboard someday, I promise.
+							.icon
+								i.icon-wrench
+			.col-lg-3.col-md-3.col-sm-16.col-xs-12
 				.dashboard-stat2
-					.display
-						.number
-							h3.font-red-haze=tracker.viewers
-							small Viewers
-						.icon
-							i.icon-user
-		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			if live
-				.dashboard-stat2
-					.display
-						.number
-							h3.font-blue-sharp=tracker.chatters
-							small Chatters
-						.icon
-							i.icon-users
-		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			.dashboard-stat2
 					.display
 						.number
 							if tracker.followers
@@ -48,38 +98,38 @@ block content
 							small Followers
 						.icon
 							i.icon-users
-		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			.dashboard-stat2
-				.display
-					.number
-						h3.font-green-sharp=tracker.commands
-						small Total Commands Handled
-					.icon
-						i.icon-wrench
-	.row
-		.col-lg-3.col-md-3.col-sm-16.col-xs-12
-			.dashboard-stat2
-				.display
-					.number
-						h3.font-green-sharp=tracker.messages
-						small Total Chat Messages
-					.icon
-						i.icon-speech
-
-			if supporter
-				- var supporterLeft = supporterStatus - (new Date()).getTime() / 1000
-				- var supporterPercent = Math.floor(100 - (supporterLeft / (supporterStatus - supporterStart)) * 100)
+			.col-lg-3.col-md-3.col-sm-16.col-xs-12
 				.dashboard-stat2
 					.display
 						.number
-							h3.font-red-haze=supporterLeftText
-							small Mikuia Supporter Ending
+							h3.font-green-sharp=tracker.commands
+							small Commands Handled
 						.icon
-							i.icon-heart
-					.progress-info
-						.progress
-							.progress-bar.red-haze(style='width: #{supporterPercent}%')
-								.sr-only #{supporterPercent}%
-						.status
-							.status-title progress
-							.status-number #{supporterPercent}%
+							i.icon-wrench
+
+				.dashboard-stat2
+					.display
+						.number
+							h3.font-green-sharp=tracker.messages
+							small Chat Messages
+						.icon
+							i.icon-speech
+		.row
+			.col-lg-6.col-md-6.col-lg-offset-6.col-md-offset-6.col-sm-16.col-xs-12
+				if supporter
+					- var supporterLeft = supporterStatus - (new Date()).getTime() / 1000
+					- var supporterPercent = Math.floor(100 - (supporterLeft / (supporterStatus - supporterStart)) * 100)
+					.dashboard-stat2
+						.display
+							.number
+								h3.font-red-haze=supporterLeftText
+								small Mikuia Supporter Ending
+							.icon
+								i.icon-heart
+						.progress-info
+							.progress
+								.progress-bar.red-haze(style='width: #{supporterPercent}%')
+									.sr-only #{supporterPercent}%
+							.status
+								.status-title progress
+								.status-number #{supporterPercent}%

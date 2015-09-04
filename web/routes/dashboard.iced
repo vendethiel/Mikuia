@@ -10,15 +10,6 @@ module.exports = (req, res) ->
 		Channel.isLive defer err4, live
 		Channel.isSupporter defer err5, supporter
 
-	tracker = {}
-	if live
-		await 
-			Channel.trackGet 'viewers', defer err, tracker.viewers
-			Channel.trackGet 'chatters', defer err, tracker.chatters
-	await Channel.trackGet 'commands', defer err, tracker.commands
-	await Channel.trackGet 'followers', defer err, tracker.followers
-	await Channel.trackGet 'messages', defer err, tracker.messages
-
 	supporterLeftText = moment.unix(supporterStatus).fromNow()
 
 	for err in [err1, err2, err3, err4, err5]
@@ -26,6 +17,6 @@ module.exports = (req, res) ->
 
 	res.render 'dashboard', {
 		enabled, live, supporter, supporterLeftText,
-		supporterStart, supporterStatus, tracker
+		supporterStart, supporterStatus
 		channel: Channel.getName()
 	}

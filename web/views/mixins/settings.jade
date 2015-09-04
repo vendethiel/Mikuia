@@ -2,8 +2,8 @@ mixin settings(settings, userSettings, categories)
 
 	if categories != undefined
 		each category, categoryName in categories
-			h3=categoryName
-			br
+			.note.note-info
+				h3=categoryName
 			each setting, settingName in category
 				+setting(setting, settingName, userSettings)
 	else
@@ -12,146 +12,156 @@ mixin settings(settings, userSettings, categories)
 
 mixin setting(setting, settingName, userSettings)
 	if setting.name
-		.form-group.form-md-line-input
-			label.col-sm-3.control-label(for=settingName)=setting.name
-			.col-sm-8
-				case setting.type
-					when 'boolean'
-						.md-checkbox-inline
-							.md-checkbox
-								if userSettings && userSettings[settingName]
-									if userSettings[settingName] == 'true' || userSettings[settingName] == true
-										input.md-check(type='checkbox', id=settingName, name=settingName, checked)
-									else
-										input.md-check(type='checkbox', id=settingName, name=settingName)
-								else if setting.default == true
-									input.md-check(type='checkbox', id=settingName, name=settingName, checked)
-								else
-									input.md-check(type='checkbox', id=settingName, name=settingName)
-								label(for=settingName)
-									span
-									span.check
-									span.box
-									| #{setting.description}
-							if setting.link
-								span.help-block
-									a(href=setting.link.url)=setting.link.name
-					when 'disabled'
+		case setting.type
+			when 'boolean'
+				.form-group.form-md-checkboxes
+					.md-checkbox
 						if userSettings && userSettings[settingName]
-							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)
+							if userSettings[settingName] == 'true' || userSettings[settingName] == true
+								input.md-check(type='checkbox', id=settingName, name=settingName, checked)
+							else
+								input.md-check(type='checkbox', id=settingName, name=settingName)
+						else if setting.default == true
+							input.md-check(type='checkbox', id=settingName, name=settingName, checked)
 						else
-							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, disabled)
-						span.help-block
-							| #{setting.description} 
-							a(href=setting.link.url)=setting.link.name
-					when 'format'
-						if userSettings && userSettings[settingName]
-							.input-group
-								.input-group-addon Format: 
-								input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
-								.form-control-focus
-						else
-							.input-group
-								.input-group-addon Format: 
-								input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default)
-								.form-control-focus
-						span.help-block
-							| #{setting.description} 
-							a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle(); return false;", data-placement='bottom', rel='tooltip', title='Need help?')
-								i.fa.fa-question-circle
-						span.list(id=settingName, name=settingName, style='display: none;')
-							br
-							br
-							.well.well-xs
-								.row
-									.col-sm-12
-										h3 Default format:
-										.alert.alert-warning=setting.default
-
-									.col-sm-12
-										h3 How to use Format?
-										p Insert variables using <% and %> like this:
-										pre <%variable%>
-										p Use functions by prepending variable name with function name and a slash ("/")
-										pre <%function/variable%>
-										p You can even use multiple functions for some reason.
-										pre <%function1/function2/function3/variable%>
-								.row
-									small.col-md-12
-										h3 Variables
-										table.table.table-condensed.text-muted
-											each variable, name in setting.variables
-												tr
-													td=variable
-													td <%#{name}%>
-									small.col-md-12
-										h3 Functions
-										table.table.table-condensed.text-muted
-											tr
-												td
-													h4 Math
-												td
-											tr
-												td ceil
-												td Rounds the value up.
-											tr
-												td commas
-												td Inserts commas every 3 numbers to the value.
-											tr
-												td floor
-												td Rounds the value down.
-											tr
-												td round
-												td Rounds the value.
-											tr
-												td round(1-4)
-												td Rounds the value to (1-4) decimal places.
-											tr
-												td
-													h4 Strings
-												td
-											tr
-												td lower
-												td Lowercases the text.
-											tr
-												td upper
-												td Uppercases the text.
-											tr
-												td
-													h4 Dates
-												td
-											tr
-												td countdown
-												td Short, precise amount of difference in time (e.g. 5h 3m)
-											tr
-												td timeago
-												td Relative time of the event (e.g. 5 minutes ago)
-					when 'number'
-						if userSettings && userSettings[settingName]
-							input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
-						else
-							input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default)
-						span.help-block=setting.description
-						.form-control-focus
-					when 'select'
-						if userSettings && userSettings[settingName]
-							select.form-control(id=settingName, name=settingName)
-								each option, optionValue in setting.options
-									if optionValue == userSettings[settingName]
-										option(value=optionValue, selected='selected')=option
-									else
-										option(value=optionValue)=option
-						else
-							select.form-control(id=settingName, name=settingName)
-								each option, optionValue in setting.options
-									option(value=optionValue)=option
-						.form-control-focus
-						span.help-block=setting.description
-					when 'text'
-						if userSettings && userSettings[settingName]
-							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
-						else
-							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default)
+							input.md-check(type='checkbox', id=settingName, name=settingName)
 						
-						span.help-block=setting.description
-						.form-control-focus
+						label(for=settingName)
+							span
+							span.check
+							span.box
+							| #{setting.name} 
+							i.fa.fa-question-circle(rel='tooltip', title=setting.description)
+
+					if setting.link
+						span.help-block
+							a(href=setting.link.url)=setting.link.name
+			when 'disabled'
+				.form-group.form-md-line-input
+					if userSettings && userSettings[settingName]
+						input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName], disabled)
+					else
+						input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, disabled)
+					label(for=settingName)=setting.name
+					span.help-block
+						| #{setting.description} 
+						a(href=setting.link.url)=setting.link.name
+			when 'format'
+				.form-group.form-md-line-input
+					if userSettings && userSettings[settingName]
+						.input-group
+							.input-group-addon Format: 
+							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
+							.form-control-focus
+							label(for=settingName)=setting.name
+					else
+						.input-group
+							.input-group-addon Format: 
+							input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default)
+							.form-control-focus
+							label(for=settingName)=setting.name
+					span.help-block
+						| #{setting.description} 
+						a(href='#', onclick="jQuery('.list[name=\"" + settingName + "\"]').toggle(); return false;", data-placement='bottom', rel='tooltip', title='Need help?')
+							i.fa.fa-question-circle
+					span.list(id=settingName, name=settingName, style='display: none;')
+						br
+						br
+						.well.well-xs
+							.row
+								.col-sm-12
+									h3 Default format:
+									.alert.alert-warning=setting.default
+
+								.col-sm-12
+									h3 How to use Format?
+									p Insert variables using <% and %> like this:
+									pre <%variable%>
+									p Use functions by prepending variable name with function name and a slash ("/")
+									pre <%function/variable%>
+									p You can even use multiple functions for some reason.
+									pre <%function1/function2/function3/variable%>
+							.row
+								small.col-md-12
+									h3 Variables
+									table.table.table-condensed.text-muted
+										each variable, name in setting.variables
+											tr
+												td=variable
+												td <%#{name}%>
+								small.col-md-12
+									h3 Functions
+									table.table.table-condensed.text-muted
+										tr
+											td
+												h4 Math
+											td
+										tr
+											td ceil
+											td Rounds the value up.
+										tr
+											td commas
+											td Inserts commas every 3 numbers to the value.
+										tr
+											td floor
+											td Rounds the value down.
+										tr
+											td round
+											td Rounds the value.
+										tr
+											td round(1-4)
+											td Rounds the value to (1-4) decimal places.
+										tr
+											td
+												h4 Strings
+											td
+										tr
+											td lower
+											td Lowercases the text.
+										tr
+											td upper
+											td Uppercases the text.
+										tr
+											td
+												h4 Dates
+											td
+										tr
+											td countdown
+											td Short, precise amount of difference in time (e.g. 5h 3m)
+										tr
+											td timeago
+											td Relative time of the event (e.g. 5 minutes ago)
+			when 'number'
+				.form-group.form-md-line-input
+					if userSettings && userSettings[settingName]
+						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
+					else
+						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default)
+					label(for=settingName)=setting.name
+					span.help-block=setting.description
+					.form-control-focus
+			when 'select'
+				.form-group.form-md-line-input
+					if userSettings && userSettings[settingName]
+						select.form-control(id=settingName, name=settingName)
+							each option, optionValue in setting.options
+								if optionValue == userSettings[settingName]
+									option(value=optionValue, selected='selected')=option
+								else
+									option(value=optionValue)=option
+					else
+						select.form-control(id=settingName, name=settingName)
+							each option, optionValue in setting.options
+								option(value=optionValue)=option
+					.form-control-focus
+					label(for=settingName)=setting.name
+					span.help-block=setting.description
+			when 'text'
+				.form-group.form-md-line-input
+					if userSettings && userSettings[settingName]
+						input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
+					else
+						input.form-control(type='text', id=settingName, name=settingName, placeholder=setting.default)
+					label(for=settingName)=setting.name
+					span.help-block=setting.description
+					.form-control-focus

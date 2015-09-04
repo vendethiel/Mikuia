@@ -1,109 +1,97 @@
 extends layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Command Settings
-				small  try not to spam your chat
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
-			i.fa.fa-circle
-		li
-			a(href='/dashboard/commands') Commands
-			i.fa.fa-circle
-		li 
-			a Settings
-
+	h3.page-title
+		| #{command} Command Settings 
+		small try not to spam your chat
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/commands') Commands	
+				i.fa.fa-angle-right
+			li
+				a Settings
 	.row
-		form.form-horizontal(action='/dashboard/commands/save/' + command, method='post', role='form')
+		form.form(action='/dashboard/commands/save/' + command, method='post', role='form')
 			.col-lg-4.col-md-6.col-sm-12
 				.portlet.light
 					.portlet-title
 						.caption
 							i.fa.fa-cogs
 							span.caption-subject.bold.uppercase Command Settings
-							span.caption-helper  #{command}
 					.portlet-body.form
 						.form-body
 							h3 User Filters
-							br
-							.form-group.form-md-line-input
-								label.col-sm-3.control-label Only Broadcaster
-								.col-sm-8
-									.md-checkbox-inline
-										.md-checkbox
-											if userSettings && userSettings._onlyBroadcaster
-												if userSettings._onlyBroadcaster
-													input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster', checked)
-												else
-													input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster')
+							.form-group.form-md-checkboxes
+								.md-checkbox-list
+									.md-checkbox
+										if userSettings && userSettings._onlyBroadcaster
+											if userSettings._onlyBroadcaster
+												input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster', checked)
 											else
 												input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster')
-											label(for='_onlyBroadcaster')
-												span
-												span.check
-												span.box
-												| Only allow broadcaster to use the command.
-							.form-group.form-md-line-input
-								label.col-sm-3.control-label Only Mods
-								.col-sm-8
-									.md-checkbox-inline
-										.md-checkbox
-											if userSettings && userSettings._onlyMods
-												if userSettings._onlyMods
-													input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods', checked)
-												else
-													input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods')
+										else
+											input.md-check(type='checkbox', id='_onlyBroadcaster', name='_onlyBroadcaster')
+										label(for='_onlyBroadcaster')
+											span
+											span.check
+											span.box
+											| Broadcaster Only 
+											i.fa.fa-question-circle(rel='tooltip', title='This command will be usable only by you.')
+									.md-checkbox
+										if userSettings && userSettings._onlyMods
+											if userSettings._onlyMods
+												input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods', checked)
 											else
 												input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods')
-											label(for='_onlyMods')
-												span
-												span.check
-												span.box
-												| Only allow moderators to use the command.
-							.form-group.form-md-line-input
-								label.col-sm-3.control-label Only Subs
-								.col-sm-8
-									.md-checkbox-inline
-										.md-checkbox
-											if userSettings && userSettings._onlySubs
-												if userSettings._onlySubs
-													input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs', checked)
-												else
-													input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs')
+										else
+											input.md-check(type='checkbox', id='_onlyMods', name='_onlyMods')
+										label(for='_onlyMods')
+											span
+											span.check
+											span.box
+											| Mods Only 
+											i.fa.fa-question-circle(rel='tooltip', title='This command will be usable only by channel moderators.')
+									.md-checkbox
+										if userSettings && userSettings._onlySubs
+											if userSettings._onlySubs
+												input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs', checked)
 											else
 												input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs')
-											label(for='_onlySubs')
-												span
-												span.check
-												span.box
-												| Only allow subscribers to use the command.
+										else
+											input.md-check(type='checkbox', id='_onlySubs', name='_onlySubs')
+										label(for='_onlySubs')
+											span
+											span.check
+											span.box
+											| Subs Only 
+											i.fa.fa-question-circle(rel='tooltip', title='This command will be usable only by subscribers.')
 							h3 Mikuia Levels
 							br
 							.form-group.form-md-line-input
-								label.col-sm-3.control-label Minimal Level
-								.col-sm-8
-									if userSettings && userSettings._minLevel
-										input.form-control(type='number', name='_minLevel', placeholder='0', value=userSettings._minLevel)
-									else
-										input.form-control(type='number', name='_minLevel', placeholder='0')
-									span.help-block Minimal Level required to use the command.
-									.form-control-focus
+								if userSettings && userSettings._minLevel
+									input.form-control(type='number', name='_minLevel', placeholder='0', value=userSettings._minLevel)
+								else
+									input.form-control(type='number', name='_minLevel', placeholder='0')
+								label(for='_minLevel') Minimal Level
+								span.help-block Minimal Level required to use the command.
+								.form-control-focus
 
 							br
 							h3 Mikuia Coins
 							br
 							.form-group.form-md-line-input
-								label.col-sm-3.control-label Coin Cost
-								.col-sm-8
-									if userSettings && userSettings._coinCost
-										input.form-control(type='number', name='_coinCost', placeholder='0', value=userSettings._coinCost)
-									else
-										input.form-control(type='number', name='_coinCost', placeholder='0')
-									span.help-block Amount of coins deducted for using the command.
-									.form-control-focus
+								if userSettings && userSettings._coinCost
+									input.form-control(type='number', name='_coinCost', placeholder='0', value=userSettings._coinCost)
+								else
+									input.form-control(type='number', name='_coinCost', placeholder='0')
+								label(for='_minLevel') Coin Cost
+								span.help-block Amount of coins deducted for using the command.
+								.form-control-focus
 							br
 
 			.col-lg-4.col-md-6.col-sm-12
@@ -112,18 +100,14 @@ block content
 						.caption
 							i.fa.fa-cogs
 							span.caption-subject.bold.uppercase Handler Settings
-							span.caption-helper  #{command}
 					.portlet-body.form
 						.form-body
 							if settings
 								+settings(settings, userSettings)
 							else
-								.well.well-lg
-									h4.block There are no command-specific configurable settings.
-									p
-										| Uh, well, that happens. Please don't cry. Why are you crying? Now I'm crying too... ;_;
+								.note.note-warning This handler has no additional settings.
 						.form-actions
-							button.btn.blue(type='submit') Save
+							button.btn.btn-primary(type='submit') Save
 			.col-lg-4.col-md-6.col-sm-12
 				if guide
 					.portlet.light.bg-inverse

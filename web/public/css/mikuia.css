@@ -209,12 +209,11 @@ body.mikuia {
 }
 
 a.navbar-brand {
-	color: #5C9ACF;
-	padding-top: 13px;
+	color: white;
 }
 
 .navbar-dashboard {
-	padding-top: 26px !important;
+	padding-top: 22px !important;
 }
 
 body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
@@ -241,6 +240,28 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 
 .nomargin {
 	margin: 0;
+}
+
+.note {
+	word-break: break-word;
+}
+
+.page-actions-mikuia {
+	padding: 6px;
+}
+
+.page-actions-mikuia .separator {
+	padding-right: 10px;
+}
+
+.page-breadcrumb .fa-home {
+	margin-right: 4px;
+}
+
+.portlet-mikuia {
+	background-image: url('/img/mikuia.png');
+	background-position: 100% -450px;
+	background-repeat: no-repeat;
 }
 
 .profile-avatar {

@@ -366,6 +366,7 @@ class exports.Chat
 							Channel = new Mikuia.Models.Channel stream.channel.name
 							Channel.trackValue 'followers', stream.channel.followers
 							Channel.trackValue 'viewers', stream.viewers
+							Channel.trackValue 'views', stream.views
 
 							await Channel.isSupporter defer err, isSupporter
 							if isSupporter

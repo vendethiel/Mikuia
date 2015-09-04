@@ -1,19 +1,22 @@
 extends layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Commands
-				small  those things you write and they do things
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
-			i.fa.fa-circle
-		li
-			a(href='/dashboard/commands') Commands
+	h3.page-title
+		| Commands 
+		small they're fun i think
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/commands') Commands	
+		.page-toolbar
+			.btn-group.pull-right
+				a.btn.btn-primary.btn-fit-height#add(data-target='#addModal', data-toggle='modal') Add a command
 	.row
-		.col-sm-8
+		.col-md-12
 			.portlet.light
 				.portlet-title
 					.caption
@@ -21,29 +24,50 @@ block content
 						span.caption-subject.bold.uppercase Commands
 						span.caption-helper  this is a list of them
 				.portlet-body
-					table.table.table-bordered
+					table.table.table-striped
 						thead
 							tr
-								td Command
-								td Handler
-								td Actions
+								th Command
+								th Handler
+								th Actions
 						tbody
-							each command, commandName in commands
-								tr
-									td=commandName
-									td #{command.handler} - #{command.description}
+							each command in commands
+								tr(name=command.name)
+									td=command.name
 									td
-										a.btn.input-sm.green.command-settings(href='/dashboard/commands/settings/' + commandName) Settings
-										a.btn.input-sm.red.command-remove(href='#', title=commandName) Remove
-		.col-sm-4
-			.portlet.light
-				.portlet-title
-					.caption
-						i.fa.fa-cogs.font-blue-sharp
-						span.caption-subject.bold.uppercase.font-blue-sharp Add a command
-						span.caption-helper  why not
-				.portlet-body.form
-					form.form-horizontal(action='/dashboard/commands/add', method='post', role='form')
+										| #{command.handler} - #{command.description}
+										.badge.badge-roundless.badge-default.pull-right=command.plugin
+										if command.settings
+											if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
+												.badge.badge-roundless.badge-danger.pull-right Level #{command.settings._minLevel}
+
+											if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
+												if parseInt(command.settings._coinCost) > 1
+													.badge.badge-roundless.badge-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
+												else
+													.badge.badge-roundless.badge-warning.pull-right #{command.settings._coinCost} #{command.coin.coinName}
+
+											if command.settings._onlyMods
+												.badge.badge-roundless.badge-success.pull-right Only Mods
+
+											if command.settings._onlySubs
+												.badge.badge-roundless.badge-info.pull-right Only Subs
+
+											if command.settings._onlyBroadcaster
+												.badge.badge-roundless.badge-primary.pull-right Only Broadcaster
+
+									td
+										a.btn.btn-default.btn-sm.command-settings(href='/dashboard/commands/settings/' + command.name) Settings
+										a.btn.btn-danger.btn-sm.command-remove(href='#', title=command.name) Remove
+
+	form.form-horizontal(action='/dashboard/commands/add', method='post', role='form')
+		.modal.fade#addModal
+			.modal-dialog
+				.modal-content
+					.modal-header
+						button.close(type='button', data-dismiss='modal') &times;
+						h4.modal-title Add a command
+					.modal-body
 						.form-body
 							.form-group.form-md-line-input
 								label.col-sm-3.control-label Command
@@ -63,20 +87,28 @@ block content
 													option(value=handlerName) #{handlerName} - #{handler.description}
 									span.help-block This specifies what you expect the command to do.
 									.form-control-focus
-						.form-actions
-							button.btn.blue(type='submit') Add
+					.modal-footer
+						a.btn.btn-default(data-dismiss='modal') Cancel
+						button.btn.btn-primary(type='submit') Add
+		
 
 block footerScript
 	script(type='text/javascript').
 
-		$('.command-remove').click(function() {
-			$.post('/dashboard/commands/remove', {
-				command: $(this).attr('title')
-			}).done(function() {
-				location.reload()
+		$('#add').click(function() {
+			bootbox.dialog({
+				title: 'Add a command',
+				message: ''
 			})
 		})
 
-
-		// MIKUIA IS SHIT
-		// CONFIRMED
+		$('.command-remove').click(function() {
+			var commandName = $(this).attr('title')
+			$.post('/dashboard/commands/remove', {
+				command: commandName
+			}).done(function(response) {
+				if(response.removed) {
+					$('tr[name=' + commandName + ']').fadeOut()
+				}
+			})
+		})

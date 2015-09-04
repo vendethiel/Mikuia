@@ -1,37 +1,38 @@
 extends ../../../web/views/layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Coins
-				small  they are shiny
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
-			i.fa.fa-circle
-		li
-			a Plugins
-			i.fa.fa-circle
-		li
-			a Coins
-
+	h3.page-title
+		| Coins 
+		small shiny coins
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/plugins') Plugins
+				i.fa.fa-angle-right
+			li
+				a Coins
+		.page-toolbar
+			.btn-group.pull-right
+				a.btn.btn-warning.btn-fit-height#edit(data-target='#editModal', data-toggle='modal') Edit someone's coins
 	.row
-		.col-md-9
+		.col-md-12
 			.portlet.light
 				.portlet-title
 					.caption
 						i.fa.fa-cogs.font-yellow-gold
-						i.icon-heart
 						span.caption-subject.bold.uppercase.font-yellow-gold Coins
 						span.caption-helper  yeah coins
 				.portlet-body
-					table.table.table-bordered.table-striped.table-hover
+					table.table.table-striped.table-hover
 						thead
 							tr
-								td(width='30%') User
-								td Balance
-								td Actions
+								th(width='30%') User
+								th Balance
+								th Actions
 						tbody
 							each md in coins
 								if md.length > 0
@@ -52,15 +53,14 @@ block content
 											a.btn.input-sm.green(onclick='give(\'' + channel + '\')') Give
 											a.btn.input-sm.blue(onclick='set(\'' + channel + '\')') Set
 											a.btn.input-sm.red(onclick='take(\'' + channel + '\')') Take
-		.col-md-3
-			.portlet.light
-				.portlet-title
-					.caption
-						i.fa.fa-cogs.font-yellow-gold
-						i.icon-heart
-						span.caption-subject.bold.uppercase.font-yellow-gold Manual Edit
-						span.caption-helper  oh boy
-				.portlet-body
+
+	.modal.fade#editModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Edit coins
+				.modal-body
 					form.form-horizontal
 						.form-body
 							.form-group.form-md-line-input
@@ -71,16 +71,13 @@ block content
 											i.fa.fa-user
 										input.form-control#manualUsername(type='text')
 										.form-control-focus
-						br
-						.form-actions
-							.row
-								.col-md-offset-3.col-md-9
-									a.btn.green(onclick='give($("#manualUsername").val())') Give
-									|  
-									a.btn.blue(onclick='set($("#manualUsername").val())') Set
-									|  
-									a.btn.red(onclick='take($("#manualUsername").val())') Take
-
+						
+				.modal-footer
+					a.btn.green(onclick='give($("#manualUsername").val())') Give
+					|  
+					a.btn.blue(onclick='set($("#manualUsername").val())') Set
+					|  
+					a.btn.red(onclick='take($("#manualUsername").val())') Take
 
 block footerScript
 	script(type='text/javascript').

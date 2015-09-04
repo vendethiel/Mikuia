@@ -9,13 +9,31 @@ module.exports =
 		await
 			Channel.getCommands defer err, commandHandlers
 			Channel.getEnabledPlugins defer err, enabledPlugins
+			Channel.getSetting 'coins', 'name', defer err, coinName
+			Channel.getSetting 'coins', 'namePlural', defer err, coinNamePlural
 
-		commands = {}
+		commands = []
+		sorting = []
+
 		if commandHandlers?
 			for command, handler of commandHandlers
-				commands[command] =
-					handler: handler,
-					description: handlers[handler].description
+				sorting.push command
+
+		sorting.sort()
+		for command in sorting
+			description = Mikuia.Plugin.getHandler(commandHandlers[command]).description
+
+			await Channel.getCommandSettings command, true, defer err, settings
+
+			commands.push
+				name: command
+				description: description
+				handler: commandHandlers[command]
+				plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commandHandlers[command]).plugin).name
+				settings: settings
+				coin:
+					coinName: coinName
+					coinNamePlural: coinNamePlural
 
 		res.render 'commands',
 			commands: commands
@@ -44,8 +62,10 @@ module.exports =
 
 		if data.command?
 			await Channel.removeCommand data.command, defer err, data
-
-		res.send 200
+			res.send
+				removed: true
+		else
+			res.send 500
 
 	save: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
