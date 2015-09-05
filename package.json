@@ -2,7 +2,7 @@
   "name": "Mikuia",
   "version": "0.0.1",
   "scripts": {
-    "start": "./node_modules/iced-coffee-script/bin/coffee mikuia.iced"
+    "test": "mocha --compilers iced:iced-coffee-script/register"
   },
   "dependencies": {
     "body-parser": "^1.12.2",
@@ -19,6 +19,7 @@
     "jade": "^1.9.2",
     "limiter": "^1.0.5",
     "lol-js": "Mikuia/lol-js",
+    "mathjs": "^2.2.0",
     "moment": "^2.9.0",
     "morgan": "^1.5.2",
     "passport": "^0.2.1",
@@ -32,5 +33,9 @@
     "tmi.js": "^0.0.20",
     "twitchy": "^0.5.0",
     "underscore": "^1.8.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.0",
+    "should": "^7.1.0"
   }
 }

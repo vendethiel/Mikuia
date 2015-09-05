@@ -1,5 +1,6 @@
 countdown = require 'countdown'
 moment = require 'moment'
+mathjs = require 'mathjs'
 
 countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
@@ -9,8 +10,6 @@ countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 	(n) -> n.toString()
 
 class exports.Format
-	constructor: (@Mikuia) ->
-
 	parse: (format, data) ->
 		re = /<%([^%>]+)?%>/g
 
@@ -68,4 +67,10 @@ class exports.Format
 			else
 				format = format.replace match[0], ''
 
-		return format
+		return @parseNew format, data
+
+	parseNew: (format, data) ->
+		math = mathjs.create()
+		math.import data ? {}
+		format.replace /{{([^}}]+)}}/g, (match, p) ->
+			math.eval p
