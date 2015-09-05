@@ -117,9 +117,10 @@ module.exports =
 					userSettings = commandSettingData
 			
 			guide = null
-			await fs.readFile 'plugins/' + Mikuia.Plugin.getHandler(handlerName).plugin + '/guides/' + handlerName + '.jade', defer err, guideFile
-			if !err
-				guide = jade.render guideFile
+			if Mikuia.Plugin.getHandler(handlerName)?.plugin?
+				await fs.readFile 'plugins/' + Mikuia.Plugin.getHandler(handlerName).plugin + '/guides/' + handlerName + '.jade', defer err, guideFile
+				if !err
+					guide = jade.render guideFile
 
 			res.render 'command',
 				command: req.params.name
